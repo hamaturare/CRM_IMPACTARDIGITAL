@@ -3,13 +3,16 @@ from django.urls import path, include
 
 
 from apps.common.views import HomeView, SignUpView, DashboardView, ProfileUpdateView, ProfileView
-
+from apps.leads.views import LeadsView
+from apps.clients.views import ClientsView
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
+
     path('admin/', admin.site.urls),
     
     path('', HomeView.as_view(), name='home'),
+    path('home/', HomeView.as_view(), name='home'),
     path('dashboard/', DashboardView.as_view(), name='dashboard'),
 
     path('profile-update/', ProfileUpdateView.as_view(), name='profile-update'),
@@ -65,6 +68,9 @@ urlpatterns = [
          name='password_reset_complete'),
 
     #path('oauth/', include('social_django.urls', namespace='social')),  # <-- here
+    
+    path('leads/',LeadsView.as_view(), name='leads'),  
+    path('clients/',ClientsView.as_view(), name='clients'), 
 ]
 
 

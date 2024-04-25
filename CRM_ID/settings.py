@@ -54,6 +54,8 @@ CRISPY_TEMPLATE_PACK = 'bootstrap5'
 LOCAL_APPS = [
     'apps.common',
     'apps.userprofile',
+    'apps.leads',
+    'apps.clients',
 
 ]
 
