@@ -19,14 +19,15 @@
                     <th>Objetivo</th>
                     <th>Prioridade</th>
                     <th>ID</th>
+                    <th>UPDATE</th>
                 </tr>
             </thead>
             <tbody>
                 {% for lead in leads %}
                 <tr>
-                    <td>{{ lead.first_name }} {{ lead.last_name }}</td>
+                    <td><a href="#">{{ lead.first_name }} {{ lead.last_name }}</a></td>
                     <td>{{ lead.email }}</td>
-                    <td>{{ lead.instagram|default_if_none:"Não Inf./" }}</td>
+                    <td>{{ lead.instagram|default_if_none:"Não Inf." }}</td>
                     <td>
                         {% if lead.website %}
                         <a href="{{ lead.website }}" target="_blank" class="text-primary"><i class="fas fa-link"></i> Visit</a>
@@ -52,6 +53,7 @@
                     <td>{{ lead.objective }}</td>
                     <td>{{ lead.priority }}</td>
                     <td>{{ lead.id }}</td>
+                    <td><a href="#" class="btn btn-primary">Atualizar</a></td> <!-- Botão de atualizar -->
                 </tr>
                 {% endfor %}
             </tbody>
