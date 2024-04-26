@@ -10,6 +10,7 @@ from apps.userprofile.models import Profile
 
 class HomeView(TemplateView):
     template_name = 'common/home.html'
+    login_url = reverse_lazy('home')
 
 class DashboardView(LoginRequiredMixin, TemplateView):
     template_name = 'common/dashboard.html'
@@ -27,6 +28,7 @@ class SignUpView(CreateView):
     form_class = SignUpForm
     success_url = reverse_lazy('home')
     template_name = 'common/register.html'
+    login_url = reverse_lazy('home')
 
 from django.http import HttpResponseRedirect
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -39,12 +41,14 @@ from django.contrib import messages
 
 class ProfileView(LoginRequiredMixin, TemplateView):
     template_name = 'common/profile.html'
+    login_url = reverse_lazy('home')
 
 class ProfileUpdateView(LoginRequiredMixin, TemplateView):
     user_form = UserForm
     profile_form = ProfileForm
     template_name = 'common/profile-update.html'
-
+    login_url = reverse_lazy('home')
+    
     def post(self, request):
 
         post_data = request.POST or None

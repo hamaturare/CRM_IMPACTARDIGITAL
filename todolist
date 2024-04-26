@@ -1,5 +1,13 @@
 CRM IMPACTAR DIGITAL
 
+DASHBOARD
+    OBJETIVOS
+    KPIs
+    Numero de CLIENTES
+    LTV
+    CHURN
+    Gráficos
+    
 LEADS
     First Name (Nome da Lead)
     Last Name (Nome da Lead)
@@ -23,4 +31,8 @@ CLIENTES
     Inicio do Contrato
     Cidade
     Estado
-    
+    Dominio/site
+    Vencimento do Dominio
+    NPS
+
+NPS Da Empresa

@@ -1,7 +1,6 @@
 {% load static %}
 {% load crispy_forms_tags %} 
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -23,6 +22,33 @@
   <link rel="stylesheet" href="{% static 'date-time-phone/jquery-ui.css' %}">
   <link rel='stylesheet' href="{% static 'date-time-phone/jquery-ui-timepicker-addon.css' %}" />
   <!-- Date Time Picker CSS -->
+
+  <style>
+      .container-fluid {
+          padding-left: 15px;  
+          padding-right: 15px;
+      }
+      
+      @media (min-width: 768px) {
+          .container-fluid {
+              padding-left: 20px;
+              padding-right: 20px;
+          }
+
+      }
+      @media (min-width: 992px) {
+          .container-fluid {
+              padding-left: 30px;
+              padding-right: 30px;
+          }
+      }
+
+      .table td, .table th {
+        text-align: center;
+        vertical-align: middle;
+      }
+
+  </style>
 
 </head>
 
@@ -117,6 +143,7 @@
         {% include 'common/messages.html' %}
 
         {% block content %}  
+        
         {% endblock content %}
         
       </div>
@@ -129,52 +156,34 @@
   <!-- End of Page Wrapper -->
 
   {% block script %}  
+    <!-- Scripts específicos para certas páginas podem ser adicionados aqui -->
   {% endblock script %}
 
-  <!-- Bootstrap core JavaScript-->
-  <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
-  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <!-- Bootstrap core JavaScript e outros scripts essenciais -->
+    <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
 
-  <!-- Core plugin JavaScript-->
-  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+    <!-- Scripts de plugins podem ser carregados aqui ou em páginas específicas se não forem usados globalmente -->
+    <script src="{% static 'date-time-phone/jquery-ui.js' %}"></script>
+    <script src="{% static 'date-time-phone/jquery-ui-timepicker-addon.js' %}"></script>
+    <script src="{% static 'date-time-phone/jquery-input-mask-phone-number.min.js' %}"></script>
 
-  <!-- Custom scripts for all pages-->
-  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
-
-  <script>
-    setTimeout(function(){
-      if ($('#msg').length > 0) {
-        $('#msg').remove();
-      }
-    }, 2000)
-  </script>
-
-  <!-- Date Time Picker JS -->
-  <script src="{% static 'date-time-phone/jquery-ui.js' %}" ></script>
-  <script src="{% static 'date-time-phone/jquery-ui-timepicker-addon.js' %}"></script> 
-
-  <script>
-    $( function() {
-        // $( "#id_birth_date" ).datetimepicker({ dateFormat: 'yy-mm-dd', maxDate: 0, controlType: 'select'}).attr("autocomplete", "off") ;
-        // $( "#id_birth_date" ).timepicker({ dateFormat: 'yy-mm-dd', maxDate: 0, controlType: 'select'}).attr("autocomplete", "off") ;
-        $( "#id_birth_date" ).datepicker({ dateFormat: 'yy-mm-dd' }).attr("autocomplete", "off") ;
-    });
-  </script>
-  <!-- Date Time Picker JS -->
-
-  <!-- Phone Mask JS -->
-  <script src="{% static 'date-time-phone/jquery-input-mask-phone-number.min.js' %}"></script> 
-
-  <script>
-    //(xx) xxxx-xxxx format code
-    $(document).ready(function () {
-        $('#id_phone_number').setupPhoneMaskOnField({
-            format: '(xx) xxxx-xxxx',
-        });   
-    });
-  </script>
-  <!-- Phone Mask JS -->
-
+    <script>
+        $(document).ready(function() {
+            $('#id_phone_number').setupPhoneMaskOnField({
+                format: '(xx) xxxx-xxxx',
+            });
+            $('#id_birth_date').datepicker({
+                dateFormat: 'yy-mm-dd'
+            }).attr("autocomplete", "off");
+            setTimeout(function() {
+                if ($('#msg').length > 0) {
+                    $('#msg').remove();
+                }
+            }, 2000);
+        });
+    </script>
 </body>
-
 </html>

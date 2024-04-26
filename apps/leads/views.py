@@ -1,17 +1,11 @@
-from django.shortcuts import render
-from django.views.generic import TemplateView, CreateView
-from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Lead
 
-# Create your views here.
-
-class LeadsView(LoginRequiredMixin, TemplateView):
+class LeadsView(LoginRequiredMixin, ListView):
+    model = Lead
     template_name = 'leads/leads.html'
+    context_object_name = 'leads'
+    paginate_by = 50  # Shows 50 leads per page
     login_url = reverse_lazy('home')
-    
-
-def leads(request):
-    leads = Lead.objects.all()
-    
-    return render(request, 'leads/leads.html', {'leads':leads })

@@ -9,9 +9,11 @@ class Lead(models.Model):
     instagram = models.URLField(blank=True, null=True, verbose_name=_("Instagram"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
     whatsapp = models.CharField(max_length=20, verbose_name=_("Whatsapp (Telefone)"), blank=False)
-    first_contact_date = models.DateField(verbose_name=_("Data Primeiro Contato"), blank=False)
+    first_contact_date = models.DateField(verbose_name=_("Data Primeiro Contato"),null=True, blank=True)
     objective = models.TextField(verbose_name=_("Objetivo da Lead"))
     priority = models.IntegerField(verbose_name=_("Prioridade"))
+    city = models.CharField(max_length=50, verbose_name=_("Cidade"), blank=True)
+    state = models.CharField(max_length=2, verbose_name=_("Estado"), blank=True)
 
     def __str__(self):
-        return f"{self.first_name} {self.last_name}"
+        return '%s %s' % (self.first_name, self.last_name)
