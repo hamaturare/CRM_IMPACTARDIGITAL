@@ -7,7 +7,7 @@ DASHBOARD
     LTV
     CHURN
     Gráficos
-    
+
 LEADS
     First Name (Nome da Lead)
     Last Name (Nome da Lead)
@@ -16,7 +16,7 @@ LEADS
     Dia que a Lead Chegou (Data do contato com a Lead/ created at)
     Whatsapp (Telefone)
     Data Primeiro contato (envio de msg, emails etc)
-    Objetivo da Lead
+    Objetivo da Lead / Tipo de serviço
     Prioridade (importancia)
 
 CLIENTES
