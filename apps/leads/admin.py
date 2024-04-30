@@ -11,8 +11,8 @@ class ServiceTypeAdmin(admin.ModelAdmin):
     search_fields = ['name']  # Permite buscar por nome
 
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'last_name', 'email', 'objective', 'priority', 'created_at')
-    list_filter = ('priority', 'created_at', 'objective')  # Filtros na barra lateral
+    list_display = ('first_name', 'last_name', 'email', 'priority', 'created_at')
+    list_filter = ('priority', 'created_at', )  # Filtros na barra lateral
     search_fields = ('first_name', 'last_name', 'email')
     actions = [duplicate_record]
 

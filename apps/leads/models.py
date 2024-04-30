@@ -24,12 +24,6 @@ class Lead(models.Model):
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
     whatsapp = models.CharField(max_length=20, verbose_name=_("Whatsapp (Telefone)"), blank=False)
     first_contact_date = models.DateField(verbose_name=_("Data Primeiro Contato"),null=True, blank=True)
-    objective = models.CharField(
-        max_length=100,
-        verbose_name=_("Objetivo da Lead"),
-        choices=OBJECTIVE_CHOICES,
-        default='other'  # Opção padrão
-    )
     service_type = models.ForeignKey(ServiceType, on_delete=models.SET_NULL, null=True, verbose_name=_("Tipos de Serviço da Lead"))
     # Continuação dos outros campos
     priority = models.IntegerField(verbose_name=_("Prioridade"))

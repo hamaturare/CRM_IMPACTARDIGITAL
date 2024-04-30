@@ -84,5 +84,5 @@ class AddLeadView(LoginRequiredMixin, View):
         form = self.form_class(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('lead')  # Redireciona após o cadastro ser bem-sucedido
+            return redirect('leads')  # Redireciona após o cadastro ser bem-sucedido
         return render(request, self.template_name, {'form': form})
