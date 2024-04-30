@@ -3,9 +3,10 @@ from django.urls import path, include
 
 
 from apps.common.views import HomeView, SignUpView, DashboardView, ProfileUpdateView, ProfileView
-from apps.leads.views import LeadsView
+from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadView
 from apps.clients.views import ClientsView
 from django.contrib.auth import views as auth_views
+
 
 urlpatterns = [
 
@@ -70,7 +71,12 @@ urlpatterns = [
     #path('oauth/', include('social_django.urls', namespace='social')),  # <-- here
     
     path('leads/',LeadsView.as_view(), name='leads'),  
-    path('clients/',ClientsView.as_view(), name='clients'), 
+    path('clients/',ClientsView.as_view(), name='clients'),
+    path('update_lead/<int:pk>/', LeadUpdateView.as_view(), name='update_lead'),
+    path('delete_lead/<int:pk>/', LeadDeleteView.as_view(), name='delete_lead'),
+    path('add_lead/', AddLeadView.as_view(), name='add_lead'),
+     
+    
 ]
 
 

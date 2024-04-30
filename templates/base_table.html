@@ -7,14 +7,15 @@
   <link rel="stylesheet" href="https://cdn.datatables.net/1.10.20/css/jquery.dataTables.min.css">
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
 
   <title>Django CRM Project</title>
 
   <!-- Custom fonts for this template-->
+  <link href="https://stackpath.bootstrapcdn.com/bootstrap/5.1.0/css/bootstrap.min.css" rel="stylesheet">
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.min.css" rel="stylesheet" type="text/css">
   <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
-
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.7.2/font/bootstrap-icons.min.css" rel="stylesheet">
   <!-- Custom styles for this template-->
   <link href="{% static 'css/sb-admin-2.min.css' %}" rel="stylesheet">
 
@@ -155,9 +156,17 @@
   </div>
   <!-- End of Page Wrapper -->
 
-  {% block script %}  
-    <!-- Scripts específicos para certas páginas podem ser adicionados aqui -->
+  {% block script %}
+  <!-- Scripts específicos para certas páginas podem ser adicionados aqui -->
+
   {% endblock script %}
+  
+  {% block extra_css %} 
+  <!-- Custom CSS específicos para certas páginas podem ser adicionados aqui -->
+  
+  <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+  
+  {% endblock extra_css %}
 
     <!-- Bootstrap core JavaScript e outros scripts essenciais -->
     <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>

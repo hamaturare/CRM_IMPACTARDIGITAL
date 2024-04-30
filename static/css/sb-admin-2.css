@@ -10996,3 +10996,7 @@ footer.sticky-footer .copyright {
 body.sidebar-toggled footer.sticky-footer {
   width: 100%;
 }
+
+.modal-content-super-rounded {
+  border-radius: 40px; /* ou qualquer outro valor que você deseje */
+}

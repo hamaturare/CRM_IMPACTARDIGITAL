@@ -1,0 +1,45 @@
+@keyframes blinker {
+  50% {
+    opacity: 0;
+  }
+}
+
+.blink, .blink2 {
+border-radius: 10px;
+color: white;
+animation: blinker 1s linear infinite;
+}
+
+.blink {
+background-color: red;
+padding: 5px;
+}
+
+.blink2 {
+background-color: orange;
+padding: 5px;
+}
+
+/* Media Query para telas de dispositivos menores que 600 pixels */
+@media screen and (max-width: 600px) {
+.blink, .blink2 {
+  padding: 10px; /* Aumenta o padding para uma melhor visualização em telas menores */
+  border-radius: 20px; /* Aumenta o border-radius para um estilo mais marcante em dispositivos menores */
+  font-size: 18px; /* Aumenta o tamanho da fonte para melhor leitura em dispositivos pequenos */
+}
+}
+
+.table td, .table th {
+  white-space: nowrap;
+}
+
+@media (max-width: 768px) {
+  .table td, .table th {
+      font-size: 12px; /* Ou outro tamanho de fonte apropriado para dispositivos menores */
+  }
+}
+
+.table td, .table th {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
