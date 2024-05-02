@@ -35,11 +35,12 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
-        <div class="sidebar-brand-icon rotate-n-15">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" style="margin: 10px;" href="#">
+        <div class="sidebar-brand-icon">
           <i class="fas fa-address-card"></i>
+          <!-- <img src="{% static 'img/ID-logo.png' %}" class="sidebar-logo" > -->
         </div>
-        <div class="sidebar-brand-text mx-3">Contact <sup>Management</sup></div>
+          <div class="sidebar-brand-text mx-3"> <sup>CRM - Impactar Digital</sup></div>
       </a>
 
       <!-- Divider -->
@@ -130,6 +131,13 @@
 
   {% block script %}  
   {% endblock script %}
+
+  {% block extra_css %} 
+  <!-- Custom CSS específicos para certas páginas podem ser adicionados aqui -->
+  
+  <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+  
+  {% endblock extra_css %}
 
   <!-- Bootstrap core JavaScript-->
   <script src="{% static 'vendor/jquery/jquery.min.js' %}"></script>

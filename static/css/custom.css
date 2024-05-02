@@ -7,7 +7,7 @@
 .blink, .blink2 {
 border-radius: 10px;
 color: white;
-animation: blinker 1s linear infinite;
+/*animation: blinker 1s linear infinite;*/
 }
 
 .blink {
@@ -29,17 +29,41 @@ padding: 5px;
 }
 }
 
+.container-fluid {
+    padding-left: 20px;  
+    padding-right: 20px;
+}
+
+@media (min-width: 768px) {
+    .container-fluid {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+}
+
+@media (min-width: 992px) {
+    .container-fluid {
+        padding-left: 30px;
+        padding-right: 30px;
+        
+    }
+}
+
 .table td, .table th {
+  padding: 20px; /* Adjust padding as needed */
   white-space: nowrap;
-}
-
-@media (max-width: 768px) {
-  .table td, .table th {
-      font-size: 12px; /* Ou outro tamanho de fonte apropriado para dispositivos menores */
-  }
-}
-
-.table td, .table th {
   overflow: hidden;
   text-overflow: ellipsis;
+  text-align: center;
+  vertical-align: middle;
+}
+
+.sidebar-logo {
+  width: 100%;  /* Ajusta a largura para se encaixar no container */
+  max-width: 100px;  /* Limita o tamanho máximo da imagem */
+  height: auto;  /* Mantém a proporção da imagem */
+  transform: rotate(0deg);  /* Corrige qualquer rotação */
+  display: block;  /* Remove qualquer espaço extra abaixo da imagem */
+  margin: 0 auto;  /* Centraliza a imagem no sidebar */
 }

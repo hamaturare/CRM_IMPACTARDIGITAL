@@ -9,6 +9,7 @@ from django.views.generic import DeleteView
 from django.db.models import Q
 from .forms import LeadForm
 from django.views import View
+from django.contrib import messages
 
 
 class LeadsView(LoginRequiredMixin, ListView):
@@ -55,21 +56,25 @@ class LeadUpdateView(LoginRequiredMixin, UpdateView):
         form.fields['first_contact_date'].widget = forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})
         return form
     
-    """
-    def post(self, request, *args, **kwargs):
-        self.object = self.get_object()
-        if 'delete' in request.POST:
-            return redirect('delete_lead', pk=self.object.pk)
-        elif 'back' in request.POST:
-            return redirect('leads')
-        return super(LeadUpdateView, self).post(request, *args, **kwargs)
-    """    
+    def form_valid(self, form):
+        messages.success(self.request, 'Lead updated successfully!')
+        return super().form_valid(form)
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['first_contact_date'].widget = forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})
+        return form
     
     
 # Sua nova view LeadDeleteView
 class LeadDeleteView(LoginRequiredMixin, DeleteView):
     model = Lead
     success_url = reverse_lazy('leads')
+    
+    def delete(self, request, *args, **kwargs):
+        response = super().delete(request, *args, **kwargs)
+        messages.success(request, 'Lead successfully deleted!')
+        return response
 
 
 class AddLeadView(LoginRequiredMixin, View):
@@ -85,4 +90,4 @@ class AddLeadView(LoginRequiredMixin, View):
         if form.is_valid():
             form.save()
             return redirect('leads')  # Redireciona após o cadastro ser bem-sucedido
-        return render(request, self.template_name, {'form': form})
+        return render(request, self.template_name, {'form': form}) 

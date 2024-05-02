@@ -17,12 +17,12 @@ OBJECTIVE_CHOICES = (
 
 class Lead(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name=_("Dia que a Lead Chegou"))
-    first_name = models.CharField(max_length=255, verbose_name=_("Nome da Lead"), blank=False)
-    last_name = models.CharField(max_length=255, verbose_name=_("Sobrenome da Lead"), blank=False)
-    email = models.EmailField(max_length=255, unique=False, verbose_name=_("Email"), blank=False)
+    first_name = models.CharField(max_length=255, verbose_name=_("Nome da Lead"), blank=True)
+    last_name = models.CharField(max_length=255, verbose_name=_("Sobrenome da Lead"), blank=True)
+    email = models.EmailField(max_length=255, unique=False, verbose_name=_("Email"), blank=True)
     instagram = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Instagram"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
-    whatsapp = models.CharField(max_length=20, verbose_name=_("Whatsapp (Telefone)"), blank=False)
+    whatsapp = models.CharField(max_length=20, verbose_name=_("Whatsapp (Telefone)"), blank=True)
     first_contact_date = models.DateField(verbose_name=_("Data Primeiro Contato"),null=True, blank=True)
     service_type = models.ForeignKey(ServiceType, on_delete=models.SET_NULL, null=True, verbose_name=_("Tipos de Serviço da Lead"))
     # Continuação dos outros campos
