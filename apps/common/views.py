@@ -44,6 +44,7 @@ class ProfileView(LoginRequiredMixin, TemplateView):
     login_url = reverse_lazy('home')
 
 class ProfileUpdateView(LoginRequiredMixin, TemplateView):
+    model = Profile
     user_form = UserForm
     profile_form = ProfileForm
     template_name = 'common/profile-update.html'
@@ -67,9 +68,8 @@ class ProfileUpdateView(LoginRequiredMixin, TemplateView):
                                         user_form=user_form,
                                         profile_form=profile_form
                                     )
-
         return self.render_to_response(context)     
-
+    
     def get(self, request, *args, **kwargs):
         return self.post(request, *args, **kwargs)
 

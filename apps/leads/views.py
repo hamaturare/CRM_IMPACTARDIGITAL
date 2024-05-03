@@ -3,13 +3,13 @@ from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Lead
 from django.views.generic import UpdateView
-from django import forms
 from django.shortcuts import redirect, render
 from django.views.generic import DeleteView
 from django.db.models import Q
 from .forms import LeadForm
 from django.views import View
 from django.contrib import messages
+from django.forms import DateInput
 
 
 class LeadsView(LoginRequiredMixin, ListView):
@@ -35,7 +35,7 @@ class LeadsView(LoginRequiredMixin, ListView):
             )
 
         # Lista dos campos válidos para ordenação
-        valid_sort_fields = ['first_name', 'last_name', 'email', 'created_at', 'id', 'Objective', 'service_type']
+        valid_sort_fields = ['first_name', 'last_name', 'email', 'created_at', 'id', 'service_type']
         
         # Obtendo o campo de ordenação da query string e verificando se é válida
         ordering = self.request.GET.get('sort', 'first_name')
@@ -47,47 +47,56 @@ class LeadsView(LoginRequiredMixin, ListView):
 
 class LeadUpdateView(LoginRequiredMixin, UpdateView):
     model = Lead
-    fields = ['first_name', 'last_name', 'email', 'instagram', 'website', 'whatsapp', 'first_contact_date', 'service_type', 'priority']  # Or use a form_class if you have a custom form
+    form_class = LeadForm
     template_name = 'leads/update_lead.html'
-    success_url = reverse_lazy('leads')  # Assuming you have a named URL for listing leads
+    success_url = reverse_lazy('leads')
 
     def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['first_contact_date'].widget = forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})
+        form = super().get_form(form_class)  # get the form
+        # Certifique-se de que os campos existem antes de atribuir widgets
+        if 'first_contact_date' in form.fields:
+            form.fields['first_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        if 'return_contact' in form.fields:
+            form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         return form
     
-    def form_valid(self, form):
-        messages.success(self.request, 'Lead updated successfully!')
-        return super().form_valid(form)
+    def post(self, request, *args, **kwargs):
+        # Adiciona a mensagem antes de processar o formulário
+        messages.success(self.request, 'Lead atualizado com sucesso!!!')
+        return super().post(request, *args, **kwargs)
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)
-        form.fields['first_contact_date'].widget = forms.DateInput(format='%Y-%m-%d', attrs={'type': 'date'})
-        return form
-    
-    
-# Sua nova view LeadDeleteView
+
 class LeadDeleteView(LoginRequiredMixin, DeleteView):
     model = Lead
     success_url = reverse_lazy('leads')
     
     def delete(self, request, *args, **kwargs):
-        response = super().delete(request, *args, **kwargs)
-        messages.success(request, 'Lead successfully deleted!')
-        return response
+        messages.error(self.request, 'Lead deletado com sucesso!')
+        return super().delete(request, *args, **kwargs)
 
 
 class AddLeadView(LoginRequiredMixin, View):
-    form_class = LeadForm
     template_name = 'leads/add_lead.html'
 
     def get(self, request, *args, **kwargs):
-        form = self.form_class()
+        form = LeadForm()
+        self.setup_date_widgets(form)
         return render(request, self.template_name, {'form': form})
 
     def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
+        form = LeadForm(request.POST)
+        self.setup_date_widgets(form)
+        # Adiciona a mensagem de sucesso antes de verificar se o formulário é válido
+        messages.success(self.request, 'Lead adicionado com sucesso!!!')
         if form.is_valid():
             form.save()
             return redirect('leads')  # Redireciona após o cadastro ser bem-sucedido
-        return render(request, self.template_name, {'form': form}) 
+        return render(request, self.template_name, {'form': form})
+
+    def setup_date_widgets(self, form):
+        # Configura os widgets de data somente se os campos existirem
+        if 'first_contact_date' in form.fields:
+            form.fields['first_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        if 'return_contact' in form.fields:
+            form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+    

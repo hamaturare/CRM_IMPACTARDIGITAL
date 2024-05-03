@@ -1,4 +1,4 @@
-{% extends 'base_table.html' %}
+{% extends 'base.html' %}
 {% load static %}
 {% load lead_extras %}
 {% load crispy_forms_tags %} 
@@ -34,6 +34,7 @@
             <div class="modal-footer">
                 <form action="{% url 'delete_lead' pk=form.instance.pk %}" method="post">
                     {% csrf_token %}
+                    {{profile_form | crispy}}
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <input type="submit" value="Confirm" class="btn btn-danger"/>
                 </form>

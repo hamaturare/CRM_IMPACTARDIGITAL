@@ -1,13 +1,13 @@
 from django import forms
-from .models import Lead
+from .models import Client
 
-class LeadForm(forms.ModelForm):
+class ClientForm(forms.ModelForm):
     class Meta:
-        model = Lead
+        model = Client
         fields = '__all__'  # Utilizar todos os campos
 
     def __init__(self, *args, **kwargs):
-        super(LeadForm, self).__init__(*args, **kwargs)
+        super(ClientForm, self).__init__(*args, **kwargs)
         # Campos que você não deseja que sejam editáveis
         readonly_fields = ['created_at', 'id']  # Adicione mais campos conforme necessário
 
