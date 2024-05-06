@@ -1,22 +1,94 @@
-{% extends 'base_table.html' %}
+{% extends 'base.html' %}
 {% load static %}
-
 {% load crispy_forms_tags %} 
+{% load client_extras %}
 
 {% block content %}
-    <!-- Begin Page Content -->
-    <div class="container-fluid">
-
-        <!-- Page Heading -->
-        <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-        <h1 class="h3 mb-0 text-gray-800">Clients</h1>
-        </div>          
-
-        <!-- Main Content Here -->
-       
-        <h1> Welcome to Clients </h1>
-        
-        
+<div class="container-fluid mt-4">
+    <div class="row">
+      <div class="col d-flex justify-content-between align-items-center">
+            <!-- Título e Botão de Adicionar -->
+            <div>
+                <h1 class="mr-auto">Clientes</h1>
+                <a href="{% url 'add_client' %}" class="btn btn-primary btn-sm mb-2" role="button">
+                    <i class="bi bi-plus-lg"></i> Adicionar Cliente
+                </a>
+            </div>
+            <!-- Formulário de Busca -->
+            <form method="get" action="{% url 'clients' %}" class="form-inline" >
+                <div class="input-group ml-auto">
+                    <input type="text" name="search_term" value="{{ request.GET.search_term }}" class="form-control form-control-sm mr-1" placeholder="Buscar Cleinte" style="border-radius: 10px;">
+                    <div class="input-group-append">
+                        <button class="btn btn-outline-secondary btn-sm mr-1" type="submit" style="border-radius: 10px;">
+                            <i class="bi bi-search"></i>
+                        </button>
+                        <a href="{% url 'clients' %}" class="btn btn-outline-secondary btn-sm" style="border-radius: 10px;">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+      </div>
     </div>
-    <!-- /.container-fluid -->
+</div>
+<div class="container-fluid mt-4">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th><a href="?sort=Client_name">Nome do Cliente</a></th>
+                    <th><a href="?sort=Client_name">Empresa do Cliente</a></th>
+                    <th><a href="?sort=email">Email</a></th>
+                    <th>Instagram</th>
+                    <th>Website</th>
+                    <th>WhatsApp</th>
+                    <th>Cadastrado Em</th>
+                    <th>Data do Contrato</th>
+                    <th><a href="?sort=service_type">Serviço Prestado</th>
+                    <th><a href="?sort=client_income">Valor do Contrato</th>
+                    <th><a href="?sort=client_budget">Gasto Máximo Mensal</th>
+                    <th><a href="?sort=id">ID</a></th>
+                    <th>Atualizar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                <tr>
+                    <td style="text-align: left;"><a href="{% url 'update_client' pk=client.pk %}">{{ client.client_name }} </a></td>
+                    <td style="text-align: left;"><a href="{% url 'update_client' pk=client.pk %}">{{ client.company_name }} </a></td>
+                    <td>{{ client.email }}</td>
+                    <td>
+                        {% if client.instagram %} 
+                            {{client.instagram|default_if_none:"Não Inf."}}
+                        {% else %}
+                            <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
+                        {% endif %}    
+                    </td>
+                    <td>
+                        {% if client.website %}
+                            <a href="{{ client.website }}" target="_blank" class="text-primary"><i class="fas fa-link"></i> Visit</a>
+                        {% else %}
+                            <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if client.whatsapp %}
+                            <a href="https://wa.me/{{ client.whatsapp }}" target="_blank" class="text-success"><i class="fab fa-whatsapp"></i> {{ client.whatsapp|phone_format }}</a>
+                        {% else %}
+                            <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
+                        {% endif %}
+                    </td>
+                    <td>{{ client.created_at|date:"d/m/Y" }}</td>
+                    <td>{{ client.contract_date|date:"d/m/Y" }}</td>
+                    <td>{{ client.service_type }}</td>
+                    <td>{{ client.client_income }}</td>
+                    <td>{{ client.client_budget }}</td>
+                    <td>{{ client.id }}</td>
+                    <td><a href="{% url 'update_client' pk=client.pk %}" class="btn btn-primary">Atualizar</a></td>  <!-- Botão de atualizar -->
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock content %}

@@ -28,14 +28,14 @@ class LeadsView(LoginRequiredMixin, ListView):
         if search_term:
             queryset = queryset.filter(
                 Q(first_name__icontains=search_term) |
-                Q(last_name__icontains=search_term) |
+                Q(company_name__icontains=search_term) |
                 Q(email__icontains=search_term) |
                 Q(id__iexact=search_term) |
                 Q(service_type__name__icontains=search_term)  # Filtro pelos nomes de objetivo dos serviços associados
             )
 
         # Lista dos campos válidos para ordenação
-        valid_sort_fields = ['first_name', 'last_name', 'email', 'created_at', 'id', 'service_type']
+        valid_sort_fields = ['first_name', 'company_name', 'email', 'created_at', 'id', 'service_type']
         
         # Obtendo o campo de ordenação da query string e verificando se é válida
         ordering = self.request.GET.get('sort', 'first_name')

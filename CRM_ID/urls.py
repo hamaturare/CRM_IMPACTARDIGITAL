@@ -4,8 +4,9 @@ from django.urls import path, include
 
 from apps.common.views import HomeView, SignUpView, DashboardView, ProfileUpdateView, ProfileView
 from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadView
-from apps.clients.views import ClientsView
+from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, AddClientView
 from django.contrib.auth import views as auth_views
+from apps.ideabox.views import SubmitSuggestionView, SuggestionsListView
 
 
 urlpatterns = [
@@ -70,13 +71,21 @@ urlpatterns = [
 
     #path('oauth/', include('social_django.urls', namespace='social')),  # <-- here
     
+    #LEADS
     path('leads/',LeadsView.as_view(), name='leads'),  
-    path('clients/',ClientsView.as_view(), name='clients'),
     path('update_lead/<int:pk>/', LeadUpdateView.as_view(), name='update_lead'),
     path('delete_lead/<int:pk>/', LeadDeleteView.as_view(), name='delete_lead'),
     path('add_lead/', AddLeadView.as_view(), name='add_lead'),
-     
     
+    #CLIENTS
+    path('clients/',ClientsView.as_view(), name='clients'),
+    path('update_client/<int:pk>/', ClientUpdateView.as_view(), name='update_client'),
+    path('delete_client/<int:pk>/', ClientDeleteView.as_view(), name='delete_client'),
+    path('add_client/', AddClientView.as_view(), name='add_client'),
+     
+    #IDEABOX
+    path('submit/', SubmitSuggestionView.as_view(), name='submit_suggestion'),
+    path('list/', SuggestionsListView.as_view(), name='suggestions_list'),
 ]
 
 

@@ -1,0 +1,9 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Suggestions List</h2>
+<ul>
+{% for suggestion in suggestions %}
+    <li>{{ suggestion.user.username }}: {{ suggestion.content }}</li>
+{% endfor %}
+</ul>
+{% endblock %}

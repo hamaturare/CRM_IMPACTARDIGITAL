@@ -56,6 +56,7 @@ LOCAL_APPS = [
     'apps.userprofile',
     'apps.leads',
     'apps.clients',
+    'apps.ideabox'
 
 ]
 

@@ -2,7 +2,7 @@ from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 class ServiceType(models.Model):
-    name = models.CharField(max_length=100, verbose_name=_("Nome do Objetivo"))
+    name = models.CharField(max_length=100, verbose_name=_("Serviço de Interesse"))
 
     def __str__(self):
         return self.name
@@ -10,7 +10,7 @@ class ServiceType(models.Model):
 class Lead(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name=_("Dia que a Lead Chegou"))
     first_name = models.CharField(max_length=255, verbose_name=_("Nome da Lead"), blank=True)
-    last_name = models.CharField(max_length=255, verbose_name=_("Sobrenome da Lead"), blank=True)
+    company_name = models.CharField(max_length=255, verbose_name=_("Empresa da Lead"), blank=True)
     email = models.EmailField(max_length=255, unique=False, verbose_name=_("Email"), blank=True)
     instagram = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Instagram"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
@@ -24,4 +24,4 @@ class Lead(models.Model):
     state = models.CharField(max_length=2, verbose_name=_("Estado"), blank=True)
 
     def __str__(self):
-        return '%s %s' % (self.first_name, self.last_name)
+        return '%s %s' % (self.first_name, self.company_name)
