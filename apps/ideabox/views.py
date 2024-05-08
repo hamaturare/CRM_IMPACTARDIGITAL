@@ -29,7 +29,7 @@ class SuggestionsListView(LoginRequiredMixin, ListView):
     model = Suggestion
     context_object_name = 'suggestions'
     template_name = 'ideabox/suggestions_list.html'
-    paginate_by = 10  # Adicione paginação se necessário
+    paginate_by = 50 
 
     def get_queryset(self):
         queryset = super().get_queryset()  # Inicia com um queryset padrão
@@ -52,10 +52,11 @@ class SuggestionsListView(LoginRequiredMixin, ListView):
 class SuggestionUpdateView(LoginRequiredMixin, UpdateView):
     model = Suggestion
     form_class = SuggestionUpdateForm
-    template_name = 'ideabox/view_suggestion.html'  # Assumindo que este é o template de atualização
-    success_url = reverse_lazy('suggestions_list')  # URL para redirecionar após a atualização bem-sucedida
+    template_name = 'ideabox/view_suggestion.html'
+    success_url = reverse_lazy('suggestions_list')
+
+    
 
     def form_valid(self, form):
-        # Opcional: Adicionar uma mensagem de sucesso
         messages.success(self.request, 'Sugestão atualizada com sucesso!')
         return super().form_valid(form)

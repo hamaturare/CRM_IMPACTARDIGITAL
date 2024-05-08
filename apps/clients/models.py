@@ -17,7 +17,7 @@ class Client(models.Model):
     instagram = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Instagram"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
     whatsapp = models.CharField(max_length=20, verbose_name=_("Whatsapp (Telefone)"), blank=True)
-    service_type = models.ForeignKey(ServiceType, on_delete=models.SET_NULL, null=True, verbose_name=_("Tipos de Serviço da Lead"))
+    service_type = models.ForeignKey(ServiceType, on_delete=models.SET_NULL, null=True, verbose_name=_("Serviços do Cliente"))
     # Continuação dos outros campos
     city = models.CharField(max_length=50, verbose_name=_("Cidade"), blank=True)
     state = models.CharField(max_length=2, verbose_name=_("Estado"), blank=True)

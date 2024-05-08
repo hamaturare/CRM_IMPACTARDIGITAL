@@ -21,7 +21,7 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
 
     # Authentication 
-    path('register/', SignUpView.as_view(), name="register"),
+    # path('register/', SignUpView.as_view(), name="register"),
 
     path('login/', auth_views.LoginView.as_view(
         template_name='common/login.html'
@@ -68,8 +68,6 @@ urlpatterns = [
              template_name='common/password-reset/password_reset_complete.html'
          ),
          name='password_reset_complete'),
-
-    #path('oauth/', include('social_django.urls', namespace='social')),  # <-- here
     
     #LEADS
     path('leads/',LeadsView.as_view(), name='leads'),  

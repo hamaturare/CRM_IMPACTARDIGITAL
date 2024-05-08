@@ -43,13 +43,13 @@
             </thead>
             <tbody>
                 {% for suggestion in suggestions %}
-                <tr>
-                    <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.user.username }}</a></td>
-                    <td>{{ suggestion.title }}</td>
-                    <td>{{ suggestion.priority }}</td>
-                    <td>{{ suggestion.created_at|date:"d/m/Y H:i" }}</td>
-                    <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.content|truncatechars:50 }}</a></td>
-                </tr>
+                    <tr>
+                        <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.user.username }}</a></td>
+                        <td>{{ suggestion.title }}</td>
+                        <td>{{ suggestion.priority }}</td>
+                        <td>{{ suggestion.created_at|date:"d/m/Y H:i" }}</td>
+                        <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.content|truncatechars:50 }}</a></td>
+                    </tr>
                 {% endfor %}
             </tbody>
         </table>

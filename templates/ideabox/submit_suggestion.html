@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
 
 {% block content %}
@@ -8,7 +9,7 @@
         {% csrf_token %}
         {{ form|crispy }}
         <div class="form-group">
-            <button type="submit" name="save" class="btn btn-success mr-1">Salvar</button>
+            <button type="submit" name="save" class="btn btn-primary mr-1">Enviar</button>
             <a href="{% url 'suggestions_list' %}" class="btn btn-danger mr-1">Cancelar</a>
         </div>
     </form>

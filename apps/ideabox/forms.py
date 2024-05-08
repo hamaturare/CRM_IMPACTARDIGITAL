@@ -14,8 +14,9 @@ class SuggestionForm(forms.ModelForm):
 class SuggestionUpdateForm(forms.ModelForm):
     class Meta:
         model = Suggestion
-        fields = ['content', 'priority']
+        fields = ['title','content', 'priority']
         widgets = {
+            'title': forms.TextInput(attrs={'class': 'form-control'}),
             'content': forms.Textarea(attrs={'cols': 40, 'rows': 5, 'class': 'form-control'}),
             'priority': forms.Select(attrs={'class': 'form-control'}),
         }
