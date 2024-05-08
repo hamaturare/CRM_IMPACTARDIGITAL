@@ -35,7 +35,7 @@
             <div class="modal-footer">
                 <form action="{% url 'delete_client' pk=form.instance.pk %}" method="post">
                     {% csrf_token %}
-                    {{profile_form | crispy}}
+                    {{ form|crispy }}
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
                     <input type="submit" value="Confirm" class="btn btn-danger"/>
                 </form>

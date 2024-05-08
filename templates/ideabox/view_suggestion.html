@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container mt-4">
+    <form method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="card">
+            <div class="card-header">
+                Sugestão de: {{ suggestion.user.username }}
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">{{ suggestion.title }}</h5>
+                <h6 class="text-muted">Criado em: {{ suggestion.created_at|date:"d/m/Y H:i" }}</h6>
+                <div class="form-group">
+                    <label for="id_content">Conteúdo:</label>
+                    {{ form.content }}
+                </div>
+                <div class="form-group">
+                    <label for="id_content">Prioridade:</label>
+                    {{ form.priority }}
+                </div>
+                <button type="submit" class="btn btn-success">Atualizar</button>
+                <a href="{% url 'suggestions_list' %}" class="btn btn-danger">Cancelar</a>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
