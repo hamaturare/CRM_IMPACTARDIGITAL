@@ -17,6 +17,7 @@ class ClientsView(LoginRequiredMixin, ListView):
     template_name = 'clients/clients.html'
     paginate_by = 50  # Shows 50 clients per page
     login_url = reverse_lazy('home')
+    context_object_name = 'clients'
 
     def get_queryset(self):
         """Allow custom sorting and searching with safety checks."""
