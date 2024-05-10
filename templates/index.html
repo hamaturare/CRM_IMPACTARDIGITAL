@@ -1,0 +1,75 @@
+{% load static %}
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>Django Sidebar and Dashboard</title>
+
+  <!-- Custom fonts for bootstrap-->
+ 
+  <!-- Custom fonts Google Material Icons (Using this) -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">  <!-- Custom styles Custom2 Css-->
+  <link rel="stylesheet" href="{% static 'css/custom2.css' %}">
+  <!-- Date Time Picker CSS -->
+  <link rel="stylesheet" href="{% static 'date-time-phone/jquery-ui.css' %}">
+  <link rel='stylesheet' href="{% static 'date-time-phone/jquery-ui-timepicker-addon.css' %}"/>
+  <!-- Date Time Picker CSS -->
+</head>
+<body>
+    <div class="container"> 
+        <aside>
+            <div class="top">
+                <div class="logo">
+                    <img src="{% static 'img/LOGO_ID.png' %}">
+                    <h2><span class="orange-id">IMPACTAR </span><span class="blue-id">DIGITAL</span>
+                </div>
+                <div class"close" id="close-btn">
+                    <span class="material-icons">close</span>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <a href="#">
+                    <span class="material-icons">grid_view</span>
+                    <h3>Dashboard</h3>
+                </a>
+                <a href="#" class="active">
+                    <span class="material-icons">groups</span>
+                    <h3>Clients</h3>
+                </a>
+                <a href="#">
+                    <span class="material-icons">reduce_capacity</span>
+                    <h3>Leads</h3>
+                </a>
+                <a href="#">
+                    <span 
+                    class="material-icons">mail_outline</span>
+                    <h3>Messages</h3>
+                    <span class="message-count">26</span>
+                </a>
+                <a href="#">
+                    <span class="material-icons">person_outline</span>
+                    <h3>Profile</h3>
+                </a>
+                <a href="#">
+                    <span class="material-icons">key</span>
+                    <h3>Change Password</h3>
+                </a>
+                <a href="#">
+                    <span class="material-icons">lightbulb</span>
+                    <h3>Idea Box</h3>
+                </a>
+                <a href="#">
+                    <span class="material-icons">logout</span>
+                    <h3>Logout</h3>
+                </a>
+            </div>
+        </aside>
+    </div>
+</body>
+</html>

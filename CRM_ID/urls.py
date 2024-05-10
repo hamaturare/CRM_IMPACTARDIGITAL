@@ -8,6 +8,7 @@ from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, 
 from django.contrib.auth import views as auth_views
 from apps.ideabox.views import SubmitSuggestionView, SuggestionsListView, SuggestionUpdateView
 
+from apps.userprofile.views import preview_template
 
 urlpatterns = [
 
@@ -84,7 +85,9 @@ urlpatterns = [
     #IDEABOX
     path('submit_suggestion/', SubmitSuggestionView.as_view(), name='submit_suggestion'),
     path('suggestions/', SuggestionsListView.as_view(), name='suggestions_list'),
-    path('update_suggestion/<int:pk>/', SuggestionUpdateView.as_view(), name='view_suggestion')
+    path('update_suggestion/<int:pk>/', SuggestionUpdateView.as_view(), name='view_suggestion'),
+    path('preview/', preview_template, name='index'),
+
 ]
 
 
