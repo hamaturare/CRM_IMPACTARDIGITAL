@@ -1,6 +1,12 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+class Priority(models.Model):
+    name = models.CharField(max_length=50, verbose_name=_("Prioridade"))
+
+    def __str__(self):
+        return self.name
+
 class ServiceType(models.Model):
     name = models.CharField(max_length=100, verbose_name=_("Serviço de Interesse"))
 
@@ -19,9 +25,12 @@ class Lead(models.Model):
     return_contact = models.DateField(verbose_name=_("Retornar Contato Em"),null=True, blank=True)
     service_type = models.ForeignKey(ServiceType, on_delete=models.SET_NULL, null=True, verbose_name=_("Tipos de Serviço da Lead"))
     # Continuação dos outros campos
-    priority = models.IntegerField(verbose_name=_("Prioridade"))
+    priority = models.ForeignKey(Priority, on_delete=models.SET_NULL, null=True, verbose_name="Prioridade")
+
     city = models.CharField(max_length=50, verbose_name=_("Cidade"), blank=True)
     state = models.CharField(max_length=2, verbose_name=_("Estado"), blank=True)
+
+    lead_info = models.TextField(max_length=2500, blank=True, verbose_name=_("Informações Sobre a Lead"))
 
     def __str__(self):
         return '%s %s' % (self.first_name, self.company_name)

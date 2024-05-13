@@ -71,5 +71,56 @@
             </div>
         </aside>
     </div>
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
+
+    <!-- Main Content -->
+    <div id="content">
+
+      {% include 'common/messages.html' %}
+
+      {% block content %}  
+      
+      {% endblock content %}
+      
+    </div>
+    <!-- End of Main Content -->
+
+  </div>
+  <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+{% block script %}
+  <!-- Bootstrap core JavaScript e outros scripts essenciais -->
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+  <script src="{% static 'date-time-phone/jquery-ui-timepicker-addon.js' %}"></script>
+  <script src="{% static 'date-time-phone/jquery-input-mask-phone-number.min.js' %}"></script>
+  
+  <script>
+    $(document).ready(function() {
+      
+        setTimeout(function() {
+          $('#msg').fadeOut('slow', function() {
+              $(this).remove();
+          });
+      }, 2000);
+    }); 
+  </script>
+{% endblock script %}
+
+{% block extra_css %} 
+<!-- Custom CSS específicos para certas páginas podem ser adicionados aqui -->
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
+
+{% endblock extra_css %}
+
 </body>
 </html>

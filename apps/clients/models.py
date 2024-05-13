@@ -24,7 +24,7 @@ class Client(models.Model):
     client_kpis = models.CharField(max_length=50, verbose_name=_("KPIs"), blank=True)
     client_income = models.CharField(max_length=50, verbose_name=_("Valor do Contrato"), blank=True)
     client_budget = models.CharField(max_length=50, verbose_name=_("Gasto Máximo Mensal"), blank=True)
-    client_info = models.TextField(max_length=500, blank=True)
+    client_info = models.TextField(max_length=2500, blank=True, verbose_name=_("Informações Sobre o Cliente"))
     
 
     def __str__(self):

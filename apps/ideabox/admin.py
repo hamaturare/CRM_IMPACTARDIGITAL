@@ -1,8 +1,7 @@
 from django.contrib import admin
-from .models import Priority
+from .models import Priority, Suggestion
 
 # Register your models here.
-
 
 class PriorityAdmin(admin.ModelAdmin):
     list_display = ['name']  # Mostra o nome no painel admin
@@ -10,4 +9,4 @@ class PriorityAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Priority, PriorityAdmin)
-
+admin.site.register(Suggestion)

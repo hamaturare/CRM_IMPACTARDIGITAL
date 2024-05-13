@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Lead, ServiceType
+from .models import Lead, ServiceType, Priority
 
 def duplicate_record(modeladmin, request, queryset):
     for object in queryset:
@@ -11,10 +11,15 @@ class ServiceTypeAdmin(admin.ModelAdmin):
     search_fields = ['name']  # Permite buscar por nome
 
 class LeadAdmin(admin.ModelAdmin):
-    list_display = ('first_name', 'company_name', 'email', 'priority', 'created_at')
-    list_filter = ('priority', 'created_at', )  # Filtros na barra lateral
+    list_display = ('first_name', 'company_name', 'email', 'created_at')
+    list_filter = ( 'created_at', )  # Filtros na barra lateral
     search_fields = ('first_name', 'company_name', 'email')
     actions = [duplicate_record]
 
+class PriorityAdmin(admin.ModelAdmin):
+    list_display = ['name']  # Mostra o nome no painel admin
+    search_fields = ['name']  # Permite buscar por nome
+
 admin.site.register(Lead, LeadAdmin)
 admin.site.register(ServiceType, ServiceTypeAdmin)
+admin.site.register(Priority, PriorityAdmin)
