@@ -2,9 +2,8 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Client
-from django.views.generic import UpdateView
+from django.views.generic import UpdateView, DetailView, DeleteView
 from django.shortcuts import redirect, render
-from django.views.generic import DeleteView
 from django.db.models import Q
 from .forms import ClientForm
 from django.views import View
@@ -98,4 +97,10 @@ class AddClientView(LoginRequiredMixin, View):
             form.fields['contract_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         if 'next_contact_date' in form.fields:
             form.fields['next_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-    
+
+class ClientDetailView(LoginRequiredMixin, DetailView):
+    model = Client
+    template_name = 'clients/client_info.html'
+    context_object_name = 'client'
+    login_url = reverse_lazy('home')  # Garante que o usuário esteja logado
+    success_url = reverse_lazy('clients')       

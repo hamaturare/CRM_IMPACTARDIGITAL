@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% load client_extras %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
+        <h1 class="h3 mb-0 text-gray-800">Detalhes do Cliente</h1>
+    </div>
+    <div class="row">
+        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+            <div class="card-body">
+                <h2>{{ client.company_name }}</h2>
+                <p><strong>Nome do Cliente: </strong> {{ client.client_name }}</p>
+                <p><strong>Email: </strong> {{ client.email }}</p>
+                <p><strong>Data do Contrato: </strong> {{ client.contract_date|date:"d/m/Y" }}</p>
+                <p><strong>Data de Criação: </strong> {{ client.created_at|date:"d/m/Y" }}</p>
+                <p><strong>Próximo Contato: </strong> {{ client.next_contact_date|date:"d/m/Y" }}</p>
+                <p><strong>Instagram: </strong> {{ client.instagram }}</p>
+                <p><strong>Website: </strong> <a href="{{ client.website }}" target="_blank">{{ client.website }}</a></p>
+                <p><strong>WhatsApp: </strong> <a href="https://wa.me/{{ client.whatsapp }}" target="_blank" class="text-success"><i class="fab fa-whatsapp"></i> {{ client.whatsapp|phone_format }}</a></p>
+                <p><strong>Serviço Prestado: </strong> {{ client.service_type.name }}</p>
+                <p><strong>Cidade: </strong> {{ client.city }}</p>
+                <p><strong>Estado: </strong> {{ client.state }}</p>
+                <p><strong>Valor do Contrato: </strong> {{ client.client_income|real_brasileiro }}</p>
+                <p><strong>Gasto Máximo Mensal: </strong> {{ client.client_budget|real_brasileiro }}</p>
+                <p><strong>KPIs: </strong> {{ client.client_kpis|real_brasileiro }}</p>
+                <p><strong>Informações do Cliente: </strong> {{ client.client_info }}</p>
+                <!-- Botões de ação -->
+                <a href="{% url 'update_client' client.pk %}" class="btn btn-sm btn-success shadow-sm">Editar</a>
+                <a href="{% url 'clients' %}" class="btn btn-sm btn-primary shadow-sm">Voltar</a>
+                <button id="deleteBtn" type="button" class="btn btn-sm btn-danger shadow-sm">Deletar</button>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Modal de Confirmação -->
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-header text-center">
+                <h3 class="modal-title w-100" id="confirmationModalLabel">Confirmar Deleção</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <h5>Tem certeza que deseja deletar este Cliente?</h5>
+                <h5>Todos os dados do cliente serão apagados!</h5>
+                <h5>Isto será irreversível!</h5>
+            </div>
+            <div class="modal-footer">
+                <form action="{% url 'delete_client' pk=client.pk %}" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Confirmar" class="btn btn-danger"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    // JavaScript para abrir a modal de confirmação
+    document.getElementById('deleteBtn').addEventListener('click', function() {
+        $('#confirmationModal').modal('show');
+    });
+</script>
+{% endblock content %}

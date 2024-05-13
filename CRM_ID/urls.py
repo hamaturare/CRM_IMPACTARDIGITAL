@@ -3,8 +3,8 @@ from django.urls import path, include
 
 
 from apps.common.views import HomeView, SignUpView, DashboardView, ProfileUpdateView, ProfileView
-from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadView
-from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, AddClientView
+from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadView, LeadDetailView
+from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, AddClientView, ClientDetailView
 from django.contrib.auth import views as auth_views
 from apps.ideabox.views import SubmitSuggestionView, SuggestionsListView, SuggestionUpdateView
 
@@ -75,6 +75,7 @@ urlpatterns = [
     path('update_lead/<int:pk>/', LeadUpdateView.as_view(), name='update_lead'),
     path('delete_lead/<int:pk>/', LeadDeleteView.as_view(), name='delete_lead'),
     path('add_lead/', AddLeadView.as_view(), name='add_lead'),
+    path('lead_info/<int:pk>/', LeadDetailView.as_view(), name='lead_info'),
     
     #CLIENTS
     path('clients/',ClientsView.as_view(), name='clients'),
@@ -87,7 +88,8 @@ urlpatterns = [
     path('suggestions/', SuggestionsListView.as_view(), name='suggestions_list'),
     path('update_suggestion/<int:pk>/', SuggestionUpdateView.as_view(), name='view_suggestion'),
     path('preview/', preview_template, name='index'),
-
+    path('client_info/<int:pk>/', ClientDetailView.as_view(), name='client_info'),
+   
 ]
 
 

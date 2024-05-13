@@ -37,8 +37,14 @@
                     <th><a href="?sort=user__username">Usuário</a></th>
                     <th><a href="?sort=title">Título da Sugestão</a></th>
                     <th><a href="?sort=created_at">Criado Em</a></th>
-                    <th><a href="?sort=priority">Prioridade</a></th>
                     <th>Conteúdo</th>
+                    <th><a href="?sort=priority">Prioridade</a></th>
+                    <th><a href="?sort=priority">Status</a></th>
+                    {% if request.user.is_superuser %}
+                        <th><a href="?sort=priority">Atualizar</a></th>
+                    {% else %}
+                        <th><a href="?sort=priority">Vizualizar</a></th>
+                    {% endif %}
                 </tr>
             </thead>
             <tbody>
@@ -46,9 +52,15 @@
                     <tr>
                         <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.user.username }}</a></td>
                         <td>{{ suggestion.title }}</td>
-                        <td>{{ suggestion.priority }}</td>
                         <td>{{ suggestion.created_at|date:"d/m/Y H:i" }}</td>
                         <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.content|truncatechars:50 }}</a></td>
+                        <td>{{ suggestion.priority }}</td>
+                        <td>{{ suggestion.status }}</td>
+                        {% if request.user.is_superuser %}
+                            <td><a href="{% url 'view_suggestion' suggestion.id %}" class="btn btn-primary">Atualizar</a></td>  <!-- Botão de atualizar -->
+                        {% else %}
+                            <td><a href="{% url 'view_suggestion' suggestion.id %}" class="btn btn-success">Vizualizar</a></td>  <!-- Botão de Vizualizar -->
+                        {% endif %}
                     </tr>
                 {% endfor %}
             </tbody>

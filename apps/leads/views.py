@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Lead
 from django.views.generic import UpdateView
 from django.shortcuts import redirect, render
-from django.views.generic import DeleteView
+from django.views.generic import DeleteView, DetailView
 from django.db.models import Q
 from .forms import LeadForm
 from django.views import View
@@ -99,4 +99,10 @@ class AddLeadView(LoginRequiredMixin, View):
             form.fields['first_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         if 'return_contact' in form.fields:
             form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-    
+
+class LeadDetailView(LoginRequiredMixin, DetailView):
+    model = Lead
+    template_name = 'leads/lead_info.html'
+    context_object_name = 'lead'
+    login_url = reverse_lazy('home')  # Garante que o usuário esteja logado
+    success_url = reverse_lazy('leads')   

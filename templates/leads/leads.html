@@ -47,13 +47,14 @@
                     <th><a href="?sort=Service Type">Serviço de Interesse</th>
                     <th><a href="?sort=priority">Prioridade</a></th>
                     <th><a href="?sort=id">ID</a></th>
+                    <th>Vizualizar</th>
                     <th>Atualizar</th>
                 </tr>
             </thead>
             <tbody>
                 {% for lead in leads %}
                 <tr>
-                    <td style="text-align: left;"><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.first_name }} </a></td>
+                    <td style="text-align: left;"><a href="{% url 'lead_info' pk=lead.pk %}">{{ lead.first_name }} </a></td>
                     <td style="text-align: left;"><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.company_name }} </a></td>
                     <td>{{ lead.email }}</td>
                     <td>
@@ -89,6 +90,7 @@
                     <td>{{ lead.service_type }}</td>
                     <td>{{ lead.priority }}</td>
                     <td>{{ lead.id }}</td>
+                    <td><a href="{% url 'lead_info' pk=lead.pk %}" class="btn btn-success">Vizualizar</a></td>  <!-- Botão de Vizualizar -->
                     <td><a href="{% url 'update_lead' pk=lead.pk %}" class="btn btn-primary">Atualizar</a></td>  <!-- Botão de atualizar -->
                 </tr>
                 {% endfor %}

@@ -10,3 +10,13 @@ def phone_format(phone):
     elif len(phone) == 11:  # Incluir os números com nono dígito
         return '({}) {}-{}'.format(phone[:2], phone[2:7], phone[7:11])
     return phone  # Retornar o formato original se não corresponder
+
+@register.filter
+def real_brasileiro(value):
+    try:
+        # Garante que o valor é um float para formatação
+        valor = float(value)
+        # Formata o número como moeda
+        return f'R$ {valor:,.2f}'.replace(',', 'x').replace('.', ',').replace('x', '.')
+    except (TypeError, ValueError):
+        return value  # Retorna o valor original se houver um erro

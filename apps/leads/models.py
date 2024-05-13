@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils.translation import gettext_lazy as _
+from django.conf import settings
 
 class Priority(models.Model):
     name = models.CharField(max_length=50, verbose_name=_("Prioridade"))
@@ -17,6 +18,13 @@ class Lead(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name=_("Dia que a Lead Chegou"))
     first_name = models.CharField(max_length=255, verbose_name=_("Nome da Lead"), blank=True)
     company_name = models.CharField(max_length=255, verbose_name=_("Empresa da Lead"), blank=True)
+    responsible = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,  # opcional, depende se você quer forçar uma seleção
+        verbose_name=_("Responsável pela Lead")
+    )
     email = models.EmailField(max_length=255, unique=False, verbose_name=_("Email"), blank=True)
     instagram = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Instagram"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
