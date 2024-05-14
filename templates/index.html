@@ -28,7 +28,7 @@
                     <img src="{% static 'img/LOGO_ID.png' %}">
                     <h2><span class="orange-id">IMPACTAR </span><span class="blue-id">DIGITAL</span>
                 </div>
-                <div class"close" id="close-btn">
+                <div class="close" id="close-btn">
                     <span class="material-icons">close</span>
                 </div>
             </div>
@@ -38,7 +38,7 @@
                     <span class="material-icons">grid_view</span>
                     <h3>Dashboard</h3>
                 </a>
-                <a href="#" class="active">
+                <a href="#">
                     <span class="material-icons">groups</span>
                     <h3>Clients</h3>
                 </a>
@@ -70,8 +70,33 @@
                 </a>
             </div>
         </aside>
-    </div>
-
+        <main>
+        <!-- MAIN CONTENT HERE I MAY HAVE TO MOVE THE BLOCK CONTENT HERE --> 
+        </main>
+        <!-- RIGHT SESSION IF NEEDED -->
+        <div class="right">
+            <!-- BEGIN OF TOP BAR -->
+            <div class="top">
+                <button id="menu-btn">
+                    <span class="material-icons">menu</span>
+                </button>
+                <div class="theme-toggler">
+                    <span class="material-icons active">light_mode</span>
+                    <span class="material-icons">dark_mode</span>
+                </div>
+                <div class="profile">
+                    <div class="info">
+                        <p>Hey, <b>Felipe</b></p>
+                        <small class="text-muted">Admin</small>
+                    </div>
+                    <div class="profile-photo">
+                        <img src="{% static 'img/LOGO_ID.png' %}">
+                    </div>
+                </div>
+            </div>
+            <!-- END OF TOP BAR -->
+        </div>
+    </div>    
 <!-- Content Wrapper -->
 <div id="content-wrapper" class="d-flex flex-column">
 
@@ -102,6 +127,7 @@
   <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
   <script src="{% static 'date-time-phone/jquery-ui-timepicker-addon.js' %}"></script>
   <script src="{% static 'date-time-phone/jquery-input-mask-phone-number.min.js' %}"></script>
+  <script src="{% static 'js/custom.js' %}"></script>
   
   <script>
     $(document).ready(function() {
