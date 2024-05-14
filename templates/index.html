@@ -8,7 +8,7 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
-  <title>Django Sidebar and Dashboard</title>
+  <title>CRM - IMPACTAR DIGITAL</title>
 
   <!-- Custom fonts for bootstrap-->
  
@@ -20,6 +20,7 @@
   <link rel='stylesheet' href="{% static 'date-time-phone/jquery-ui-timepicker-addon.css' %}"/>
   <!-- Date Time Picker CSS -->
 </head>
+
 <body id="page-top">
     <div class="container"> 
         <aside>
@@ -32,6 +33,7 @@
                     <span class="material-icons">close</span>
                 </div>
             </div>
+            {% if request.user == suggestion.user or request.user.is_superuser %}
             <div class="sidebar">
                 <a href="{% url 'dashboard' %}" >
                     <span class="material-icons">grid_view</span>
@@ -71,6 +73,7 @@
                     </form>
                 </div>
             </div>
+            {% endif %}
         </aside>
         <main>
         <!-- MAIN CONTENT HERE I MAY HAVE TO MOVE THE BLOCK CONTENT HERE --> 
