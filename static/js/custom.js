@@ -21,3 +21,18 @@ themeToggler.addEventListener('click', () => {
     themeToggler.querySelector('span:nth-child(2)').classList.toggle('active');
 })
 
+
+document.addEventListener('DOMContentLoaded', function() {
+    const sideBarLinks = document.querySelectorAll('aside .sidebar a');
+
+    sideBarLinks.forEach(link => {
+        link.addEventListener('click', function() {
+            // Remove a classe 'active' de todos os links
+            sideBarLinks.forEach(innerLink => {
+                innerLink.classList.remove('active');
+            });
+            // Adiciona a classe 'active' ao link clicado
+            this.classList.add('active');
+        });
+    });
+});

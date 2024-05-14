@@ -36,10 +36,10 @@
     <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
 
       <!-- Sidebar - Brand -->
-      <a class="sidebar-brand d-flex align-items-center justify-content-center" style="margin: 10px;" href="#">
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" style="margin: 10px;" href="https://impactardigital.com.br/" target="_blank">
         <div class="sidebar-brand-icon">
-          <i class="fas fa-address-card"></i>
-          <!-- <img src="{% static 'img/ID-logo.png' %}" class="sidebar-logo" > -->
+          <!-- <i class="fas fa-address-card"></i> -->
+          <img src="{% static 'img/LOGO_ID.png' %}" class="sidebar-logo">
         </div>
           <div class="sidebar-brand-text mx-3"> <sup>CRM - Impactar Digital</sup></div>
       </a>
@@ -93,6 +93,13 @@
           <span>Change Password</span></a>
       </li>
 
+      <!-- Nav Item - IdeaBox -->
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'suggestions_list' %}">
+          <i class="fas fa-fw fa-chart-area"></i>
+          <span>Idea Box</span></a>
+      </li>
+
       <!-- Nav Item - Logout -->
       <li class="nav-item">
         <form action="{% url 'logout' %}" method="post">
@@ -142,10 +149,7 @@
     <script src="{% static 'date-time-phone/jquery-input-mask-phone-number.min.js' %}"></script>
     <script>
       $(document).ready(function() {
-          $('.datepicker').datepicker({
-              dateFormat: 'dd-mm-yy'
-          }).attr("autocomplete", "off");
-    
+        
           setTimeout(function() {
             $('#msg').fadeOut('slow', function() {
                 $(this).remove();
