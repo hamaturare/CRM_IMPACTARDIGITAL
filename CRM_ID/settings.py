@@ -45,7 +45,8 @@ THIRD_PARTY_APPS = [
     'crispy_forms',
     'crispy_bootstrap5',
     'django_cleanup',
-
+    'nested_admin',
+    
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
@@ -57,7 +58,7 @@ LOCAL_APPS = [
     'apps.userprofile',
     'apps.leads',
     'apps.clients',
-    'apps.ideabox'
+    'apps.ideabox',
 
 ]
 

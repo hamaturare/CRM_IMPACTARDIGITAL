@@ -29,3 +29,15 @@ class Client(models.Model):
 
     def __str__(self):
         return '%s %s' % (self.client_name, self.company_name)
+
+class ClientLeads(models.Model):
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name=_("Cliente Associado"))
+    created_at = models.DateField(auto_now_add=True, verbose_name=_("Data da Indicação"))
+    name = models.CharField(max_length=255, verbose_name=_("Nome da Lead"), blank=True)    
+    company_name = models.CharField(max_length=255, verbose_name=_("Empresa da Lead"), blank=True)
+    whatsapp = models.CharField(max_length=20, verbose_name=_("Whatsapp (Telefone)"), blank=True)
+    email = models.EmailField(max_length=255, unique=False, verbose_name=_("Email"), blank=True)
+    notes = models.TextField(max_length=50, blank=True, verbose_name=_("Anotações"))
+
+    def __str__(self):
+        return f"Nome: {self.name} Empresa: {self.company_name}"

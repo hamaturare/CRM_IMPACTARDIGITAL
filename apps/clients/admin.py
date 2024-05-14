@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Client, ServiceType
+from .models import Client, ServiceType, ClientLeads
 
 def duplicate_record(modeladmin, request, queryset):
     for object in queryset:
@@ -15,6 +15,14 @@ class ClientAdmin(admin.ModelAdmin):
     list_filter = ('client_name', 'company_name', 'created_at', )  # Filtros na barra lateral
     search_fields = ('client_name', 'company_name', 'email')
     actions = [duplicate_record]
+    
+    class ClientLeadsInline(admin.TabularInline):  # Inlines dentro da classe LeadAdmin
+        model = ClientLeads
+        extra = 1  # Define quantos campos vazios de FollowUp aparecerão por padrão
+
+    inlines = [ClientLeadsInline]  # Adiciona o inline à configuração do admin de Lead    
+
+
 
 admin.site.register(Client, ClientAdmin)
 admin.site.register(ServiceType, ServiceTypeAdmin)

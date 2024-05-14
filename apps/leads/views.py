@@ -1,12 +1,12 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Lead
+from .models import Lead, FollowUp
 from django.views.generic import UpdateView
 from django.shortcuts import redirect, render
 from django.views.generic import DeleteView, DetailView
 from django.db.models import Q
-from .forms import LeadForm
+from .forms import LeadForm, FollowUpForm
 from django.views import View
 from django.contrib import messages
 from django.forms import DateInput
@@ -106,3 +106,28 @@ class LeadDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'lead'
     login_url = reverse_lazy('home')  # Garante que o usuário esteja logado
     success_url = reverse_lazy('leads')   
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        followup_form = FollowUpForm()
+        # Configura os widgets dos campos de data
+        followup_form.fields['planned_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        followup_form.fields['actual_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        context['followup_form'] = followup_form
+        context['followups'] = FollowUp.objects.filter(lead=self.get_object())
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = FollowUpForm(request.POST)
+        if form.is_valid():
+            followup = form.save(commit=False)
+            followup.lead = self.get_object()
+            followup.save()
+            messages.success(request, 'Acompanhamento adicionado com sucesso!')
+            return redirect('lead_info', pk=self.get_object().pk)
+        else:
+            form.fields['planned_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+            form.fields['actual_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+            context = self.get_context_data()
+            context['followup_form'] = form
+            return render(request, self.template_name, context)

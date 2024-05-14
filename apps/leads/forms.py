@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth import get_user_model
-from .models import Lead
+from .models import Lead, FollowUp
 
 class LeadForm(forms.ModelForm):
     class Meta:
@@ -22,3 +22,13 @@ class LeadForm(forms.ModelForm):
         self.fields['responsible'].queryset = User.objects.all()
         self.fields['responsible'].label = "Responsável pela Lead"
         self.fields['responsible'].required = False  # Torna o campo opcional, se necessário
+
+
+class FollowUpForm(forms.ModelForm):
+    class Meta:
+        model = FollowUp
+        fields = '__all__'
+        exclude = ['lead']  # Exclua 'lead' do formulário
+
+
+      

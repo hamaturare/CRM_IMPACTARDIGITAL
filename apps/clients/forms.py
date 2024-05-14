@@ -1,5 +1,5 @@
 from django import forms
-from .models import Client
+from .models import Client, ClientLeads
 
 class ClientForm(forms.ModelForm):
     class Meta:
@@ -15,3 +15,9 @@ class ClientForm(forms.ModelForm):
         for field_name in readonly_fields:
             if field_name in self.fields:
                 self.fields[field_name].disabled = True  # Desativa o campo, mantendo-o visível mas não editável
+                
+class ClientLeadsForm(forms.ModelForm):
+    class Meta:
+        model = ClientLeads
+        fields = '__all__'
+        exclude = ['client']  # Exclua 'lead' do formulário

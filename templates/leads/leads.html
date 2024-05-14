@@ -47,6 +47,7 @@
                     <th><a href="?sort=Service Type">Serviço de Interesse</th>
                     <th><a href="?sort=priority">Prioridade</a></th>
                     <th><a href="?sort=id">ID</a></th>
+                    <th>Origem da Lead</th>
                     <th>Vizualizar</th>
                     <th>Atualizar</th>
                 </tr>
@@ -90,6 +91,7 @@
                     <td>{{ lead.service_type }}</td>
                     <td>{{ lead.priority }}</td>
                     <td>{{ lead.id }}</td>
+                    <td>{{ lead.origin }}</td>
                     <td><a href="{% url 'lead_info' pk=lead.pk %}" class="btn btn-success">Vizualizar</a></td>  <!-- Botão de Vizualizar -->
                     <td><a href="{% url 'update_lead' pk=lead.pk %}" class="btn btn-primary">Atualizar</a></td>  <!-- Botão de atualizar -->
                 </tr>

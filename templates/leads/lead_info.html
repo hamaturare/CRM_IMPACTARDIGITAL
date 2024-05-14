@@ -6,13 +6,14 @@
 {% block content %}
 <div class="container-fluid">
     <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-        <h1 class="h3 mb-0 text-gray-800">Detalhes da Lead</h1>
+        <h1 class="h3 mb-0 text-gray-800">INFO DA LEAD</h1>
     </div>
     <div class="row">
         <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
             <div class="card-body">
                 <h2>{{ lead.company_name }}</h2>
                 <p><strong>Responsável: </strong> {{ lead.responsible }}</p>
+                <p><strong>Origem da Lead: </strong> {{ lead.origin }}</p>
                 <p><strong>Contato: </strong> {{ lead.first_name }}</p>
                 <p><strong>Email: </strong> {{ lead.email }}</p>
                 <p><strong>Website: </strong> <a href="{{ client.website }}" target="_blank">{{ client.website }}</a></p>
@@ -27,8 +28,32 @@
                 <button id="deleteBtn" type="button" class="btn btn-sm btn-danger shadow-sm">Deletar</button>
             </div>
         </div>
+        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+            <div class="card-body">
+                <!-- Formulário para registrar um novo FollowUp -->
+                <br>
+                <h1 class="h3 mb-0 text-gray-800">ADICIONAR ACOMPANHAMENTO</h1>
+                <br>
+                <form method="post" action="{% url 'lead_info' lead.pk %}">
+                    {% csrf_token %}
+                    {{ followup_form|crispy }}
+                    <button type="submit" class="btn btn-primary">Registrar Acompanhamento</button>
+                </form>
+            </div>
+        </div>
+        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+            <div class="card-body">
+                <h3>Acompanhamentos Anteriores:</h3>
+                <ul>
+                {% for followup in followups %}
+                    <li>{{ followup.planned_date|date:"d/m/Y" }} - Realizado: {{ followup.actual_date|date:"d/m/Y" }} - Notas: {{ followup.notes }}</li>
+                {% endfor %}
+                </ul>
+            </div>
+        </div>
     </div>
 </div>
+
 <!-- Modal de Confirmação -->
 <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">

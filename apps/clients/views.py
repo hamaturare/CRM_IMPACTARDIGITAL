@@ -1,11 +1,11 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import Client
+from .models import Client, ClientLeads
 from django.views.generic import UpdateView, DetailView, DeleteView
 from django.shortcuts import redirect, render
 from django.db.models import Q
-from .forms import ClientForm
+from .forms import ClientForm, ClientLeadsForm
 from django.views import View
 from django.contrib import messages
 from django.forms import DateInput
@@ -104,3 +104,20 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
     context_object_name = 'client'
     login_url = reverse_lazy('home')  # Garante que o usuário esteja logado
     success_url = reverse_lazy('clients')       
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        client_leads_form = ClientLeadsForm()
+        # Configura os widgets dos campos de data
+        context['client_leads_form'] = client_leads_form
+        context['client_leads'] = ClientLeads.objects.filter(client=self.get_object())
+        return context
+
+    def post(self, request, *args, **kwargs):
+        form = ClientLeadsForm(request.POST)
+        if form.is_valid():
+            followup = form.save(commit=False)
+            followup.client = self.get_object()
+            followup.save()
+            messages.success(request, 'Indicação adicionada com sucesso!')
+            return redirect('client_info', pk=self.get_object().pk)
