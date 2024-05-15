@@ -4,100 +4,91 @@
 {% load lead_extras %}
 
 {% block content %}
-<div class="container">
-    <div class="row">
-      <div class="col d-flex justify-content-between align-items-center">
-            <!-- Título e Botão de Adicionar -->
-            <div>
-                <h1 class="mr-auto">Leads</h1>
-                <a href="{% url 'add_lead' %}" class="btn btn-primary btn-sm mb-2" role="button">
-                    <i class="bi bi-plus-lg"></i> Adicionar Lead
-                </a>
-            </div>
-            <!-- Formulário de Busca -->
-            <form method="get" action="{% url 'leads' %}" class="form-inline" >
-                <div class="input-group ml-auto">
-                    <input type="text" name="search_term" value="{{ request.GET.search_term }}" class="form-control form-control-sm mr-1" placeholder="Buscar Leads" style="border-radius: 10px;">
-                    <div class="input-group-append">
-                        <button class="btn btn-outline-secondary btn-sm mr-1" type="submit" style="border-radius: 10px;">
-                            <i class="bi bi-search"></i>
-                        </button>
-                        <a href="{% url 'leads' %}" class="btn btn-outline-secondary btn-sm" style="border-radius: 10px;">
-                            <i class="bi bi-x-lg"></i>
-                        </a>
-                    </div>
-                </div>
-            </form>
-      </div>
+<h1>Leads</h1>
+<div class="top-bar">
+    <div>
+        <a href="{% url 'add_lead' %}" class="add_button" role="button">
+            <i class="button_text"></i> Adicionar Lead
+        </a>
+    </div>
+    <!-- Formulário de Busca -->
+    <div class="search">
+        <form method="get" action="{% url 'leads' %}">
+            <input type="text" name="search_term" value="{{ request.GET.search_term }}" placeholder="Buscar Leads">
+            <button type="submit">
+                <span class="material-icons">search</span>
+            </button>
+            <a href="{% url 'leads' %}">
+                <span class="material-icons">undo</span>
+            </a>
+        </form>
     </div>
 </div>
-<div class="container-fluid mt-4">
-    <div class="table-responsive">
-        <table class="table table-striped table-hover">
-            <thead class="thead-light">
-                <tr>
-                    <th><a href="?sort=first_name">Nome</a></th>
-                    <th><a href="?sort=company_name">Empresa</a></th>
-                    <th><a href="?sort=email">Email</a></th>
-                    <th>Instagram</th>
-                    <th>Website</th>
-                    <th>WhatsApp</th>
-                    <th><a href="?sort=created_at">Criado Em</a></th>
-                    <th>Primeiro Contato</th>
-                    <th><a href="?sort=Service Type">Serviço de Interesse</th>
-                    <th><a href="?sort=priority">Prioridade</a></th>
-                    <th><a href="?sort=id">ID</a></th>
-                    <th>Origem da Lead</th>
-                    <th>Vizualizar</th>
-                    <th>Atualizar</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for lead in leads %}
-                <tr>
-                    <td style="text-align: left;"><a href="{% url 'lead_info' pk=lead.pk %}">{{ lead.first_name }} </a></td>
-                    <td style="text-align: left;"><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.company_name }} </a></td>
-                    <td>{{ lead.email }}</td>
-                    <td>
-                        {% if lead.instagram %} 
-                            {{lead.instagram|default_if_none:"Não Inf."}}
-                        {% else %}
-                            <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
-                        {% endif %}    
-                    
-                    </td>
-                    <td>
-                        {% if lead.website %}
-                            <a href="{{ lead.website }}" target="_blank" class="text-primary"><i class="fas fa-link"></i> Visit</a>
-                        {% else %}
-                            <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
-                        {% endif %}
-                    </td>
-                    <td>
-                        {% if lead.whatsapp %}
-                            <a href="https://wa.me/{{ lead.whatsapp }}" target="_blank" class="text-success"><i class="fab fa-whatsapp"></i> {{ lead.whatsapp|phone_format }}</a>
-                        {% else %}
-                            <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
-                        {% endif %}
-                    </td>
-                    <td>{{ lead.created_at|date:"d/m/Y" }}</td>
-                    <td>
-                        {% if lead.first_contact_date %}
-                        {{ lead.first_contact_date|date:"d/m/Y" }}
-                        {% else %}
-                            <span class="blink">Sem Contato</span> <!-- Adicione a classe 'blink' aqui -->
-                        {% endif %}
-                    </td>
-                    <td>{{ lead.service_type }}</td>
-                    <td>{{ lead.priority }}</td>
-                    <td>{{ lead.id }}</td>
-                    <td>{{ lead.origin }}</td>
-                    <td><a href="{% url 'lead_info' pk=lead.pk %}" class="btn btn-success">Vizualizar</a></td>  <!-- Botão de Vizualizar -->
-                    <td><a href="{% url 'update_lead' pk=lead.pk %}" class="btn btn-primary">Atualizar</a></td>  <!-- Botão de atualizar -->
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+<div class="tables">
+    <table>
+        <thead>
+            <tr>
+                <th><a href="?sort=first_name">Nome</a></th>
+                <th><a href="?sort=company_name">Empresa</a></th>
+                <th><a href="?sort=email">Email</a></th>
+                <th>Instagram</th>
+                <th>Website</th>
+                <th>WhatsApp</th>
+                <th><a href="?sort=created_at">Criado Em</a></th>
+                <th>Primeiro Contato</th>
+                <th><a href="?sort=Service Type">Serviço de Interesse</th>
+                <th><a href="?sort=priority">Prioridade</a></th>
+                <th><a href="?sort=id">ID</a></th>
+                <th>Origem da Lead</th>
+                <th>Vizualizar</th>
+                <th>Atualizar</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for lead in leads %}
+            <tr>
+                <td style="text-align: left;"><a href="{% url 'lead_info' pk=lead.pk %}">{{ lead.first_name }} </a></td>
+                <td style="text-align: left;"><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.company_name }} </a></td>
+                <td>{{ lead.email }}</td>
+                <td>
+                    {% if lead.instagram %} 
+                        {{lead.instagram|default_if_none:"Não Inf."}}
+                    {% else %}
+                        <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
+                    {% endif %}    
+                
+                </td>
+                <td>
+                    {% if lead.website %}
+                        <a href="{{ lead.website }}" target="_blank" class="text-primary"><i class="fas fa-link"></i> Visit</a>
+                    {% else %}
+                        <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
+                    {% endif %}
+                </td>
+                <td>
+                    {% if lead.whatsapp %}
+                        <a href="https://wa.me/{{ lead.whatsapp }}" target="_blank" class="text-success"><i class="fab fa-whatsapp"></i> {{ lead.whatsapp|phone_format }}</a>
+                    {% else %}
+                        <span class="blink2">Não Inf.</span> <!-- Adicione a classe 'blink' aqui -->
+                    {% endif %}
+                </td>
+                <td>{{ lead.created_at|date:"d/m/Y" }}</td>
+                <td>
+                    {% if lead.first_contact_date %}
+                    {{ lead.first_contact_date|date:"d/m/Y" }}
+                    {% else %}
+                        <span class="blink">Sem Contato</span> <!-- Adicione a classe 'blink' aqui -->
+                    {% endif %}
+                </td>
+                <td>{{ lead.service_type }}</td>
+                <td>{{ lead.priority }}</td>
+                <td>{{ lead.id }}</td>
+                <td>{{ lead.origin }}</td>
+                <td><a href="{% url 'lead_info' pk=lead.pk %}" class="btn btn-success">Vizualizar</a></td>  <!-- Botão de Vizualizar -->
+                <td><a href="{% url 'update_lead' pk=lead.pk %}" class="btn btn-primary">Atualizar</a></td>  <!-- Botão de atualizar -->
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </div>
 {% endblock content %}

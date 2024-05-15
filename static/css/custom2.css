@@ -26,6 +26,9 @@
   
     --card-padding: 1.8rem;
     --padding-1: 1.2rem;
+    --padding_button-1: 0.4rem;
+    --padding_button-2: 0.42rem;
+    --padding_button-3: 0.48rem;
   
     --box-shadow: 0 2rem 3rem var(--color-light);
   }
@@ -68,7 +71,6 @@ body {
     overflow: hidden;
     background: var(--color-white);
 }
-
 
 a {
     color: var(--color-dark);
@@ -263,10 +265,66 @@ aside .sidebar .message-count {
     border-radius: var(--border-radius-1);
 }
 
+main {
+    background: var(--color-white);
+}
+
+main h1 {
+    margin: 1rem 0rem;
+    font-weight: 800;
+}
+
+.top-bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25rem;
+    margin: 10px 0;
+}
+
+.add_button {
+    border-radius: var(--border-radius-1);
+    background: var(--color-blue-id);
+    color: var(--color-orange-id);
+    padding: var(--padding_button-2);
+    margin: 0.5rem 0rem;
+}
+
+.search {
+    display: block; /* Alinha os itens do formulário na mesma linha */
+    align-items: center; /* Centraliza verticalmente os itens */
+    gap: 8px; /* Espaço entre os itens */
+    margin: 1rem 0rem;
+}
+
+.search input[type="text"] {
+    flex-grow: 1; /* Permite que o input ocupe o máximo de espaço disponível */
+    padding: 8px; /* Espaçamento interno para o texto não tocar na borda */
+    border: 1px solid var(--color-dark-variant); /* Borda mais sutil */
+    border-radius: 10px; /* Bordas arredondadas */
+    background-color: transparent; /* Cor de fundo próxima ao branco */
+}
+
+.search button, .search a {
+    background: none; /* Remove qualquer fundo padrão */
+    border: none; /* Remove bordas */
+    cursor: pointer; /* Cursor mãozinha quando passa por cima */
+    display: relative; /* Alinha o ícone verticalmente */
+    align-items: center; /* Centraliza verticalmente o ícone dentro do botão */
+    padding: 8px; /* Espaçamento uniforme */
+    color: var(--color-blue-id); /* Cor sutil para os ícones */
+}
+
+/* Efeito de hover para o botão e link */
+.search button:hover,
+.search a:hover {
+    color: var(--color-info-dark); /* Fundo leve no hover */
+}
+
+
 /* ===================== RIGHT SESSION HERE ======================== */
 
 .right {
-    margin-top: 1.4rem;
+    padding-top: 1.4rem;
 }
 
 .right .top {
