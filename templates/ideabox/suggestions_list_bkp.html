@@ -1,0 +1,70 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load crispy_forms_tags %} 
+
+{% block content %}
+<div class="container-fluid mt-4">
+    <div class="row">
+        <div class="col d-flex justify-content-between align-items-center">
+              <!-- Título e Botão de Adicionar -->
+              <div>
+                  <h1 class="mr-auto">Sugestões</h1>
+                  <a href="{% url 'submit_suggestion' %}" class="btn btn-primary btn-sm mb-2" role="button">
+                      <i class="bi bi-plus-lg"></i> Enviar Sugestão
+                  </a>
+              </div>
+     <!-- Formulário de Busca -->
+     <form method="get" action="{% url 'suggestions_list' %}" class="form-inline">
+        <div class="input-group ml-auto">
+            <input type="text" name="search_term" value="{{ request.GET.search_term }}" class="form-control form-control-sm mr-1" placeholder="Buscar Sugestão" style="border-radius: 10px;">
+            <div class="input-group-append">
+                <button class="btn btn-outline-secondary btn-sm mr-1" type="submit" style="border-radius: 10px;">
+                    <i class="bi bi-search"></i>
+                </button>
+                <a href="{% url 'suggestions_list' %}" class="btn btn-outline-secondary btn-sm" style="border-radius: 10px;">
+                    <i class="bi bi-x-lg"></i>
+                </a>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+<div class="container-fluid mt-4">
+    <div class="table-responsive">
+        <table class="table table-striped table-hover">
+            <thead class="thead-light">
+                <tr>
+                    <th><a href="?sort=user__username">Usuário</a></th>
+                    <th><a href="?sort=title">Título da Sugestão</a></th>
+                    <th><a href="?sort=created_at">Criado Em</a></th>
+                    <th>Conteúdo</th>
+                    <th><a href="?sort=priority">Prioridade</a></th>
+                    <th><a href="?sort=priority">Status</a></th>
+                    {% if request.user.is_superuser %}
+                        <th><a href="?sort=priority">Atualizar</a></th>
+                    {% else %}
+                        <th><a href="?sort=priority">Vizualizar</a></th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for suggestion in suggestions %}
+                    <tr>
+                        <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.user.username }}</a></td>
+                        <td>{{ suggestion.title }}</td>
+                        <td>{{ suggestion.created_at|date:"d/m/Y H:i" }}</td>
+                        <td><a href="{% url 'view_suggestion' suggestion.id %}">{{ suggestion.content|truncatechars:50 }}</a></td>
+                        <td>{{ suggestion.priority }}</td>
+                        <td>{{ suggestion.status }}</td>
+                        {% if request.user.is_superuser %}
+                            <td><a href="{% url 'view_suggestion' suggestion.id %}" class="btn btn-primary">Atualizar</a></td>  <!-- Botão de atualizar -->
+                        {% else %}
+                            <td><a href="{% url 'view_suggestion' suggestion.id %}" class="btn btn-success">Vizualizar</a></td>  <!-- Botão de Vizualizar -->
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

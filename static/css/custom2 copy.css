@@ -1,0 +1,752 @@
+@import url('https://fonts.googleapis.com/css2?family=Ubuntu:ital,wght@0,300;0,400;0,500;0,700;1,300;1,400;1,500;1,700&display=swap');
+
+/* ---------------------- ROOT VARIABLES --------------------------- */
+:root {
+    --color-primary: #738eec;
+    --color-danger: #ff7782;
+    --color-success: #41f1b6;
+    --color-warning: #ffbb55;
+    --color-white: #fff;
+    --color-info-dark: #7d8da1;
+    --color-info-light: #dce1eb;
+    --color-dark-variant: #363949;
+    --color-light: rgba(132, 139, 200, 0.18);
+    --color-primary-variant: #111e88;
+    --color-background: #f6f6f9;
+
+    --color-orange-id: #ff5f00;
+    --color-orange-id2: #ff5f10;
+    --color-blue-id: #1c3145;
+    --color-green-id: #21d667;
+  
+    --card-border-radius: 2rem;
+    --border-radius-1: 0.4rem;
+    --border-radius-2: 0.8rem;
+    --border-radius-3: 1.2rem;
+  
+    --card-padding: 1.8rem;
+    --padding-1: 1.2rem;
+    --padding_button-1: 0.4rem;
+    --padding_button-2: 0.42rem;
+    --padding_button-3: 0.48rem;
+  
+    --box-shadow: 0 2rem 3rem var(--color-light);
+  }
+
+  .dark-theme-variables {
+    --color-background: #181a1e;
+    --color-white: #202528;
+    --color-dark: #edeffd;
+    --color-dark-variant: #a3bdcc;
+    --color-light: rgba(0, 0, 0, 0.4);
+    --box-shadow: 0 2rem 3rem var(--color-light);
+
+    --color-orange-id: #a3bdcc;
+    --color-orange-id2: #1c3145;
+    --color-blue-id: #ff5f00;
+  }
+  
+* {
+    margin: 0;
+    padding: 0;
+    outline: 0;
+    appearance: none;
+    border: 0;
+    text-decoration: none;
+    list-style: none;
+    box-sizing: border-box;
+}
+
+html {
+    font-size: 14px;
+}
+
+body {
+    width: 100vw;
+    height: 100vh;
+    font-family: "Ubuntu", sans-serif;
+    font-size: 0.88rem;
+    background-attachment: var(--color-background);
+    user-select:  none;
+    overflow: hidden;
+    background: var(--color-white);
+}
+
+a {
+    color: var(--color-dark);
+}
+
+.container{
+    display: grid;
+    width: 96%;
+    margin: 0 auto;
+    gap: 1.2rem;
+    grid-template-columns: 14rem auto 23rem;
+}
+
+img {
+    display: block;
+    width: 100%;
+}
+
+h1 {
+    font-weight: 800;
+    font-size: 1.8rem;
+}
+
+h2 {
+    font-size: 1.4rem;
+}
+
+h3 {
+    font-size: 0.87rem;
+}
+
+h4 {
+    font-size: 0.8rem;
+}
+
+h5 {
+    font-size: 0.77rem;
+}
+
+small {
+    font-size: 0.75rem;
+}
+
+.profile-photo {
+    width: 1.8rem;
+    height: 2.8rem;
+    border-radius: 50%;
+    overflow: hidden;
+}
+
+.text-muted {
+    color: var(--color-info-dark);
+}
+
+p {
+    color: var(--color-dark-variant);
+}
+
+b {
+    color: var(--color-dark);
+}
+
+.primary {
+    color: var(--color-primary);
+}
+
+.danger {
+    color: var(--color-danger);
+}
+
+.success {
+    color: var(--color-success);
+}
+
+.warning {
+    color: var(--color-warning);
+}
+
+.blue-id {
+    color: var(--color-blue-id);
+}
+
+.orange-id {
+    color: var(--color-orange-id);
+}
+
+.orange-id2 {
+    color: var(--color-orange-id2);
+}
+
+aside {
+    height: 100vh;
+    background: var(--color-white);
+    margin: 1.2rem 0rem;
+    border-radius: 10px;
+}
+
+aside .top {
+    display: flex;
+    align-content: center;
+    justify-content: space-between;
+    margin-top: 1.4rem;
+}
+
+aside .logo {
+    display: flex;
+    gap: 0.8rem;
+}
+
+aside .logo img {
+    width: 3rem;
+    height: 3rem;
+}
+
+aside .close  {
+    display: none;
+}
+
+/* ===================== SIDEBAR ======================== */
+
+aside .sidebar {
+    display: flex;
+    flex-direction: column;
+    height: 86vh;
+    position: relative;
+    top: 3rem;
+   background: var(--color-white);
+}
+
+aside h3 { 
+    font-weight: 500;
+    
+}
+
+aside .sidebar a {
+    display: flex;
+    color: var(--color-info-dark);
+    margin-left: 2rem;
+    gap: 1rem;
+    align-items: center;
+    position: relative;
+    height: 3.7rem;
+    transition: all 400ms ease;
+}
+
+aside .sidebar a span {
+    font-size: 1.6rem;
+    transition: color 0.4s ease;
+}
+
+/* Fixar o contêiner de logout na parte inferior da barra lateral */
+.logout-container {
+    position: absolute;
+    margin-top: auto; /* Empurra automaticamente para baixo */
+    width: 100%; /* Ajuste conforme necessário */
+    bottom: 2rem;
+}
+
+aside .sidebar a.active {
+    background: var(--color-light);
+    color: var(--color-blue-id);
+    margin-left: 0;
+    transition: all 300ms ease;
+}
+
+aside .sidebar a.active:before {
+    content: "";
+    width: 6px;
+    height: 100%;
+    background: var(--color-blue-id);
+}
+
+aside .sidebar a.active span {
+    color: var(--color-blue-id);
+    margin-left: calc(1rem - 3px);
+    transition: all 300ms ease;
+}
+
+aside .sidebar a:hover {
+    color: var(--color-blue-id);
+}
+
+aside .sidebar a:hover span {
+    color: var(--color-blue-id);
+    margin-left: 1rem;
+}
+
+aside .sidebar .message-count {
+    background: var(--color-orange-id);
+    color: var(--color-white);
+    padding: 2px 10px;
+    font-size: 12px;
+    font-weight: 700;
+    border-radius: var(--border-radius-1);
+}
+/* ================= MAIN BAR ===================== */
+
+main {
+    background: var(--color-background);
+    border-radius: 10px;
+    margin: 1rem 0rem;
+    padding: var(--padding-1);
+}
+
+main h1 {
+    margin: 1rem 0rem;
+    font-weight: 800;
+}
+
+/* ================= TOP BAR BAR ===================== */
+
+.top-bar {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 25rem;
+    margin: 10px 0;
+}
+
+.add_button {
+    border-radius: var(--border-radius-1);
+    background: var(--color-blue-id);
+    color: var(--color-orange-id);
+    padding: var(--padding_button-2);
+    margin: 0.5rem 0rem;
+}
+
+.search {
+    display: block; /* Alinha os itens do formulário na mesma linha */
+    align-items: center; /* Centraliza verticalmente os itens */
+    gap: 8px; /* Espaço entre os itens */
+    margin: 1rem 0rem;
+}
+
+.search input[type="text"] {
+    flex-grow: 1; /* Permite que o input ocupe o máximo de espaço disponível */
+    padding: 8px; /* Espaçamento interno para o texto não tocar na borda */
+    border: 1px solid var(--color-dark-variant); /* Borda mais sutil */
+    border-radius: 10px; /* Bordas arredondadas */
+    background-color: transparent; /* Cor de fundo próxima ao branco */
+}
+
+.search button, .search a {
+    background: none; /* Remove qualquer fundo padrão */
+    border: none; /* Remove bordas */
+    cursor: pointer; /* Cursor mãozinha quando passa por cima */
+    display: relative; /* Alinha o ícone verticalmente */
+    align-items: center; /* Centraliza verticalmente o ícone dentro do botão */
+    padding: 8px; /* Espaçamento uniforme */
+    color: var(--color-blue-id); /* Cor sutil para os ícones */
+}
+
+/* Efeito de hover para o botão e link */
+.search button:hover,
+.search a:hover {
+    color: var(--color-info-dark); /* Fundo leve no hover */
+}
+
+
+/* ===================== RIGHT SESSION HERE ======================== */
+
+.right {
+    padding-top: 1.4rem;
+    background: var(--color-white);
+    margin: 1.2rem 0rem;
+    border-radius: 10px;
+}
+
+.right .top {
+    display: flex;
+    justify-content: end;
+    gap: 2rem;
+}
+
+.right .top button {
+    display: none;
+}
+
+.right .theme-toggler {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    height: 1.6rem;
+    width: 4.2rem;
+    background: var(--color-light); /* fundo inicial */
+    border-radius: var(--border-radius-1);
+    cursor: pointer;
+    position: relative; /* Mantém os ícones dentro */
+    overflow: hidden; /* Esconde qualquer overflow */
+}
+
+.right .theme-toggler span {
+    font-size: 1.2rem;
+    width: 50%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s ease;
+}
+
+/* Configuração para quando o tema claro está ativo */
+.theme-toggler span.active {
+    background: var(--color-primary); /* Cor de fundo para o ícone ativo */
+    color: var(--color-white); /* Cor do ícone */
+}
+
+/* Ícones não ativos recebem um fundo transparente para integração suave */
+.theme-toggler span:not(.active) {
+    background: transparent; /* Fundo transparente */
+    color: var(--color-dark-variant); /* Cor do ícone */
+}
+
+.right .top .profile {
+    display: flex;
+    gap: 2rem;
+    text-align: right;
+
+/* ===================== IF YOU WANT TO PUT MORE STUFF HERE ======================== */
+/* ===================== IF YOU WANT TO PUT MORE STUFF HERE ======================== */
+
+}
+
+
+/* ===================== MEDIA QUERIES 01 LARGE TABLETS ======================== */
+
+@media screen and (max-width: 1200px) {
+
+    .container {
+        width: 94%;
+        grid-template-columns: 7rem auto 23rem;
+    }
+
+    aside .logo h2 {
+        display: none;
+    }
+
+    aside .logo img {
+        position: relative;
+        margin-left: 1.2rem;
+    }
+
+    aside .sidebar h3 {
+        display: none;
+    }
+
+    aside .sidebar a {
+        width: 5.6rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    aside .sidebar a:last-child {
+        position: bottom;
+        margin-top: 1.8rem;
+    }
+
+}
+/* ===================== MAIN DASHBOARD QUERIES HERE ======================== */
+
+/* ===================== END OF MAIN DASHBOARD CSS QUERIES HERE ======================== */
+
+
+/* ===================== MEDIA QUERIES 02 MOBILES AND SMALLER LAPTOPS/TABLETS ======================== */
+
+@media screen and (max-width: 768px) {
+
+    .container {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+    aside {
+        position: fixed;
+        left: -100%;
+        background: var(--color-white);
+        width: 18rem;
+        z-index: 3;
+        box-shadow: 1rem 3rem 4rem var(--color-light);
+        height: 100vh;
+        padding-right: var(--card-padding);
+        display: none;
+        animation: showMenu 400ms forwards;
+    }
+
+    @keyframes showMenu {
+        to {
+            left: 0;
+        }
+    }
+
+    aside .logo {
+        margin-left: 1rem;
+    }
+
+    aside .logo h2 {
+        display: inline;
+    }
+
+    aside .sidebar h3 {
+        display: inline;
+    }
+
+    aside .sidebar a {
+        width: 100%;
+        height: 3.4rem;
+    }
+
+    aside .sidebar a:last-child {
+        position: absolute;
+        bottom: 5rem;
+    }
+
+    aside .close {
+        color: var(--color-dark);
+        display: inline-block;
+        cursor: pointer;
+    }
+
+    main {
+        padding-top: 4.6rem; /* Ajuste a altura conforme necessário para corresponder à altura da sua top bar */
+    }
+
+    .right {
+        width: 94%;
+        margin: 0 auto 4rem;
+    }
+    .right .top {
+        position: fixed;
+        top: 0;
+        left: 0;
+        align-items: center;
+        padding: 0 0.8rem;
+        height: 4.6rem;
+        background: var(--color-white);
+        width: 100%;
+        margin: 0;
+        z-index: 2;
+        box-shadow: 0 1rem 1rem var(--color-light);
+    }
+    
+    .right .top .theme-toggler {
+        width: 4.4rem;
+        position: absolute;
+        left: 66%;
+    }
+    
+    .right .profile .info {
+        display: none;
+    }
+
+    .right .top button {
+        display: inline-block;
+        background: transparent;
+        cursor: pointer;
+        color: var(--color-dark);
+        position: absolute;
+        left: 1rem;
+    }
+
+    .right .top button span { 
+       font-size: 2rem; 
+    }
+
+}
+/* ========================= MAIN DASHBOARD MEDIA QUERIES CSS HERE =========================== */
+
+/* ===================== END OF MAIN DASHBOARD MEDIA QUERIES CSS HERE ======================== */
+
+
+
+/* ==================== PAGINA LEADS =============== */
+
+/* Barra de rolagem horizontal para tabelas grandes */
+.table-responsive {
+    overflow-x: auto;
+    width: 100%;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.custom-table th,
+.custom-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-top: 1px solid var(--color-dark-variant);
+}
+
+.custom-table th a {
+    color: var(--color-dark);
+    text-decoration: none;
+}
+
+.custom-table th a:hover {
+    color: var(--color-primary);
+}
+
+.main-container {
+    margin: 1rem;
+    padding: var(--padding-1);
+    background: var(--color-background);
+    border-radius: 10px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.header-content {
+    display: flex;
+    align-items: center;
+}
+
+.add-button {
+    display: flex;
+    align-items: center;
+    background: var(--color-blue-id);
+    color: var(--color-orange-id);
+    padding: var(--padding_button-2);
+    border-radius: var(--border-radius-1);
+    text-decoration: none;
+}
+
+.add-button .material-icons {
+    margin-right: 0.5rem;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+}
+
+.search-input {
+    padding: 8px;
+    border: 1px solid var(--color-dark-variant);
+    border-radius: 10px;
+    background-color: #f9f9f9;
+    margin-right: 8px;
+}
+
+.search-button,
+.clear-search {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--color-blue-id);
+    display: flex;
+    align-items: center;
+    padding: 8px;
+}
+
+.search-button:hover,
+.clear-search:hover {
+    color: var(--color-info-dark);
+}
+
+/* Botões personalizados */
+.btn-view,
+.btn-update {
+    display: inline-block;
+    padding: 0.375rem 0.75rem;
+    border-radius: var(--border-radius-1);
+    text-align: center;
+    color: var(--color-white);
+    text-decoration: none;
+}
+
+.btn-view {
+    background-color: var(--color-success);
+}
+
+.btn-update {
+    background-color: var(--color-primary);
+}
+
+/* Links personalizados */
+.link-website,
+.link-whatsapp {
+    color: var(--color-info-dark);
+}
+
+.link-website:hover,
+.link-whatsapp:hover {
+    color: var(--color-primary);
+}
+
+/* Animação de piscar */
+.blink {
+    animation: blink-animation 1.5s steps(2, start) infinite;
+}
+
+@keyframes blink-animation {
+    to {
+        visibility: hidden;
+    }
+}
+
+/* Ajustes responsivos */
+@media screen and (max-width: 1200px) {
+    .container {
+        width: 94%;
+        grid-template-columns: 7rem auto 23rem;
+    }
+
+    aside .logo h2 {
+        display: none;
+    }
+
+    aside .logo img {
+        position: relative;
+        margin-left: 1.2rem;
+    }
+
+    aside .sidebar h3 {
+        display: none;
+    }
+
+    aside .sidebar a {
+        width: 5.6rem;
+        margin-bottom: 0.2rem;
+    }
+    
+    aside .sidebar a:last-child {
+        position: bottom;
+        margin-top: 1.8rem;
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .container {
+        width: 100%;
+        grid-template-columns: 1fr;
+    }
+
+    aside {
+        position: fixed;
+        left: -100%;
+        background: var(--color-white);
+        width: 18rem;
+        z-index: 3;
+        box-shadow: 1rem 3rem 4rem var(--color-light);
+        height: 100vh;
+        padding-right: var(--card-padding);
+        display: none;
+        animation: showMenu 400ms forwards;
+    }
+
+    @keyframes showMenu {
+        to {
+            left: 0;
+        }
+    }
+
+    aside .logo {
+        margin-left: 1rem;
+    }
+
+    aside .logo h2 {
+        display: inline;
+    }
+
+    aside .sidebar h3 {
+        display: inline;
+    }
+
+    aside .sidebar a {
+        width: 100%;
+        height: 3.4rem;
+    }
+
+    aside .sidebar a:last-child {
+        position: absolute;
+    }
+}

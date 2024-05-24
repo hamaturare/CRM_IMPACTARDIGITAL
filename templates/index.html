@@ -1,7 +1,5 @@
 {% load static %}
-{% load crispy_forms_tags %}
-{% load custom_tags %}  <!-- Carrega a biblioteca de tags personalizadas -->
-
+{% load crispy_forms_tags %} 
 <!DOCTYPE html>
 
 <html lang="en">
@@ -14,13 +12,16 @@
   <title>CRM - IMPACTAR DIGITAL</title>
 
   <!-- Custom fonts for bootstrap-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+ 
   <!-- Custom fonts Google Material Icons (Using this) -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">  
-  <!-- Custom styles Custom2 Css-->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">  <!-- Custom styles Custom2 Css-->
   <link rel="stylesheet" href="{% static 'css/custom2.css' %}">
 
+  <!-- Date Time Picker CSS -->
+  <link rel="stylesheet" href="{% static 'date-time-phone/jquery-ui.css' %}">
+  <link rel='stylesheet' href="{% static 'date-time-phone/jquery-ui-timepicker-addon.css' %}"/>
+  <!-- Date Time Picker CSS -->
+  
 </head>
 <body id="page-top">
     <div class="container"> 
@@ -34,36 +35,36 @@
                     <span class="material-icons">close</span>
                 </div>
             </div>
+            {% if request.user == suggestion.user or request.user.is_superuser %}
             <div class="sidebar">
-                <a href="{% url 'dashboard' %}" class="{% active_url request 'dashboard' %}">
+                <a href="{% url 'dashboard' %}" >
                     <span class="material-icons">grid_view</span>
                     <h3>Dashboard</h3>
                 </a>
-                <a href="{% url 'clients' %}" class="{% active_url request 'clients' %}">
+                <a href="{% url 'clients' %}">
                     <span class="material-icons">groups</span>
                     <h3>Clients</h3>
                 </a>
-                <a href="{% url 'leads' %}" class="{% active_url request 'leads' %}">
+                <a href="{% url 'leads' %}">
                     <span class="material-icons">reduce_capacity</span>
                     <h3>Leads</h3>
                 </a>
-                <a href="#" class="{% active_url request 'messages' %}">
+                <a href="#">
                     <span class="material-icons">mail_outline</span>
                     <h3>Messages</h3>
                     <span class="message-count">26</span>
                 </a>
-                <a href="{% url 'profile' %}" class="{% active_url request 'profile' %}">
+                <a href="{% url 'profile' %}">
                     <span class="material-icons">person_outline</span>
                     <h3>Profile</h3>
                 </a>
-                <a href="{% url 'change-password' %}" class="{% active_url request 'change-password' %}">
+                <a href="{% url 'change-password' %}">
                     <span class="material-icons">key</span>
                     <h3>Change Password</h3>
                 </a>
-                <a href="{% url 'suggestions_list' %}" class="{% active_url request 'suggestions_list' %}">
+                <a href="{% url 'suggestions_list' %}">
                     <span class="material-icons">lightbulb</span>
                     <h3>Idea Box</h3>
-                </a>
                 <div class="logout-container">
                     <a class="nav-link" href="#" onclick="document.getElementById('logout-form').submit();">
                         <span class="material-icons">logout</span>
@@ -74,16 +75,12 @@
                     </form>
                 </div>
             </div>
+            {% endif %}
         </aside>
         <main>
-            <!-- MAIN SESSION HERE -->
-            {% include 'common/messages.html' %}
-
-            {% block content %}  
-            
-            {% endblock content %}
+        <!-- MAIN CONTENT HERE I MAY HAVE TO MOVE THE BLOCK CONTENT HERE --> 
         </main>
-        <!-- RIGHT SESSION HERE -->
+        <!-- RIGHT SESSION IF NEEDED -->
         <div class="right">
             <!-- BEGIN OF TOP BAR -->
             <div class="top">
@@ -96,26 +93,48 @@
                 </div>
                 <div class="profile">
                     <div class="info">
-                        <p>Welcome, <b>{{ user.first_name }} {{ user.last_name }}</b>!</p>
+                        <p>Welcome, <b>{{user.first_name}} {{user.last_name}}!</b></p>
+                        <small class="text-muted">{{user.user_name}}</small>
                     </div>
                     <div class="profile-photo">
-                        <img src="{% static 'img/LOGO_ID.png' %}" alt="Profile Photo">
-                        <small class="text-muted">{{ user.username }}</small>
+                        <img src="{% static 'img/LOGO_ID.png' %}">
                     </div>
                 </div>
             </div>
             <!-- END OF TOP BAR -->
         </div>
-  </div>
-  
-{% block script %}
+    </div>    
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
 
-  <!-- JavaScript e outros scripts essenciais -->
+    <!-- Main Content -->
+    <div id="content">
+
+      {% include 'common/messages.html' %}
+
+      {% block content %}  
+      
+      {% endblock content %}
+      
+    </div>
+    <!-- End of Main Content -->
+
+  </div>
+  <!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+{% block script %}
+  <!-- Bootstrap core JavaScript e outros scripts essenciais -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script src="{% static 'vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+  <script src="{% static 'js/sb-admin-2.min.js' %}"></script>
+  <script src="{% static 'date-time-phone/jquery-ui-timepicker-addon.js' %}"></script>
+  <script src="{% static 'date-time-phone/jquery-input-mask-phone-number.min.js' %}"></script>
   <script src="{% static 'js/custom.js' %}"></script>
-  
   <script>
     $(document).ready(function() {
       
@@ -126,7 +145,6 @@
       }, 2000);
     }); 
   </script>
-
 {% endblock script %}
 
 {% block extra_css %} 
@@ -135,7 +153,6 @@
 <link rel="stylesheet" type="text/css" href="{% static 'css/custom.css' %}">
 
 {% endblock extra_css %}
-{% block extra_js %}{% endblock %}
 
 </body>
 </html>

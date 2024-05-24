@@ -3,55 +3,63 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container mt-4">
-    <form method="post">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="card">
-            <div class="card-header">
-                Sugestão de: {{ suggestion.user.username }}
-            </div>
-            <div class="card-body">
-                <h6 class="text-muted">Criado em: {{ suggestion.created_at|date:"d/m/Y H:i" }}</h6>
-                <div class="form-group">
-                    <label>Conteúdo:</label>
-                    {% if request.user == suggestion.user or request.user.is_superuser %}
-                        {{ form.title }}
-                    {% else %}
-                    <h5 class="card-title">{{ suggestion.title }}</h5>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <label>Conteúdo:</label>
-                    {% if request.user == suggestion.user or request.user.is_superuser %}
-                        {{ form.content }}
-                    {% else %}
-                        <p class="card-text">{{ suggestion.content }}</p>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <label>Prioridade:</label>
-                    {% if request.user == suggestion.user or request.user.is_superuser %}
-                        {{ form.priority }}
-                    {% else %}
-                        <p class="card-text">{{ suggestion.priority.name }}</p>
-                    {% endif %}
-                </div>
-                <div class="form-group">
-                    <label>Status:</label>
-                    {% if request.user.is_superuser %}
-                        {{ form.status }} 
-                    {% endif %}
-                </div>
-                {% if request.user == suggestion.user or request.user.is_superuser %}
-                    <button type="submit" class="btn btn-success">Atualizar</button>
-                    <a href="{% url 'suggestions_list' %}" class="btn btn-danger">Cancelar</a>
-                {% else %}
-                    <a href="{% url 'suggestions_list' %}" class="btn btn-secondary">Voltar</a>
-                {% endif %}
-              
-            </div>
+<div class="main-container">
+    <div class="header">
+        <div class="header-content">
+            <h1>Detalhes da Sugestão</h1>
         </div>
-    </form>
+    </div>
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="card">
+                <div class="card-header">
+                    Sugestão de: {{ suggestion.user.username }}
+                </div>
+                <div class="card-body">
+                    <h6 class="text-muted">Criado em: {{ suggestion.created_at|date:"d/m/Y H:i" }}</h6>
+                    <div class="form-group">
+                        <label for="{{ form.title.id_for_label }}">Título:</label>
+                        {% if request.user == suggestion.user or request.user.is_superuser %}
+                            {{ form.title|as_crispy_field }}
+                        {% else %}
+                            <h5 class="card-title">{{ suggestion.title }}</h5>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.content.id_for_label }}">Conteúdo:</label>
+                        {% if request.user == suggestion.user or request.user.is_superuser %}
+                            {{ form.content|as_crispy_field }}
+                        {% else %}
+                            <p class="card-text">{{ suggestion.content }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.priority.id_for_label }}">Prioridade:</label>
+                        {% if request.user == suggestion.user or request.user.is_superuser %}
+                            {{ form.priority|as_crispy_field }}
+                        {% else %}
+                            <p class="card-text">{{ suggestion.priority.name }}</p>
+                        {% endif %}
+                    </div>
+                    <div class="form-group">
+                        <label for="{{ form.status.id_for_label }}">Status:</label>
+                        {% if request.user.is_superuser %}
+                            {{ form.status|as_crispy_field }}
+                        {% endif %}
+                    </div>
+                    <div class="form-buttons">
+                        {% if request.user == suggestion.user or request.user.is_superuser %}
+                            <button type="submit" class="btn btn-success ">Atualizar</button>
+                            <a href="{% url 'suggestions_list' %}" class="btn btn-danger">Cancelar</a>
+                        {% else %}
+                            <a href="{% url 'suggestions_list' %}" class="btn btn-secondary">Voltar</a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
 </div>
 {% endblock %}
