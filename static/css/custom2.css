@@ -453,6 +453,7 @@ main h1 {
 }
 
 .header {
+    margin-top: 3rem;
     width: 100%;
     display: flex;
     align-items: center;
