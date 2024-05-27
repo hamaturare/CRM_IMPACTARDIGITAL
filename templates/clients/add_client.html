@@ -1,22 +1,26 @@
 {% extends 'base.html' %}
 {% load static %}
-{% load lead_extras %}
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-lg-8 offset-lg-2">
-            <h1 class="mb-3">Adicionar Cliente</h1>
-            <form method="post">
-                {% csrf_token %}
-                {{ form|crispy }}
-                <div class="form-group">
-                    <button type="submit" class="btn btn-success">Adicionar Cliente</button>
-                    <button type="button" onclick="location.href='{% url 'clients' %}'" class="btn btn-danger">Cancelar</button>
-                </div>
-            </form>
-        </div>
+<div class="main-container">
+    <div class="header-content">
+        <h1>Adicionar Cliente</h1>
+        <br>
+    </div>
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="form-buttons">
+                <button type="submit" class="btn-submit">
+                    <span class="btn btn-success">Adicionar Cliente</span>
+                </button>
+                <button type="button" onclick="location.href='{% url 'clients' %}'" class="btn-cancel">
+                    <span class="btn btn-danger">Cancelar</span>
+                </button>
+            </div>
+        </form>
     </div>
 </div>
 {% endblock content %}

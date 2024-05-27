@@ -4,12 +4,12 @@
 {% load client_extras %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-        <h1 class="h3 mb-0 text-gray-800">INFO DA LEAD</h1>
+<div class="main-container">
+    <div>
+        <h1>INFORMAÇÕES DA LEAD</h1>
     </div>
     <div class="row">
-        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+        <div class="card o-hidden border-0 shadow-sm my-5 col-lg-12">
             <div class="card-body">
                 <h2>{{ lead.company_name }}</h2>
                 <p><strong>Responsável: </strong> {{ lead.responsible }}</p>
@@ -28,11 +28,11 @@
                 <button id="deleteBtn" type="button" class="btn btn-sm btn-danger shadow-sm">Deletar</button>
             </div>
         </div>
-        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+        <div class="card o-hidden border-0 shadow-sm my-5 col-lg-12">
             <div class="card-body">
                 <!-- Formulário para registrar um novo FollowUp -->
                 <br>
-                <h1 class="h3 mb-0 text-gray-800">ADICIONAR ACOMPANHAMENTO</h1>
+                <h2 class="mb-0 text-gray-800">ADICIONAR ACOMPANHAMENTO</h2>
                 <br>
                 <form method="post" action="{% url 'lead_info' lead.pk %}">
                     {% csrf_token %}
@@ -41,14 +41,30 @@
                 </form>
             </div>
         </div>
-        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+        <div class="card o-hidden border-0 shadow-sm my-5 col-lg-12" id="client_suggestions" >
             <div class="card-body">
-                <h3>Acompanhamentos Anteriores:</h3>
-                <ul>
-                {% for followup in followups %}
-                    <li>{{ followup.planned_date|date:"d/m/Y" }} - Realizado: {{ followup.actual_date|date:"d/m/Y" }} - Notas: {{ followup.notes }}</li>
-                {% endfor %}
-                </ul>
+                <br>
+                <h2 class="mb-0 text-gray-800">ACOMPANHAMENTOS ANTERIORES</h2>
+                <br>
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Data Ultimo Acompanhamento</th>
+                                <th>Realizado Em</th>
+                                <th>Notas</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for followup in followups %}
+                                <tr>
+                                    <td>{{ followup.planned_date|date:"d/m/Y" }}</td>
+                                    <td>{{ followup.actual_date|date:"d/m/Y" }}</td>
+                                    <td>{{ followup.notes }}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
             </div>
         </div>
     </div>

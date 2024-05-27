@@ -1,11 +1,9 @@
 {% load static %}
 {% load crispy_forms_tags %}
-{% load custom_tags %}  <!-- Carrega a biblioteca de tags personalizadas -->
+{% load custom_tags %}
 
 <!DOCTYPE html>
-
 <html lang="en">
-
 <head>
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -21,14 +19,25 @@
   <!-- Custom styles Custom2 Css-->
   <link rel="stylesheet" href="{% static 'css/custom2.css' %}">
 
+  <!-- Apply the saved theme immediately to avoid flicker -->
+  <script>
+    (function() {
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.classList.add('dark-theme-variables');
+        }
+    })();
+  </script> 
+
 </head>
+
 <body id="page-top">
     <div class="container"> 
         <aside>
             <div class="top">
                 <div class="logo">
                     <img src="{% static 'img/LOGO_ID.png' %}">
-                    <h2><span class="orange-id">IMPACTAR </span><span class="blue-id">DIGITAL</span>
+                    <h2><span class="orange-id" id="imapactar">IMPACTAR </span><span class="blue-id">DIGITAL</span>
                 </div>
                 <div class="close" id="close-btn">
                     <span class="material-icons">close</span>
@@ -113,18 +122,16 @@
   <!-- JavaScript e outros scripts essenciais -->
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
   <script src="{% static 'js/custom.js' %}"></script>
   
   <script>
     $(document).ready(function() {
-      
         setTimeout(function() {
-          $('#msg').fadeOut('slow', function() {
-              $(this).remove();
-          });
-      }, 2000);
-    }); 
+            $('#msg').fadeOut('slow', function() {
+                $(this).remove();
+            });
+        }, 2000);
+    });
   </script>
 
 {% endblock script %}

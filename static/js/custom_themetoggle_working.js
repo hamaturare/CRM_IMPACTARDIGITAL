@@ -17,20 +17,16 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Apply the saved theme on page load
-    const applySavedTheme = () => {
-        const savedTheme = localStorage.getItem('theme');
-        if (savedTheme === 'dark') {
-            document.documentElement.classList.add('dark-theme-variables');
-            lightModeIcon.classList.remove('active');
-            darkModeIcon.classList.add('active');
-        } else {
-            document.documentElement.classList.remove('dark-theme-variables');
-            lightModeIcon.classList.add('active');
-            darkModeIcon.classList.remove('active');
-        }
-    };
-
-    applySavedTheme();
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+        document.documentElement.classList.add('dark-theme-variables');
+        lightModeIcon.classList.remove('active');
+        darkModeIcon.classList.add('active');
+    } else {
+        document.documentElement.classList.remove('dark-theme-variables');
+        lightModeIcon.classList.add('active');
+        darkModeIcon.classList.remove('active');
+    }
 
     // Change theme on toggle button click
     themeToggler.addEventListener('click', () => {

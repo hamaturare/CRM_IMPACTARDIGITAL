@@ -22,6 +22,7 @@
     --color-blue-id: #1c3145;
     --color-blue-id2: #041c33;
     --color-green-id: #21d667;
+    --color-impactar-name:#ff5f10;
   
     --card-border-radius: 2rem;
     --border-radius-1: 0.4rem;
@@ -37,19 +38,40 @@
     --box-shadow: 0 2rem 3rem var(--color-light);
 }
 
+.light-theme-variables {
+    --color-background: #f6f6f9;
+    --color-white: #fff;
+    --color-dark-variant: #363949;
+    --color-light: rgba(132, 139, 200, 0.18);
+    --color-info-dark: #7d8da1;
+
+    --color-white-ice: #f3f3f3f6;
+    --color-orange-id: #ff5f00;
+    --color-orange-id2: #ff5f10;
+    --color-blue-id: #1c3145;
+    --color-blue-id2: #041c33;
+
+    --color-impactar-name:#ff5f10;
+
+    --box-shadow: 0 2rem 3rem var(--color-light);
+}
+
 .dark-theme-variables {
     --color-background: #181a1e;
     --color-white: #202528;
     --color-dark-variant: #a3bdcc;
     --color-light: rgba(0, 0, 0, 0.4);
-    --box-shadow: 0 2rem 3rem var(--color-light);
     --color-info-dark: #dce1eb;
 
     --color-white-ice: #bcc7ce;
-    --color-orange-id2: #243d55;
     --color-orange-id: #1c3145;
+    --color-orange-id2: #243d55;
     --color-blue-id: #ff5f00;
     --color-blue-id2: #e6e6e6;
+
+    --color-impactar-name:#dce1eb;
+
+    --box-shadow: 0 2rem 3rem var(--color-light);
 }
 
 * {
@@ -116,22 +138,27 @@ img {
 h1 {
     font-weight: 800;
     font-size: 1.8rem;
+    color: var(--color-blue-id);
 }
 
 h2 {
     font-size: 1.4rem;
+    color: var(--color-blue-id);
 }
 
 h3 {
     font-size: 0.87rem;
+    color: var(--color-blue-id);
 }
 
 h4 {
     font-size: 0.8rem;
+    color: var(--color-blue-id);
 }
 
 h5 {
     font-size: 0.77rem;
+    color: var(--color-blue-id);
 }
 
 
@@ -189,6 +216,10 @@ b {
 
 .orange-id2 {
     color: var(--color-orange-id2);
+}
+
+#imapactar {
+    color: var(--color-impactar-name);
 }
 
 aside {
@@ -281,6 +312,7 @@ aside .sidebar a.active span {
     color: var(--color-blue-id);
     margin-left: calc(1rem - 3px);
     transition: all 300ms ease;
+    border: none;
 }
 
 aside .sidebar a:hover {
@@ -389,11 +421,13 @@ main h1 {
 }
 
 .right .top .profile .info p {
+    color: var(--color-dark-variant);
     margin: 0;
     display: inline; /* Define o parágrafo como inline */
 }
 
 .right .top .profile .info b {
+    color: var(--color-blue-id);
     font-weight: bold; /* Negrito para o nome */
 }
 
@@ -404,23 +438,32 @@ main h1 {
 
 .main-container {
     padding: 0 1rem;
-    justify-content: space-evenly;
+    justify-content: center;
     align-items: center;
+    display: flex;
+    flex-direction: column;
     background: var(--color-background);
     overflow: hidden; /* Certifique-se de que o conteúdo dentro do contêiner não transborde */
 }
 
+/* Overwriting Bootstrap row class */
+.row {
+    max-width: 100%;
+
+}
+
 .header {
+    width: 100%;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     margin-bottom: 1rem;
+    justify-items: stretch;
+    flex-wrap: nowrap;
+    justify-content: space-between; 
 }
 
 .header-content {
-    display: flexbox;
-    align-items: center;
-    gap: 1rem;
+    text-align: left;
     color: var(--color-blue-id);
 }
 
@@ -472,6 +515,7 @@ main h1 {
     border: 1px solid var(--color-dark-variant); /* Borda mais sutil */
     border-radius: 10px; /* Bordas arredondadas */
     background-color: transparent; /* Cor de fundo próxima ao branco */
+    color: var(--color-blue-id2);
 }
 
 .search-button,
@@ -535,7 +579,7 @@ main h1 {
 .custom-table td {
     padding: 0.75rem;
     border-top: solid 1px var(--color-dark-variant);
-    text-align: center;
+    text-align: left;
     color: var(--color-blue-id2);
     
 }
@@ -642,6 +686,7 @@ main h1 {
     color: var(--color-primary);
 }
 
+
 /* Estilos para o texto que pisca na tabela */
 
 .blink {
@@ -678,6 +723,8 @@ main h1 {
 
 /* Container para o formulário */
 .form-container {
+     width: 100%;
+    max-width: 600px; 
     background: var(--color-white);
     padding: 2rem;
     border-radius: var(--border-radius-1);
@@ -696,17 +743,15 @@ label{
     color: var(--color-blue-id);
 }
 
-/* Estilo para os campos de seleção do formulário */
 select.form-select, select.form-control {
-    padding: 0.75rem;
     border: 1px solid var(--color-info-dark); /* Borda sólida visível */
     border-radius: 5px; /* Bordas arredondadas */
-     /* Cor de fundo */
     transition: border-color 0.3s ease;
     color: var(--color-blue-id); /* Cor do texto */
     -webkit-appearance: none; /* Remove o estilo padrão do navegador */
     -moz-appearance: none;
     appearance: none;
+    box-sizing: border-box; /* Garante que o padding não afete a largura */
 }
 
 select.form-select:focus, select.form-control:focus {
@@ -722,6 +767,11 @@ div .form-buttons .btn-submit, .btn-cancel {
     border-radius: 5px;
     background: var(--color-white);
     margin-right: 1rem;
+}
+
+/* Taking away the white card behind the table */
+#client_suggestions {
+    background: transparent;
 }
 
 /* =========================  AJUSTES RESPONSIVOS =================================== */
@@ -808,14 +858,19 @@ div .form-buttons .btn-submit, .btn-cancel {
     }
 
     aside .close {
-        color: var(--color-dark);
+        color: var(--color-blue-id);
         display: inline-block;
         cursor: pointer;
         position: absolute;
         top: 0.5rem;
         right: 0.5rem;
-        text-shadow: 0 1px 4px var(--color-blue-id);
     }
+
+    #close-btn, #menu-btn {
+        color: var(--color-blue-id);
+        text-shadow: none;
+        border: none;
+    } 
 
     .right {
         width: 94%;
@@ -907,4 +962,56 @@ div .form-buttons .btn-submit, .btn-cancel {
         display: none;
     }
 
+}
+
+/* =============  Sobrescrevendo o CSS do bootstrap =================== */
+
+.card {
+    background: var(--color-white);
+}
+
+/* Making sure the selector boxes on the Leads and Client update forms are on center */
+
+/* Lead Forms */
+#id_responsible, #id_origin, #id_service_type, #id_priority{
+    margin: 0.2rem;
+    padding: 0.1rem;
+    text-align: center;
+    width: auto;
+}
+
+/* Clint Forms */
+#id_actual_date, #id_notes, #id_planned_date, 
+#id_name, #id_company_name, #id_whatsapp, #id_email {
+    background: var(--color-white-ice);
+}
+
+/* Profile Forms */
+#id_first_name, #id_last_name, #id_bio,
+#id_birth_date, #id_profile_image, #id_phone_number {
+    background: var(--color-white-ice);
+}
+
+div .form-control .d-flex .h-auto {
+    background-color: var(--color-white-ice);
+}
+
+
+/* Change Password Forms */
+
+#id_old_password, #id_new_password1, #id_new_password2 {
+    background-color: var(--color-white-ice);
+
+}
+
+#id_new_password1_helptext {
+    color: var(--color-info-dark);
+}
+
+.card-header {
+    color: var(--color-info-dark);
+}
+
+.modal-content {
+    background: var(--color-white);
 }

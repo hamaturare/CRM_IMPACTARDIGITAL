@@ -3,15 +3,24 @@
 {% load crispy_forms_tags %}
 
 {% block content %}
-<div class="container mt-4">
-    <h2>Enviar Sugestão</h2>
-    <form method="post" class="mb-3">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <div class="form-group">
-            <button type="submit" name="save" class="btn btn-primary mr-1">Enviar</button>
-            <a href="{% url 'suggestions_list' %}" class="btn btn-danger mr-1">Cancelar</a>
-        </div>
-    </form>
+<div class="main-container">
+    <div class="header-content">
+        <h1>Enviar Sugestão</h1>
+        <br>
+    </div>
+    <div class="form-container">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <div class="form-buttons">
+                <button type="submit" class="btn-submit">
+                    <span class="btn btn-success">Enviar</span>
+                </button>
+                <button type="button" onclick="location.href='{% url 'suggestions_list' %}'" class="btn-cancel">
+                    <span class="btn btn-danger">Cancelar</span>
+                </button>
+            </div>
+        </form>
+    </div>
 </div>
-{% endblock %}
+{% endblock content %}

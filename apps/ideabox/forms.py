@@ -12,6 +12,12 @@ class SuggestionForm(forms.ModelForm):
             'status': forms.Select(attrs={'class': 'form-control'}),
         }
 
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(SuggestionForm, self).__init__(*args, **kwargs)
+        if user and not user.is_superuser:
+            self.fields.pop('status')
+
 class SuggestionUpdateForm(forms.ModelForm):
     class Meta:
         model = Suggestion

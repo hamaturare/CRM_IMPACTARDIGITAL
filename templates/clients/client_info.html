@@ -4,12 +4,12 @@
 {% load client_extras %}
 
 {% block content %}
-<div class="container-fluid">
-    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
-        <h1 class="h3 mb-0 text-gray-800">Detalhes do Cliente</h1>
+<div class="main-container">
+    <div>
+        <h1>DETALHES DO CLIENTE</h1>
     </div>
     <div class="row">
-        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+        <div class="card o-hidden border-0 shadow-sm my-5 col-lg-12">
             <div class="card-body">
                 <h2>{{ client.company_name }}</h2>
                 <p><strong>Nome do Cliente: </strong> {{ client.client_name }}</p>
@@ -33,11 +33,11 @@
                 <button id="deleteBtn" type="button" class="btn btn-sm btn-danger shadow-sm">Deletar</button>
             </div>
         </div>
-        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+        <div class="card o-hidden border-0 shadow-sm my-5 col-lg-12">
             <div class="card-body">
                 <!-- Formulário para registrar um novo FollowUp -->
                 <br>
-                <h1 class="h3 mb-0 text-gray-800">ADICIONAR INDICAÇÃO DO CLIENTE</h1>
+                <h2 class="mb-0 text-gray-800">ADICIONAR INDICAÇÃO DO CLIENTE</h2>
                 <br>
                 <form method="post" action="{% url 'client_info' client.pk %}">
                     {% csrf_token %}
@@ -46,11 +46,14 @@
                 </form>
             </div>
         </div>
-        <div class="card o-hidden border-0 shadow-lg my-5 col-lg-12">
+        <div class="card o-hidden border-0  my-5 col-lg-12" id="client_suggestions">
             <div class="card-body">
+                <br>
+                <h2 class="mb-0 text-gray-800">INDICAÇÕES DO CLIENTE</h2>
+                <br>
                 <div class="table-responsive">
-                    <table class="table table-striped table-hover">
-                        <thead class="thead-light">
+                    <table class="custom-table">
+                        <thead>
                             <tr>
                                 <th>Nome</th>
                                 <th>Empresa</th>
@@ -67,8 +70,8 @@
                                     <td>{{ client_lead.name }}</td>
                                     <td>{{ client_lead.name }}</td>
                                     <td>{{ client_lead.email }}</td>
-                                    <td>
-                                        <a href="https://wa.me/{{ client_lead.whatsapp }}" target="_blank" class="text-success"><i class="fab fa-whatsapp"></i> {{ client_lead.whatsapp|phone_format }}</a>
+                                    <td class="whatsapp">
+                                        <a href="https://wa.me/{{ client_lead.whatsapp }}" target="_blank"><i class="fab fa-whatsapp"></i> {{ client_lead.whatsapp|phone_format }}</a>
                                     </td>
                                     <td>{{ client_lead.created_at|date:"d/m/Y" }}</td>
                                     <td>{{ client_lead.notes }}</td>

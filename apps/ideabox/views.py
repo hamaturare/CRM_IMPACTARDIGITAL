@@ -17,6 +17,11 @@ class SubmitSuggestionView(LoginRequiredMixin, CreateView):
     form_class = SuggestionForm
     template_name = 'ideabox/submit_suggestion.html'
     success_url = reverse_lazy('suggestions_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
     
     def post(self, request, *args, **kwargs):
         # Adiciona a mensagem antes de processar o formulário
