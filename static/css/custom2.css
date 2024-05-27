@@ -816,6 +816,24 @@ div .form-buttons .btn-submit, .btn-cancel {
         grid-template-columns: 1fr;
     }
 
+    main{
+        margin: 1rem 0;
+        padding: var(--padding-1);
+    }
+
+    .main-container {
+        margin: 1rem;
+        padding: var(--padding-1);
+        background: var(--color-background);
+        overflow: hidden; /* Certifique-se de que o conteúdo dentro do contêiner não transborde */
+    }
+
+    .header {
+        display: flex;
+        margin-bottom: 1rem;
+        flex-wrap: wrap
+    }
+
     aside {
         position: fixed;
         left: -100%;
@@ -936,17 +954,6 @@ div .form-buttons .btn-submit, .btn-cancel {
        font-size: 2rem; 
     }
 
-    main{
-        margin: 1rem 0;
-        padding: var(--padding-1);
-    }
-
-    .main-container {
-        margin: 1rem;
-        padding: var(--padding-1);
-        background: var(--color-background);
-        overflow: hidden; /* Certifique-se de que o conteúdo dentro do contêiner não transborde */
-    }
     .add-button {
         z-index: 1;
     }
@@ -1009,6 +1016,7 @@ div .form-control .d-flex .h-auto {
     color: var(--color-info-dark);
 }
 
+/* Change on Card Headers and Modal Contents */
 .card-header {
     color: var(--color-info-dark);
 }
@@ -1016,3 +1024,4 @@ div .form-control .d-flex .h-auto {
 .modal-content {
     background: var(--color-white);
 }
+
