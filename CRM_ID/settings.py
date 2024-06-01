@@ -59,6 +59,7 @@ LOCAL_APPS = [
     'apps.leads',
     'apps.clients',
     'apps.ideabox',
+    'apps.wpmessages',
 
 ]
 

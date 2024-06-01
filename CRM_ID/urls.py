@@ -7,6 +7,8 @@ from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadV
 from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, AddClientView, ClientDetailView
 from django.contrib.auth import views as auth_views
 from apps.ideabox.views import SubmitSuggestionView, SuggestionsListView, SuggestionUpdateView
+from apps.wpmessages.views import WpMessagesView
+
 
 from apps.userprofile.views import preview_template
 
@@ -89,6 +91,9 @@ urlpatterns = [
     path('update_suggestion/<int:pk>/', SuggestionUpdateView.as_view(), name='view_suggestion'),
     path('client_info/<int:pk>/', ClientDetailView.as_view(), name='client_info'),
     path('preview/', preview_template, name='index'),
+
+    #MESSAGES
+    path('messages/',WpMessagesView.as_view(), name='wpmessages'), 
    
 ]
 

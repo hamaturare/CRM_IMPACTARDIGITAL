@@ -687,6 +687,14 @@ main h1 {
     color: var(--color-primary);
 }
 
+.text-truncate {
+    display: -webkit-box;
+    -webkit-line-clamp: 2; /* Número de linhas */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 250px; /* Largura máxima do texto */
+  }
 
 /* Estilos para o texto que pisca na tabela */
 
@@ -707,9 +715,11 @@ main h1 {
     border-radius: var(--border-radius-1);
     white-space: nowrap; /* Evita quebra de linha */
 }
+.dont-apply {
 
-.blink, .blink2 {
-    animation: blink-animation 1.5s steps(2, start) infinite;
+    .blink, .blink2 {
+        animation: blink-animation 1.5s steps(2, start) infinite;
+    }
 }
 
 @keyframes blink-animation {
