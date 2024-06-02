@@ -7,7 +7,7 @@ from django.shortcuts import redirect, render
 from django.views.generic import DeleteView, DetailView
 from django.db.models import Q
 from django.views import View
-from django.http import JsonResponse, HttpResponse
+from django.http import HttpResponse, JsonResponse 
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .functions import *
@@ -24,12 +24,10 @@ class WhatsAppWebhookView(View):
         return super().dispatch(*args, **kwargs)
 
     def get(self, request, *args, **kwargs):
-        VERIFY_TOKEN = settings.WHATSAPP_VERIFY_TOKEN
+        VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
         mode = request.GET.get('hub.mode')
         token = request.GET.get('hub.verify_token')
         challenge = request.GET.get('hub.challenge')
-
-        print(f"Mode: {mode}, Token: {token}, Challenge: {challenge}")
 
         if mode and token:
             if mode == 'subscribe' and token == VERIFY_TOKEN:
@@ -40,7 +38,6 @@ class WhatsAppWebhookView(View):
 
     def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
-        print(f"Received data: {data}")
 
         if 'object' in data and 'entry' in data:
             if data['object'] == 'whatsapp_business_account':
@@ -56,15 +53,15 @@ class WhatsAppWebhookView(View):
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
                         # Handle the incoming message
-                        handle_incoming_message(
-                            lead_phone_number,
-                            #profile_name,
+                        #handle_incoming_message(
+                         #   lead_phone_number,
+                         #   profile_name,
                             #phone_id,
                             #whatsapp_id,
                             #usiness_phone_number,
                             #essage_id,
                             #timestamp,
-                            text)
+                         #   text)
                         
                 except Exception as e:
                     print(f"Error processing WhatsApp message: {e}")

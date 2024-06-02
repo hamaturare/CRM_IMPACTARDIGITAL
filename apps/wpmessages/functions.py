@@ -7,14 +7,28 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 def send_whatsapp_message(phone_number, message):
-    headers = {"Authorization": settings.WHATSAPP_API_URL}
-    payload = {"messaging_product": "whatsapp",
-                "recipient_type": "individual",
-                "to": phone_number,
-                "type": "text",
-                "text": {"body": message}
-                }
+    headers = {
+        "Authorization": f"Bearer {settings.WHATSAPP_ACCESS_TOKEN}",
+        "Content-Type": "application/json"
+    }
+    payload = {
+        "messaging_product": "whatsapp",
+        "recipient_type": "individual",
+        "to": phone_number,
+        "type": "text",
+        "text": {"body": message}
+    }
 
+    try:
+        response = requests.post(settings.WHATSAPP_API_URL, headers=headers, json=payload)
+        response.raise_for_status()  # Raise an HTTPError for bad responses
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Error sending WhatsApp message: {e}")
+        return {"status": "error", "message": str(e)}
+
+    return response.json()
+
+"""
     try:
         response = requests.post(settings.WHATSAPP_API_URL, headers=headers, json=payload)
         #response.raise_for_status()
@@ -31,7 +45,7 @@ def handle_incoming_message(lead_phone_number, text):
     send_whatsapp_message(phone_number, message)
 
 
-"""
+
 def handle_incoming_message(lead_phone_number, profile_name, phone_id, whatsapp_id, business_phone_number, message_id, timestamp, text):
     wp_message, created = WpMessage.objects.get_or_create(
         lead_phone_number=lead_phone_number,
