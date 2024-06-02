@@ -7,26 +7,32 @@ from datetime import datetime
 logger = logging.getLogger(__name__)
 
 def send_whatsapp_message(phone_number, message):
-    url = f"{settings.WHATSAPP_API_URL}/{settings.WHATSAPP_PHONE_ID}/messages"
-    headers = {"Authorization": f"Bearer {settings.WHATSAPP_ACCESS_TOKEN}"}
-    payload = {
-        "messaging_product": "whatsapp",
-        "recipient_type": "individual",
-        "to": phone_number,
-        "type": "text",
-        "text": {"body": message}
-    }
+    headers = {"Authorization": settings.WHATSAPP_API_URL}
+    payload = {"messaging_product": "whatsapp",
+                "recipient_type": "individual",
+                "to": phone_number,
+                "type": "text",
+                "text": {"body": message}
+                }
 
     try:
-        response = requests.post(url, headers=headers, json=payload)
-        response.raise_for_status()
+        response = requests.post(settings.WHATSAPP_API_URL, headers=headers, json=payload)
+        #response.raise_for_status()
     except requests.exceptions.RequestException as e:
         logger.error(f"Error sending WhatsApp message: {e}")
         return {"status": "error", "message": str(e)}
 
     return response.json()
 
-def handle_incoming_message(lead_phone_number, phone_id, profile_name, whatsapp_id, business_phone_number, message_id, timestamp, text):
+
+def handle_incoming_message(lead_phone_number, text):
+    phone_number = lead_phone_number
+    message = 'RE: {} was received'.format(text)
+    send_whatsapp_message(phone_number, message)
+
+
+"""
+def handle_incoming_message(lead_phone_number, profile_name, phone_id, whatsapp_id, business_phone_number, message_id, timestamp, text):
     wp_message, created = WpMessage.objects.get_or_create(
         lead_phone_number=lead_phone_number,
         defaults={
@@ -48,14 +54,7 @@ def handle_incoming_message(lead_phone_number, phone_id, profile_name, whatsapp_
         wp_message.save()
 
     if wp_message.state == 'initial':
-        response_message = (
-            "Olá, tudo bem? Em qual serviço você está interessado?\n"
-            "Digite o número abaixo:\n"
-            "1- Anúncios com Tráfego Pago\n"
-            "2- Sites e Landpages\n"
-            "3- Treinamento Presencial de Tráfego Pago\n"
-            "4- Outros Assuntos"
-        )
+        response_message = ("Olá, tudo bem? Em qual serviço você está interessado?\n Digite o número abaixo:\n 1- Anúncios com Tráfego Pago\n 2- Sites e Landpages\n 3- Treinamento Presencial de Tráfego Pago\n 4- Outros Assuntos")
         wp_message.state = 'awaiting_service'
     elif wp_message.state == 'awaiting_service':
         if text == '1':
@@ -117,3 +116,4 @@ def handle_incoming_message(lead_phone_number, phone_id, profile_name, whatsapp_
     wp_message.chat_history += f"\nUser: {text}\nBot: {response_message}"
     wp_message.save()
     send_whatsapp_message(lead_phone_number, response_message)
+"""

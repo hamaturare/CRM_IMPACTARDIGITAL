@@ -12,7 +12,6 @@ config = Config(RepositoryEnv(str(env_path)))
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
@@ -167,9 +166,11 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
-WHATSAPP_API_URL = config('WHATSAPP_API_URL')
-WHATSAPP_PHONE_ID = config('WHATSAPP_PHONE_ID')
-WHATSAPP_ACCESS_TOKEN = config('WHATSAPP_ACCESS_TOKEN')
-WHATSAPP_VERIFY_TOKEN = config('WHATSAPP_VERIFY_TOKEN')
+WHATSAPP_API_URL = 'https://graph.facebook.com/v19.0/352309607958630/messages'
+WHATSAPP_ACCESS_TOKEN = 'Bearer EAATatv2lO34BOzl7ggqPhsOE0iVOAG7c1JudTxGXQpX7FZBfhmO0YfoHCUTA7hLu4efDEMlQi0aTmmKN5bEQs1fFy7tfeCr81J7fzubfgOTlEUhsNE6Y67W4ZA3M9f5jMocRWClAetvjlKvJP7n06qwYPXgDBmBB1KyLWSCh7DByoD17jzMs9ResAzlw6ab6yvXaYm2Y96RnK2I7YZCBb6twXPu5ZAWt8PcZD'
+WHATSAPP_VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
+
+#WHATSAPP_PHONE_ID = config('WHATSAPP_PHONE_ID')
+#WHATSAPP_VERIFY_TOKEN = config('WHATSAPP_VERIFY_TOKEN')
 
 #SECURE_SSL_REDIRECT = True
