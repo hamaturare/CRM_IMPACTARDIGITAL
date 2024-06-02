@@ -10,7 +10,7 @@ from django.views import View
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-from .functions import handle_incoming_message
+from .functions import *
 import json
 
 class WpMessagesView(LoginRequiredMixin, ListView):
@@ -18,21 +18,30 @@ class WpMessagesView(LoginRequiredMixin, ListView):
     template_name = 'wpmessages/wpmessages.html'
     login_url = reverse_lazy('home')
 
-@csrf_exempt
-def whatsapp_webhook(request):
-    if request.method == 'GET':
-        VERIFY_TOKEN = settings.VERIFY_TOKEN
+class WhatsAppWebhookView(View):
+    @csrf_exempt
+    def dispatch(self, *args, **kwargs):
+        return super().dispatch(*args, **kwargs)
+
+    def get(self, request, *args, **kwargs):
+        VERIFY_TOKEN = settings.WHATSAPP_VERIFY_TOKEN
         mode = request.GET.get('hub.mode')
         token = request.GET.get('hub.verify_token')
         challenge = request.GET.get('hub.challenge')
 
-        if mode == 'subscribe' and token == VERIFY_TOKEN:
-            return HttpResponse(challenge, status=200)
-        else:
-            return HttpResponse('Forbidden', status=403)
+        print(f"Mode: {mode}, Token: {token}, Challenge: {challenge}")
 
-    elif request.method == 'POST':
+        if mode and token:
+            if mode == 'subscribe' and token == VERIFY_TOKEN:
+                return HttpResponse(challenge, status=200)
+            else:
+                return HttpResponse('Forbidden', status=403)
+        return HttpResponse('Bad Request', status=400)
+
+    def post(self, request, *args, **kwargs):
         data = json.loads(request.body)
+        print(f"Received data: {data}")
+
         if 'object' in data and 'entry' in data:
             if data['object'] == 'whatsapp_business_account':
                 try:

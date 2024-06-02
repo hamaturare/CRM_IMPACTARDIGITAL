@@ -6,7 +6,7 @@ from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadV
 from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, AddClientView, ClientDetailView
 from django.contrib.auth import views as auth_views
 from apps.ideabox.views import SubmitSuggestionView, SuggestionsListView, SuggestionUpdateView
-from apps.wpmessages.views import WpMessagesView, whatsapp_webhook
+from apps.wpmessages.views import WpMessagesView, WhatsAppWebhookView
 from apps.userprofile.views import preview_template
 
 urlpatterns = [
@@ -91,7 +91,7 @@ urlpatterns = [
 
     #MESSAGES
     path('messages/', WpMessagesView.as_view(), name='wpmessages'),
-    path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02/', whatsapp_webhook, name='whatsapp-webhook'),
+    path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02', WhatsAppWebhookView.as_view(), name='whatsapp-webhook'),
 
 ]
 
