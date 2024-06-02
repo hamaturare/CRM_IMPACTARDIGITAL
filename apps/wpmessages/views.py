@@ -21,7 +21,7 @@ class WpMessagesView(LoginRequiredMixin, ListView):
 @csrf_exempt
 def whatsapp_webhook(request):
     if request.method == 'GET':
-        VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
+        VERIFY_TOKEN = settings.VERIFY_TOKEN
         mode = request.GET.get('hub.mode')
         token = request.GET.get('hub.verify_token')
         challenge = request.GET.get('hub.challenge')

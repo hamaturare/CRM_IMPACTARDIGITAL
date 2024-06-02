@@ -91,7 +91,7 @@ urlpatterns = [
 
     #MESSAGES
     path('messages/', WpMessagesView.as_view(), name='wpmessages'),
-    path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02', whatsapp_webhook, name='whatsapp-webhook'),
+    path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02/', whatsapp_webhook, name='whatsapp-webhook'),
 
 ]
 
