@@ -18,7 +18,25 @@ class WpMessagesView(LoginRequiredMixin, ListView):
     template_name = 'wpmessages/wpmessages.html'
     login_url = reverse_lazy('home')
 
-class WhatsAppWebhookView(View):
+
+
+@csrf_exempt
+def whatsapp_webhook(request):
+    if request.method == 'GET':
+        VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
+        mode = request.GET.get('hub.mode')
+        token = request.GET.get('hub.verify_token')
+        challenge = request.GET.get('hub.challenge')
+
+        if mode == 'subscribe' and token == VERIFY_TOKEN:
+            return HttpResponse(challenge, status=200)
+        else:
+            return HttpResponse('Forbidden', status=403)
+
+
+
+"""
+class WhatsAppWebhookView():
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
         return super().dispatch(*args, **kwargs)
@@ -67,3 +85,4 @@ class WhatsAppWebhookView(View):
                     print(f"Error processing WhatsApp message: {e}")
                     return HttpResponse('error', status=500)
         return HttpResponse('success', status=200)
+"""
