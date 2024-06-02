@@ -15,5 +15,7 @@ def send_whatsapp_message(phoneNumber, message):
             "body": message
         }
     }
+
     response = requests.post(url, headers=headers, json=payload)
     return response.json()
+
