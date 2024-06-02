@@ -32,7 +32,28 @@ def whatsapp_webhook(request):
             return HttpResponse(challenge, status=200)
         else:
             return HttpResponse('Forbidden', status=403)
+        
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        if 'object' in data and 'entry' in data:
+            if data['object'] == 'whatsapp_business_account':
+                try:
+                    for entry in data['entry']:
+                        lead_phone_number= entry['changes'][0]['value']['metadata']['display_phone_number'] # Send the Whatsapp to this is the Lead phone Number
+                        phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
+                        profile_name = entry['changes'][0]['value']['contacts'][0]['profile']['name']
+                        whatsapp_id = entry['changes'][0]['value']['contacts'][0]['wa_id']
+                        business_phone_number = entry['changes'][0]['value']['messages'][0]['from']
+                        message_id = entry['changes'][0]['value']['messages'][0]['id']
+                        timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
+                        text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
+                        lead_phone_number = "5527999371909"
+                        message = 'RE: {} was received'.format(text)
+                        send_whatsapp_message(lead_phone_number, message)
+                except:
+                    pass
+        return HttpResponse('success', status=200)
 
 
 """
