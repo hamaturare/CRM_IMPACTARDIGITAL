@@ -55,7 +55,7 @@ class WhatsAppWebhookView(View):
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
                         # Send a response message
-                        phoneNumber = "+27828882737"
+                        phoneNumber = "5527999371909"
                         message = 'RE: {} was received.'.format(text)
                         send_whatsapp_message(phoneNumber, message)
 
