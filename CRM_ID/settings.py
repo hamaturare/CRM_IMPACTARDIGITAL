@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
+from decouple import Config, RepositoryEnv
+
+config = Config(RepositoryEnv('.env'))
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -157,7 +159,7 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 #EMAIL_HOST = 'crm.impactardigital.com.br'
 #EMAIL_PORT = 465
 #EMAIL_USE_TLS = False
-#EMAIL_USE_SSL = True 
+#MAIL_USE_SSL = True 
 #EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 #EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
 #DEFAULT_FROM_EMAIL = 'noreplyt@crm.impactardigital.com.br'
@@ -171,3 +173,10 @@ MESSAGE_TAGS = {
     messages.WARNING: 'alert-warning',
     messages.ERROR: 'alert-danger',
 }
+
+WHATSAPP_API_URL = config('WHATSAPP_API_URL')
+WHATSAPP_PHONE_ID = config('WHATSAPP_PHONE_ID')
+WHATSAPP_ACCESS_TOKEN = config('WHATSAPP_ACCESS_TOKEN')
+WAHTSAPP_VERIFY_TOKEN = config('WHATSAPP_VERIFY_TOKEN')
+
+#SECURE_SSL_REDIRECT = True
