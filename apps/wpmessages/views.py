@@ -1,23 +1,20 @@
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import WpMessages
+from .models import WpMessage
 from django.views.generic import UpdateView
 from django.shortcuts import redirect, render
 from django.views.generic import DeleteView, DetailView
 from django.db.models import Q
 from django.views import View
-from django.contrib import messages
-from django.forms import DateInput
-import json
 from django.http import JsonResponse, HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
-
-from .functions import send_whatsapp_message
+from .functions import handle_incoming_message
+import json
 
 class WpMessagesView(LoginRequiredMixin, ListView):
-    model = WpMessages
+    model = WpMessage
     template_name = 'wpmessages/wpmessages.html'
     login_url = reverse_lazy('home')
 
@@ -45,19 +42,26 @@ class WhatsAppWebhookView(View):
             if data['object'] == 'whatsapp_business_account':
                 try:
                     for entry in data['entry']:
-                        phoneNumber = entry['changes'][0]['value']['metadata']['display_phone_number']
-                        phoneId = entry['changes'][0]['value']['metadata']['phone_number_id']
-                        profileName = entry['changes'][0]['value']['contacts'][0]['profile']['name']
-                        whatsAppId = entry['changes'][0]['value']['contacts'][0]['wa_id']
-                        fromId = entry['changes'][0]['value']['messages'][0]['from']
-                        messageId = entry['changes'][0]['value']['messages'][0]['id']
+                        business_phone_number = entry['changes'][0]['value']['metadata']['display_phone_number']
+                        phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
+                        profile_name = entry['changes'][0]['value']['contacts'][0]['profile']['name']
+                        whatsapp_id = entry['changes'][0]['value']['contacts'][0]['wa_id']
+                        lead_phone_number = entry['changes'][0]['value']['messages'][0]['from']
+                        message_id = entry['changes'][0]['value']['messages'][0]['id']
                         timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
-                        # Send a response message
-                        phoneNumber = "5527999371909"
-                        message = 'RE: {} was received.'.format(text)
-                        send_whatsapp_message(phoneNumber, message)
+                        # Handle the incoming message
+                        handle_incoming_message(
+                            business_phone_number,
+                            phone_id,
+                            profile_name,
+                            whatsapp_id,
+                            lead_phone_number,
+                            message_id,
+                            timestamp,
+                            text
+                        )
 
                 except Exception as e:
                     print(f"Error processing WhatsApp message: {e}")
