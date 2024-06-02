@@ -42,22 +42,22 @@ class WhatsAppWebhookView(View):
             if data['object'] == 'whatsapp_business_account':
                 try:
                     for entry in data['entry']:
-                        business_phone_number = entry['changes'][0]['value']['metadata']['display_phone_number']
+                        lead_phone_number= entry['changes'][0]['value']['metadata']['display_phone_number'] # Send the Whatsapp to this is the Lead phone Number
                         phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
                         profile_name = entry['changes'][0]['value']['contacts'][0]['profile']['name']
                         whatsapp_id = entry['changes'][0]['value']['contacts'][0]['wa_id']
-                        lead_phone_number = entry['changes'][0]['value']['messages'][0]['from']
+                        business_phone_number = entry['changes'][0]['value']['messages'][0]['from']
                         message_id = entry['changes'][0]['value']['messages'][0]['id']
                         timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
                         # Handle the incoming message
                         handle_incoming_message(
-                            business_phone_number,
+                            lead_phone_number,
                             phone_id,
                             profile_name,
                             whatsapp_id,
-                            lead_phone_number,
+                            business_phone_number,
                             message_id,
                             timestamp,
                             text

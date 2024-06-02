@@ -26,7 +26,7 @@ def send_whatsapp_message(phone_number, message):
 
     return response.json()
 
-def handle_incoming_message(business_phone_number, phone_id, profile_name, whatsapp_id, lead_phone_number, message_id, timestamp, text):
+def handle_incoming_message(lead_phone_number, phone_id, profile_name, whatsapp_id, business_phone_number, message_id, timestamp, text):
     wp_message, created = WpMessage.objects.get_or_create(
         lead_phone_number=lead_phone_number,
         defaults={
