@@ -12,14 +12,43 @@ from django.views.decorators.csrf import csrf_exempt
 from django.conf import settings
 from .functions import *
 import json
+import logging
+
+logger = logging.getLogger(__name__)
 
 class WpMessagesView(LoginRequiredMixin, ListView):
     model = WpMessage
     template_name = 'wpmessages/wpmessages.html'
     login_url = reverse_lazy('home')
 
+@csrf_exempt
+def whatsapp_webhook(request):
+    logger.info('Webhook accessed')
+    if request.method == 'GET':
+        try:
+            VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
+            mode = request.GET.get('hub.mode')
+            token = request.GET.get('hub.verify_token')
+            challenge = request.GET.get('hub.challenge')
 
+            logger.info(f'Mode: {mode}, Token: {token}, Challenge: {challenge}')
 
+            if mode == 'subscribe' and token == VERIFY_TOKEN:
+                return HttpResponse(challenge, status=200)
+            else:
+                logger.warning('Forbidden access attempted with token: %s', token)
+                return HttpResponse('Forbidden', status=403)
+        except Exception as e:
+            logger.error(f'Error in GET request: {e}')
+            return HttpResponse('Internal Server Error', status=500)
+
+    return HttpResponse('Method Not Allowed', status=405)
+
+def test_view(request):
+    logger.info('Test view accessed')
+    return HttpResponse('Test view is working', status=200)
+
+"""
 @csrf_exempt
 def whatsapp_webhook(request):
     if request.method == 'GET':
@@ -56,7 +85,7 @@ def whatsapp_webhook(request):
         return HttpResponse('success', status=200)
 
 
-"""
+
 class WhatsAppWebhookView():
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
