@@ -48,11 +48,11 @@ def whatsapp_webhook(request):
             if data['object'] == 'whatsapp_business_account':
                 try:
                     for entry in data['entry']:
-                        lead_phone_number= entry['changes'][0]['value']['metadata']['display_phone_number'] # Send the Whatsapp to this is the Lead phone Number
+                        business_phone_number= entry['changes'][0]['value']['metadata']['display_phone_number'] # This is our number from whatsapp business
                         phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
                         profile_name = entry['changes'][0]['value']['contacts'][0]['profile']['name']
                         whatsapp_id = entry['changes'][0]['value']['contacts'][0]['wa_id']
-                        business_phone_number = entry['changes'][0]['value']['messages'][0]['from']
+                        lead_phone_number = entry['changes'][0]['value']['messages'][0]['from'] # Number to respond to. This is the Lead phone Number that enters in contact
                         message_id = entry['changes'][0]['value']['messages'][0]['id']
                         timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
@@ -60,10 +60,10 @@ def whatsapp_webhook(request):
                         #Handle the incoming message
                         handle_incoming_message(
                             lead_phone_number,
-                            #profile_name,
+                            profile_name,
                             #phone_id,
                             #whatsapp_id,
-                            #usiness_phone_number,
+                            business_phone_number,
                             #essage_id,
                             #timestamp,
                             text)
