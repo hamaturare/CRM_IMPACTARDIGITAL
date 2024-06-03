@@ -30,10 +30,21 @@ def send_whatsapp_message(phone_number, message):
 
 
 def handle_incoming_message(lead_phone_number, text):
-    phone_number = lead_phone_number
-    message = 'RE: {} was received'.format(text)
-    send_whatsapp_message(phone_number, message)
+    logger.info(f'Handling incoming message from {lead_phone_number}')
+    try:
+        wp_message = WpMessage(
+            lead_phone_number=lead_phone_number,
+            message_text=text
+        )
+        wp_message.save()
 
+        phone_number = lead_phone_number
+        message = 'RE: {} was received'.format(text)
+        send_whatsapp_message(phone_number, message)
+
+        logger.info(f'Saved message for {lead_phone_number} and sent confirmation')
+    except Exception as e:
+        logger.error(f'Error handling incoming message: {e}')
 
 """
 def handle_incoming_message(lead_phone_number, profile_name, phone_id, whatsapp_id, business_phone_number, message_id, timestamp, text):
