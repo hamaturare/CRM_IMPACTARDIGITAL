@@ -60,10 +60,10 @@ def whatsapp_webhook(request):
                         #Handle the incoming message
                         handle_incoming_message(
                             lead_phone_number,
-                            profile_name,
+                            #profile_name,
                             #phone_id,
                             #whatsapp_id,
-                            business_phone_number,
+                            #usiness_phone_number,
                             #essage_id,
                             #timestamp,
                             text)
