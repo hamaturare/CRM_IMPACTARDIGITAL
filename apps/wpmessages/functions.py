@@ -29,27 +29,9 @@ def send_whatsapp_message(phone_number, message):
     return response.json()
 
 
-def handle_incoming_message(lead_phone_number, profile_name, business_phone_number, text):
-    
-    wp_message, created = WpMessage.objects.get_or_create(
-        lead_phone_number=lead_phone_number,
-        defaults={'profile_name': profile_name,
-                  'message_text': text,
-                  'business_phone_number': business_phone_number,
-                  'chat_history': text,  # Initialize chat history with the first message
-                  'state': 'initial',
-                  'thanked': False
-                  })
-    if not created:
-        wp_message.chat_history += f"\n{text}"
-        wp_message.save()
-
-    if wp_message.state == 'initial':
-        response_message = ("Olá, tudo bem? Em qual serviço você está interessado?\n Digite o número abaixo:\n 1- Anúncios com Tráfego Pago\n 2- Sites e Landpages\n 3- Treinamento Presencial de Tráfego Pago\n 4- Outros Assuntos")
-        wp_message.state = 'awaiting_service'
-    
-    phone_number=lead_phone_number
-    message = response_message
+def handle_incoming_message(lead_phone_number, text):
+    phone_number = lead_phone_number
+    message = 'RE: {} was received'.format(text)
     send_whatsapp_message(phone_number, message)
 
 
