@@ -29,16 +29,6 @@ def send_whatsapp_message(phone_number, message):
     return response.json()
 
 """
-    try:
-        response = requests.post(settings.WHATSAPP_API_URL, headers=headers, json=payload)
-        #response.raise_for_status()
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Error sending WhatsApp message: {e}")
-        return {"status": "error", "message": str(e)}
-
-    return response.json()
-
-
 def handle_incoming_message(lead_phone_number, text):
     phone_number = lead_phone_number
     message = 'RE: {} was received'.format(text)

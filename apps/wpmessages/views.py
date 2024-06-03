@@ -23,7 +23,7 @@ class WpMessagesView(LoginRequiredMixin, ListView):
 
 @csrf_exempt
 def whatsapp_webhook(request):
-    logger.info('Webhook accessed')
+    #logger.info('Webhook accessed')
     if request.method == 'GET':
         try:
             VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
@@ -31,7 +31,7 @@ def whatsapp_webhook(request):
             token = request.GET.get('hub.verify_token')
             challenge = request.GET.get('hub.challenge')
 
-            logger.info(f'Mode: {mode}, Token: {token}, Challenge: {challenge}')
+            #logger.info(f'Mode: {mode}, Token: {token}, Challenge: {challenge}')
 
             if mode == 'subscribe' and token == VERIFY_TOKEN:
                 return HttpResponse(challenge, status=200)
@@ -42,26 +42,6 @@ def whatsapp_webhook(request):
             logger.error(f'Error in GET request: {e}')
             return HttpResponse('Internal Server Error', status=500)
 
-    return HttpResponse('Method Not Allowed', status=405)
-
-def test_view(request):
-    logger.info('Test view accessed')
-    return HttpResponse('Test view is working', status=200)
-
-"""
-@csrf_exempt
-def whatsapp_webhook(request):
-    if request.method == 'GET':
-        VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
-        mode = request.GET.get('hub.mode')
-        token = request.GET.get('hub.verify_token')
-        challenge = request.GET.get('hub.challenge')
-
-        if mode == 'subscribe' and token == VERIFY_TOKEN:
-            return HttpResponse(challenge, status=200)
-        else:
-            return HttpResponse('Forbidden', status=403)
-        
     if request.method == 'POST':
         data = json.loads(request.body)
         if 'object' in data and 'entry' in data:
@@ -85,7 +65,7 @@ def whatsapp_webhook(request):
         return HttpResponse('success', status=200)
 
 
-
+"""
 class WhatsAppWebhookView():
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
