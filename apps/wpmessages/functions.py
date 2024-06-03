@@ -28,14 +28,14 @@ def send_whatsapp_message(phone_number, message):
 
     return response.json()
 
-"""
+
 def handle_incoming_message(lead_phone_number, text):
     phone_number = lead_phone_number
     message = 'RE: {} was received'.format(text)
     send_whatsapp_message(phone_number, message)
 
 
-
+"""
 def handle_incoming_message(lead_phone_number, profile_name, phone_id, whatsapp_id, business_phone_number, message_id, timestamp, text):
     wp_message, created = WpMessage.objects.get_or_create(
         lead_phone_number=lead_phone_number,

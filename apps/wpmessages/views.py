@@ -57,9 +57,23 @@ def whatsapp_webhook(request):
                         timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
+                        #Handle the incoming message
+                        handle_incoming_message(
+                            lead_phone_number,
+                            #profile_name,
+                            #phone_id,
+                            #whatsapp_id,
+                            #usiness_phone_number,
+                            #essage_id,
+                            #timestamp,
+                            text)
+
+
+                        """
                         lead_phone_number = "5527999371909"
                         message = 'RE: {} was received'.format(text)
                         send_whatsapp_message(lead_phone_number, message)
+                        """
                 except:
                     pass
         return HttpResponse('success', status=200)
