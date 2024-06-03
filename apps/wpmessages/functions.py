@@ -29,17 +29,18 @@ def send_whatsapp_message(phone_number, message):
     return response.json()
 
 
-def handle_incoming_message(lead_phone_number, text):
+def handle_incoming_message(lead_phone_number, profile_name, text):
     logger.info(f'Handling incoming message from {lead_phone_number}')
     try:
         wp_message = WpMessage(
             lead_phone_number=lead_phone_number,
-            message_text=text
+            message_text=text,
+            profile_name=profile_name
         )
         wp_message.save()
 
         phone_number = lead_phone_number
-        message = 'RE: {} was received'.format(text)
+        message = 'RE: Hi {}, your message: {} was received'.format(profile_name,text)
         send_whatsapp_message(phone_number, message)
 
         logger.info(f'Saved message for {lead_phone_number} and sent confirmation')
