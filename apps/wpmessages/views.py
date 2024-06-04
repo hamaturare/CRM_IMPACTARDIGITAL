@@ -63,7 +63,7 @@ def whatsapp_webhook(request):
                             profile_name,
                             #phone_id,
                             #whatsapp_id,
-                            #business_phone_number,
+                            business_phone_number,
                             #message_id,
                             #timestamp,
                             text)

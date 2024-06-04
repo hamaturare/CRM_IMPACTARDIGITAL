@@ -2,7 +2,7 @@ from django.conf import settings
 from .models import WpMessage
 import requests
 import logging
-from datetime import datetime
+from datetime import datetime, timedelta
 
 logger = logging.getLogger(__name__)
 
@@ -29,107 +29,99 @@ def send_whatsapp_message(phone_number, message):
     return response.json()
 
 
-def handle_incoming_message(lead_phone_number, profile_name, text):
-    logger.info(f'Handling incoming message from {lead_phone_number}')
+def handle_incoming_message(lead_phone_number, profile_name, business_phone_number, text):
+
     try:
-        wp_message = WpMessage(
-            lead_phone_number=lead_phone_number,
-            message_text=text,
-            profile_name=profile_name
-        )
-        wp_message.save()
+        #trying to check if this phone number exists in database or not
+        wp_message = WpMessage.objects.get(lead_phone_number=lead_phone_number)
 
-        phone_number = lead_phone_number
-        message = 'RE: Hi {}, your message: {} was received'.format(profile_name,text)
-        send_whatsapp_message(phone_number, message)
+        # since the wp message is created and chechk above I need to check if the state inside WpMessage is = to initial
+        if wp_message.state == 'awaiting_service':
+            if text == '1':
+                wp_message.service_interest = 'Anúncios com Tráfego Pago'
+                message = "Obrigado pelo seu interesse em nossos serviço de Anúncios com Tráfego Pago."
+            elif text == '2':
+                wp_message.service_interest = 'Sites e Landpages'
+                message = "Obrigado pelo seu interesse em nossos serviço de criação de Sites e Landpages."
+            elif text == '3':
+                wp_message.service_interest = 'Treinamento Presencial de Tráfego Pago'
+                message = "Obrigado pelo seu interesse em em nossos serviço de Treinamento Presencial de Tráfego Pago."
+            elif text == '4':
+                wp_message.service_interest = 'Outros Assuntos'
+                message = "Obrigado pelo seu interesse em Outros Assuntos."
+            else:
+                message = (
+                    "Desculpe, não entendi sua resposta. Por favor, digite o número correspondente ao serviço de seu interesse:\n"
+                    "1- Anúncios com Tráfego Pago\n"
+                    "2- Sites e Landpages\n"
+                    "3- Treinamento Presencial de Tráfego Pago\n"
+                    "4- Outros Assuntos"
+                )
+                wp_message.chat_history += f"\nUser: {text}\nBot: {message}"
+                wp_message.message_timestamp = datetime.now()
+                wp_message.save()
+                send_whatsapp_message(lead_phone_number, message)
 
-        logger.info(f'Saved message for {lead_phone_number} and sent confirmation')
-    except Exception as e:
-        logger.error(f'Error handling incoming message: {e}')
-
-"""
-def handle_incoming_message(lead_phone_number, profile_name, phone_id, whatsapp_id, business_phone_number, message_id, timestamp, text):
-    wp_message, created = WpMessage.objects.get_or_create(
-        lead_phone_number=lead_phone_number,
-        defaults={
-            'phone_id': phone_id,
-            'profile_name': profile_name,
-            'whatsapp_id': whatsapp_id,
-            'message_id': message_id,
-            'timestamp': datetime.fromtimestamp(int(timestamp)),
-            'message_text': text,
-            'business_phone_number': business_phone_number,
-            'chat_history': text,  # Initialize chat history with the first message
-            'state': 'initial',
-            'thanked': False
-        }
-    )
-
-    if not created:
-        wp_message.chat_history += f"\n{text}"
-        wp_message.save()
-
-    if wp_message.state == 'initial':
-        response_message = ("Olá, tudo bem? Em qual serviço você está interessado?\n Digite o número abaixo:\n 1- Anúncios com Tráfego Pago\n 2- Sites e Landpages\n 3- Treinamento Presencial de Tráfego Pago\n 4- Outros Assuntos")
-        wp_message.state = 'awaiting_service'
-    elif wp_message.state == 'awaiting_service':
-        if text == '1':
-            wp_message.service_interest = 'Anúncios com Tráfego Pago'
-            response_message = "Obrigado pelo seu interesse em Anúncios com Tráfego Pago."
-        elif text == '2':
-            wp_message.service_interest = 'Sites e Landpages'
-            response_message = "Obrigado pelo seu interesse em Sites e Landpages."
-        elif text == '3':
-            wp_message.service_interest = 'Treinamento Presencial de Tráfego Pago'
-            response_message = "Obrigado pelo seu interesse em Treinamento Presencial de Tráfego Pago."
-        elif text == '4':
-            wp_message.service_interest = 'Outros Assuntos'
-            response_message = "Obrigado pelo seu interesse em Outros Assuntos."
-        else:
-            response_message = (
-                "Desculpe, não entendi sua resposta. Por favor, digite o número correspondente ao serviço de seu interesse:\n"
-                "1- Anúncios com Tráfego Pago\n"
-                "2- Sites e Landpages\n"
-                "3- Treinamento Presencial de Tráfego Pago\n"
-                "4- Outros Assuntos"
-            )
-            send_whatsapp_message(lead_phone_number, response_message)
-            wp_message.save()
-            return
-
-        response_message += (
-            "\nDeseja falar com um atendente pelo WhatsApp ou prefere que alguém entre em contato por telefone?\n"
-            "Digite o número abaixo:\n"
-            "1 - Desejo falar com um atendente pelo WhatsApp\n"
-            "2 - Prefiro que alguém entre em contato por telefone"
-        )
-        wp_message.state = 'awaiting_contact_method'
-    elif wp_message.state == 'awaiting_contact_method':
-        if text == '1':
-            wp_message.contact_method = 'WhatsApp'
-            response_message = "Obrigado! Um de nossos atendentes entrará em contato com você pelo WhatsApp em breve."
-        elif text == '2':
-            wp_message.contact_method = 'Telefone'
-            response_message = "Obrigado! Um de nossos atendentes entrará em contato com você por telefone em breve."
-        else:
-            response_message = (
-                "Desculpe, não entendi sua resposta. Por favor, digite o número correspondente à sua preferência:\n"
+            message += (
+                "\nDeseja falar com um atendente pelo WhatsApp ou prefere que alguém entre em contato por telefone?\n"
+                "Digite o número abaixo:\n\n"
                 "1 - Desejo falar com um atendente pelo WhatsApp\n"
                 "2 - Prefiro que alguém entre em contato por telefone"
             )
-            send_whatsapp_message(lead_phone_number, response_message)
+
+            wp_message.state = 'awaiting_contact_method'
+            wp_message.chat_history += f"\nUser: {text}\nBot: {message}"
+            wp_message.message_timestamp = datetime.now()
             wp_message.save()
-            return
+            send_whatsapp_message(lead_phone_number, message)
 
-        wp_message.state = 'completed'
-    
-    if wp_message.state == 'completed' and not wp_message.thanked:
-        response_message = "Obrigado por entrar em contato conosco. Um de nossos atendentes estará com você em breve."
-        wp_message.thanked = True
-    elif wp_message.state == 'completed' and wp_message.thanked:
-        return  # Do not send any message if already thanked
+        elif wp_message.state == 'awaiting_contact_method':
+            if text == '1':
+                wp_message.contact_method = 'WhatsApp'
+                message = "Obrigado! Um de nossos atendentes entrará em contato com você pelo WhatsApp em breve."
+            elif text == '2':
+                wp_message.contact_method = 'Telefone'
+                message = "Obrigado! Um de nossos atendentes entrará em contato com você por telefone em breve."
+            else:
+                message = (
+                    "Desculpe, não entendi sua resposta. Por favor, digite o número correspondente à sua preferência:\n"
+                    "1 - Desejo falar com um atendente pelo WhatsApp\n"
+                    "2 - Prefiro que alguém entre em contato por telefone"
+                )
+                
+                wp_message.chat_history += f"\nUser: {text}\nBot: {message}"
+                wp_message.message_timestamp = datetime.now()
+                wp_message.save()
+                send_whatsapp_message(lead_phone_number, message)
 
-    wp_message.chat_history += f"\nUser: {text}\nBot: {response_message}"
-    wp_message.save()
-    send_whatsapp_message(lead_phone_number, response_message)
-"""
+            wp_message.state = 'completed'
+            wp_message.chat_history += f"\nUser: {text}\nBot: {message}"
+            wp_message.message_timestamp = datetime.now()
+            wp_message.save()
+            send_whatsapp_message(lead_phone_number, message)
+
+        elif wp_message.state == 'completed':
+            pass
+            #mandar algum aviso no CRM ou email etc... Lead quente tentando falar novamente.
+    except:
+        
+        wp_message = WpMessage.objects.create(
+            lead_phone_number=lead_phone_number,
+            profile_name=profile_name,
+            message_text=text,
+            chat_history=text,
+            business_phone_number=business_phone_number)
+
+        message = ("Olá, tudo bem? Em qual serviço você está interessado?\n"
+                    "Digite o número abaixo:\n"
+                    "1- Anúncios com Tráfego Pago\n "
+                    "2- Sites e Landpages\n"
+                    "3- Treinamento Presencial de Tráfego Pago\n"
+                    "4- Outros Assuntos"
+                    )
+        
+        wp_message.state = 'awaiting_service'
+        wp_message.message_timestamp = datetime.now()
+        wp_message.chat_history += f"\nUser: {text}\nBot: {message}"
+        wp_message.save()
+        send_whatsapp_message(lead_phone_number, message)
