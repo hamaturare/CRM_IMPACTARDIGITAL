@@ -20,8 +20,8 @@ class LeadsView(LoginRequiredMixin, ListView):
     login_url = reverse_lazy('home')
 
     def get_queryset(self):
-        """Allow custom sorting and searching with safety checks."""
-        queryset = Lead.objects.all()
+        """Allow custom sorting and searching with safety checks. Also fetching the FollowUp database to be used in leads.html"""
+        queryset = Lead.objects.all().prefetch_related('followup_set')
         
         # Adicionando funcionalidade de busca
         search_term = self.request.GET.get('search_term', '').strip()
@@ -43,8 +43,7 @@ class LeadsView(LoginRequiredMixin, ListView):
             return queryset.order_by(ordering)
         
         return queryset.order_by('first_name')
-
-
+    
 class LeadUpdateView(LoginRequiredMixin, UpdateView):
     model = Lead
     form_class = LeadForm
@@ -54,8 +53,8 @@ class LeadUpdateView(LoginRequiredMixin, UpdateView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)  # get the form
         # Certifique-se de que os campos existem antes de atribuir widgets
-        if 'first_contact_date' in form.fields:
-            form.fields['first_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        if 'last_contact_date' in form.fields:
+            form.fields['last_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         if 'return_contact' in form.fields:
             form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         return form
@@ -74,6 +73,17 @@ class LeadDeleteView(LoginRequiredMixin, DeleteView):
         messages.error(self.request, 'Lead deletado com sucesso!')
         return super().delete(request, *args, **kwargs)
 
+class FollowUpDeleteView(LoginRequiredMixin, DeleteView):
+    model = FollowUp
+    template_name = 'leads/confirm_delete_followup.html'
+
+    def get_success_url(self):
+        lead_id = self.object.lead.id
+        return reverse_lazy('lead_info', kwargs={'pk': lead_id})
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(self.request, 'Follow-up deleted successfully!')
+        return super().delete(request, *args, **kwargs)
 
 class AddLeadView(LoginRequiredMixin, View):
     template_name = 'leads/add_lead.html'
@@ -92,13 +102,15 @@ class AddLeadView(LoginRequiredMixin, View):
             form.save()
             return redirect('leads')  # Redireciona após o cadastro ser bem-sucedido
         return render(request, self.template_name, {'form': form})
-
+    
+    """
     def setup_date_widgets(self, form):
         # Configura os widgets de data somente se os campos existirem
-        if 'first_contact_date' in form.fields:
-            form.fields['first_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        if 'last_contact_date' in form.fields:
+            form.fields['last_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         if 'return_contact' in form.fields:
             form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+    """
 
 class LeadDetailView(LoginRequiredMixin, DetailView):
     model = Lead
@@ -111,10 +123,11 @@ class LeadDetailView(LoginRequiredMixin, DetailView):
         context = super().get_context_data(**kwargs)
         followup_form = FollowUpForm()
         # Configura os widgets dos campos de data
-        followup_form.fields['planned_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-        followup_form.fields['actual_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        followup_form.fields['last_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        followup_form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         context['followup_form'] = followup_form
-        context['followups'] = FollowUp.objects.filter(lead=self.get_object())
+        context['followups'] = FollowUp.objects.all() #Include all follow-ups in the context and filter them in the template if needed.
+        #context['followups'] = FollowUp.objects.filter(lead=self.get_object())
         return context
 
     def post(self, request, *args, **kwargs):
@@ -126,8 +139,8 @@ class LeadDetailView(LoginRequiredMixin, DetailView):
             messages.success(request, 'Acompanhamento adicionado com sucesso!')
             return redirect('lead_info', pk=self.get_object().pk)
         else:
-            form.fields['planned_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-            form.fields['actual_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+            form.fields['last_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+            form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
             context = self.get_context_data()
             context['followup_form'] = form
             return render(request, self.template_name, context)

@@ -34,12 +34,10 @@
                 <tr>
                     <th><a href="?sort=first_name" class="sortable">Nome</a></th>
                     <th><a href="?sort=company_name" class="sortable">Empresa</a></th>
-                    <th>Email</th>
-                    <th>Instagram</th>
-                    <th>Website</th>
+                    <th>Último Contato</th>
+                    <th>Próximo Contato</th>
                     <th>WhatsApp</th>
                     <th><a href="?sort=created_at" class="sortable">Criado Em</a></th>
-                    <th>Primeiro Contato</th>
                     <th><a href="?sort=service_type" class="sortable">Serviço de Interesse</a></th>
                     <th><a href="?sort=priority" class="sortable">Prioridade</a></th>
                     <th><a href="?sort=id" class="sortable">ID</a></th>
@@ -52,7 +50,22 @@
                 {% for lead in leads %}
                 <tr>
                     <td style="text-align: left;"><a href="{% url 'lead_info' pk=lead.pk %}">{{ lead.first_name }} </a></td>
-                    <td style="text-align: left;"><a href="{% url 'update_lead' pk=lead.pk %}">{{ lead.company_name }} </a></td>
+                    <td style="text-align: left;"><a href="{% url 'lead_info' pk=lead.pk %}">{{ lead.company_name }} </a></td>
+                    <td>
+                        {% if lead.followup_set.last %}
+                            {{ lead.followup_set.last.last_contact_date|date:"d/m/Y" }}
+                        {% else %}
+                            <span class="blink">Sem Contato</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if lead.followup_set.last %}
+                            {{ lead.followup_set.last.return_contact|date:"d/m/Y" }}
+                        {% else %}
+                            <span class="blink">Marcar Contato</span>
+                        {% endif %}
+                    </td>
+                    <!--
                     <td>{{ lead.email }}</td>
                     <td class="instagram">
                         {% if lead.instagram %} 
@@ -70,6 +83,7 @@
                             <span class="blink2">Não Inf.</span>
                         {% endif %}
                     </td>
+                    -->
                     <td class="whatsapp">
                         {% if lead.whatsapp %}
                             <a href="https://wa.me/{{ lead.whatsapp }}" target="_blank">
@@ -80,13 +94,6 @@
                         {% endif %}
                     </td>
                     <td>{{ lead.created_at|date:"d/m/Y" }}</td>
-                    <td>
-                        {% if lead.first_contact_date %}
-                        {{ lead.first_contact_date|date:"d/m/Y" }}
-                        {% else %}
-                            <span class="blink">Sem Contato</span>
-                        {% endif %}
-                    </td>
                     <td>{{ lead.service_type }}</td>
                     <td>{{ lead.priority }}</td>
                     <td>{{ lead.id }}</td>
