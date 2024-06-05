@@ -108,7 +108,7 @@
                         <p>Welcome, <b>{{ user.first_name }} {{ user.last_name }}</b>!</p>
                     </div>
                     <div class="profile-photo">
-                        <img src="{% static 'img/LOGO_ID.png' %}" alt="Profile Photo">
+                        <img src="{{user.profile.profile_image.url}}" alt="Profile Photo">
                         <small class="text-muted">{{ user.username }}</small>
                     </div>
                 </div>
