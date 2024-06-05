@@ -59,7 +59,7 @@
                 <a href="{% url 'wpmessages' %}" class="{% active_url request 'wpmessages' %}">
                     <span class="material-icons">mail_outline</span>
                     <h3>Messages</h3>
-                    <span class="message-count">26</span>
+                    <span class="message-count">{{ message_count }}</span>
                 </a>
                 <a href="{% url 'profile' %}" class="{% active_url request 'profile' %}">
                     <span class="material-icons">person_outline</span>

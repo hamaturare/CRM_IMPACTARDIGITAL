@@ -8,7 +8,8 @@ from django.views.generic import DeleteView, DetailView
 from django.db.models import Q
 from django.views import View
 from django.http import HttpResponse, JsonResponse 
-from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.http import require_POST 
 from django.conf import settings
 from .functions import *
 import json
@@ -19,7 +20,52 @@ logger = logging.getLogger(__name__)
 class WpMessagesView(LoginRequiredMixin, ListView):
     model = WpMessage
     template_name = 'wpmessages/wpmessages.html'
+    context_object_name = 'wpmessages'
+    paginate_by = 50  # Shows 50 leads per page
     login_url = reverse_lazy('home')
+
+    def get_queryset(self):
+        """Allow custom sorting and searching with safety checks. Also fetching the FollowUp database to be used in leads.html"""
+        queryset = WpMessage.objects.all()
+        
+        # Adicionando funcionalidade de busca
+        search_term = self.request.GET.get('search_term', '').strip()
+        if search_term:
+            queryset = queryset.filter(
+                Q(first_name__icontains=search_term) |
+                Q(company_name__icontains=search_term) |
+                Q(email__icontains=search_term) |
+                Q(id__iexact=search_term) |
+                Q(service_type__name__icontains=search_term)  # Filtro pelos nomes de objetivo dos serviços associados
+            )
+
+        # Lista dos campos válidos para ordenação
+        valid_sort_fields = ['profile_name', 'lead_phone_number', 'created_at', 'contact_method', 'state', 'service_interest']
+        
+        # Obtendo o campo de ordenação da query string e verificando se é válida
+        ordering = self.request.GET.get('sort', 'profile_name')
+        if ordering in valid_sort_fields:
+            return queryset.order_by(ordering)
+        
+        return queryset.order_by('profile_name')
+    
+    def get_context_data(self, **kwargs):
+        """Add extra context including message count."""
+        context = super().get_context_data(**kwargs)
+        context['message_count'] = WpMessage.objects.count()  # Get the total number of messages
+        return context
+
+@csrf_protect
+@require_POST
+def update_contacted_status(request, wpmessage_id):
+    try:
+        wpmessage = WpMessage.objects.get(id=wpmessage_id)
+        contacted = 'contacted' in request.POST
+        wpmessage.contacted = contacted
+        wpmessage.save()
+        return redirect('wpmessages')
+    except WpMessage.DoesNotExist:
+        return HttpResponse('WpMessage not found', status=404)
 
 @csrf_exempt
 def whatsapp_webhook(request):
