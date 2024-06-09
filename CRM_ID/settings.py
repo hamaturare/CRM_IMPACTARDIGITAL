@@ -27,6 +27,7 @@ ALLOWED_HOSTS = ['fmendes.pythonanywhere.com', '127.0.0.1']
 # Application definition
 
 DEFAULT_APPS = [
+    'jazzmin',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -102,6 +103,25 @@ DATABASES = {
 
 WSGI_APPLICATION = 'CRM_ID.wsgi.application'
 
+
+JAZZMIN_SETTINGS = {
+    "site_title": "Meu Painel de Administração",
+    "site_header": "Administração",
+    "welcome_sign": "Bem-vindo ao Painel de Administração",
+    "copyright": "Meu Projeto",
+    "search_model": "auth.User",
+    "site_logo": "img/LOGO_ID.png",  # Caminho para o logotipo
+}
+
+JAZZMIN_UI_TWEAKS = {
+    "theme": "cosmo",
+    "dark_mode_theme": "darkly",
+    "navbar": "navbar-dark",
+    "navbar_fixed": True,
+    "sidebar": "sidebar-dark-primary",
+    "sidebar_fixed": True,
+    "footer_fixed": False,
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators

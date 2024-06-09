@@ -4,9 +4,19 @@
 {% load wpmessages_extras %}
 
 {% block content %}
-<h1 style="text-align:center;"> THIS PAGE WILL DISPLAY THE MESSAGES FROM WHATSAPP </h1>
+<style>
+    .page-title {
+        text-align: center;
+        text-transform: capitalize;
+        margin-bottom: 10px;
+        /* Add any other styling you want here */
+    }
+</style>
 <div class="main-container">
     <div class="table-responsive">
+        <h1 class="page-title">Leads Aguardando Contato</h1>
+        <hr>
+        <br>
         <table class="custom-table">
             <thead>
                 <tr>
@@ -26,36 +36,97 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
+                    {% if wpmessage.state == 'completed'%}
+                        <tr>
+                            <td>{{ wpmessage.profile_name }}</td>
+                            <td>{{ wpmessage.service_interest }}</td>
+                            <td class="whatsapp">
+                                {% if wpmessage.lead_phone_number %}
+                                    <a href="https://wa.me/{{ wpmessage.lead_phone_number }}" target="_blank">
+                                        <i class="fab fa-whatsapp"></i> {{ wpmessage.lead_phone_number|phone_format }}
+                                    </a>
+                                {% else %}
+                                    <span class="blink2">Não Inf.</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ wpmessage.created_at|date:"d/m/Y" }}</td>
+                            <td>{{ wpmessage.contact_method }}</td>
+                            <td>{{ wpmessage.business_phone_number|phone_format }}</td>
+                            <td>{{ wpmessage.state }}</td>
+                            <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
+                            <td>{{ wpmessage.priority }}</td>
+                            <td>
+                                <form method="post" action="{% url 'update_contacted_status' wpmessage.id %}">
+                                    {% csrf_token %}
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="contacted" onchange="this.form.submit()" {% if wpmessage.contacted %}checked{% endif %}>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td><a href="#" class="btn-view">Quente</a></td>  
+                            <td><a href="#" class="btn-update">Deletar</a></td> 
+                        </tr>
+                    {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>    
+    <div class="table-responsive">
+        <h1 class="page-title">Leads Que Não Terminaram O Questionário</h1>
+        <hr>
+        <br>
+        <table class="custom-table">
+            <thead>
                 <tr>
-                    <td>{{ wpmessage.profile_name }}</td>
-                    <td>{{ wpmessage.service_interest }}</td>
-                    <td class="whatsapp">
-                        {% if wpmessage.lead_phone_number %}
-                            <a href="https://wa.me/{{ wpmessage.lead_phone_number }}" target="_blank">
-                                <i class="fab fa-whatsapp"></i> {{ wpmessage.lead_phone_number|phone_format }}
-                            </a>
-                        {% else %}
-                            <span class="blink2">Não Inf.</span>
-                        {% endif %}
-                    </td>
-                    <td>{{ wpmessage.created_at|date:"d/m/Y" }}</td>
-                    <td>{{ wpmessage.contact_method }}</td>
-                    <td>{{ wpmessage.business_phone_number|phone_format }}</td>
-                    <td>{{ wpmessage.state }}</td>
-                    <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
-                    <td>{{ wpmessage.priority }}</td>
-                    <td>
-                        <form method="post" action="{% url 'update_contacted_status' wpmessage.id %}">
-                            {% csrf_token %}
-                            <label class="custom-checkbox">
-                                <input type="checkbox" name="contacted" onchange="this.form.submit()" {% if wpmessage.contacted %}checked{% endif %}>
-                                <span class="checkmark"></span>
-                            </label>
-                        </form>
-                    </td>
-                    <td><a href="#" class="btn-view">Quente</a></td>  
-                    <td><a href="#" class="btn-update">Deletar</a></td> 
+                    <th>Nome</th>
+                    <th>Serviço de Interesse</th>
+                    <th>WhatsApp da Lead</th>
+                    <th>Primeira Mensagem</th>
+                    <th>Forma de Contactar</th>
+                    <th>Número ID</th>
+                    <th>Status Atendimento</th>
+                    <th>Chat History</th>
+                    <th>Prioridade</th>
+                    <th>Contacted</th>
+                    <th></th>
+                    <th></th>
                 </tr>
+            </thead>
+            <tbody>
+                {% for wpmessage in wpmessages %}
+                    {% if wpmessage.state != 'completed'%}
+                        <tr>
+                            <td>{{ wpmessage.profile_name }}</td>
+                            <td>{{ wpmessage.service_interest }}</td>
+                            <td class="whatsapp">
+                                {% if wpmessage.lead_phone_number %}
+                                    <a href="https://wa.me/{{ wpmessage.lead_phone_number }}" target="_blank">
+                                        <i class="fab fa-whatsapp"></i> {{ wpmessage.lead_phone_number|phone_format }}
+                                    </a>
+                                {% else %}
+                                    <span class="blink2">Não Inf.</span>
+                                {% endif %}
+                            </td>
+                            <td>{{ wpmessage.created_at|date:"d/m/Y" }}</td>
+                            <td>{{ wpmessage.contact_method }}</td>
+                            <td>{{ wpmessage.business_phone_number|phone_format }}</td>
+                            <td>{{ wpmessage.state }}</td>
+                            <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
+                            <td>{{ wpmessage.priority }}</td>
+                            <td>
+                                <form method="post" action="{% url 'update_contacted_status' wpmessage.id %}">
+                                    {% csrf_token %}
+                                    <label class="custom-checkbox">
+                                        <input type="checkbox" name="contacted" onchange="this.form.submit()" {% if wpmessage.contacted %}checked{% endif %}>
+                                        <span class="checkmark"></span>
+                                    </label>
+                                </form>
+                            </td>
+                            <td><a href="#" class="btn-view">Quente</a></td>  
+                            <td><a href="#" class="btn-update">Deletar</a></td> 
+                        </tr>
+                    {% endif %}
                 {% endfor %}
             </tbody>
         </table>
