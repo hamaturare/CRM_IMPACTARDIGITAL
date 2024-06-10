@@ -2,12 +2,9 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import WpMessage
-from django.views.generic import UpdateView
-from django.shortcuts import redirect, render
-from django.views.generic import DeleteView, DetailView
+from django.shortcuts import redirect
 from django.db.models import Q
-from django.views import View
-from django.http import HttpResponse, JsonResponse 
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST 
 from django.conf import settings
@@ -123,7 +120,6 @@ def whatsapp_webhook(request):
                 except:
                     pass
         return HttpResponse('success', status=200)
-
 
 """
 class WhatsAppWebhookView():

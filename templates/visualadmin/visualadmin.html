@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Visual Admin</title>
+    <style>
+        .node {
+            border: 1px solid #ccc;
+            padding: 10px;
+            margin: 20px;
+            display: inline-block;
+            vertical-align: top;
+            border-radius: 10px;
+            background-color: #e0f7fa;
+            position: relative;
+        }
+        .children {
+            margin-left: 40px;
+        }
+        .node-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .line {
+            position: absolute;
+            height: 2px;
+            background-color: #000;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            border: 1px solid #ccc;
+            background-color: #fff;
+            padding: 20px;
+            z-index: 10;
+        }
+        .overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 5;
+        }
+    </style>
+</head>
+<body>
+    <h1>Visual Admin</h1>
+    <button onclick="showPopup('add-state-popup')">Adicionar Estado</button>
+    <div id="organogram">
+        {% for state in states %}
+            <div class="node" id="state-{{ state.id }}">
+                <strong>{{ state.name }}</strong>
+                <div class="node-buttons">
+                    <button onclick="editState({{ state.id }}, '{{ state.name }}')">Editar Estado</button>
+                    <button onclick="deleteState({{ state.id }})">Deletar Estado</button>
+                </div>
+                <button onclick="showPopup('add-question-popup', {{ state.id }})">Adicionar Pergunta</button>
+                <div class="children">
+                    {% for question in state.questions.all %}
+                        <div class="node" id="question-{{ question.id }}">
+                            {{ question.question_text }}
+                            <div class="node-buttons">
+                                <button onclick="editQuestion({{ question.id }}, '{{ question.question_text }}', '{{ question.question_type }}', '{{ question.invalid_response_message }}', '{{ question.custom_field_name }}')">Editar Pergunta</button>
+                                <button onclick="deleteQuestion({{ question.id }})">Deletar Pergunta</button>
+                            </div>
+                            <button onclick="showPopup('add-option-popup', {{ question.id }})">Adicionar Opção</button>
+                            <div class="children">
+                                {% for option in question.options.all %}
+                                    <div class="node" id="option-{{ option.id }}">
+                                        {{ option.option_text }} - {{ option.response_message }}
+                                        {% if option.next_state %}
+                                            (Próximo: {{ option.next_state.name }})
+                                        {% endif %}
+                                        <div class="node-buttons">
+                                            <button onclick="editOption({{ option.id }}, '{{ option.option_text }}', '{{ option.response_message }}', '{{ option.next_state.id|default:'' }}')">Editar Opção</button>
+                                            <button onclick="deleteOption({{ option.id }})">Deletar Opção</button>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+
+    <div id="add-state-popup" class="popup">
+        <form id="add-state-form" method="post">
+            {% csrf_token %}
+            <input type="text" name="state_name" placeholder="Nome do Estado">
+            <input type="hidden" name="add_state" value="1">
+            <button type="submit">Salvar Estado</button>
+        </form>
+        <button onclick="hidePopup('add-state-popup')">Fechar</button>
+    </div>
+
+    <div id="add-question-popup" class="popup">
+        <form id="add-question-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="state_id" id="question-state-id">
+            <input type="text" name="question_text" placeholder="Texto da Pergunta">
+            <select name="question_type">
+                <option value="text">Text</option>
+                <option value="choice">Choice</option>
+                <option value="number">Number</option>
+            </select>
+            <input type="text" name="invalid_response_message" placeholder="Mensagem de Resposta Inválida">
+            <input type="text" name="custom_field_name" placeholder="Nome do Campo Personalizado">
+            <input type="hidden" name="add_question" value="1">
+            <button type="submit">Salvar Pergunta</button>
+        </form>
+        <button onclick="hidePopup('add-question-popup')">Fechar</button>
+    </div>
+
+    <div id="add-option-popup" class="popup">
+        <form id="add-option-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" id="option-question-id">
+            <input type="text" name="option_text" placeholder="Texto da Opção">
+            <input type="text" name="response_message" placeholder="Mensagem de Resposta">
+            <select name="next_state_id">
+                <option value="">Selecionar Próximo Estado</option>
+                {% for state in states %}
+                    <option value="{{ state.id }}">{{ state.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" name="add_option" value="1">
+            <button type="submit">Salvar Opção</button>
+        </form>
+        <button onclick="hidePopup('add-option-popup')">Fechar</button>
+    </div>
+
+    <div id="edit-state-popup" class="popup">
+        <form id="edit-state-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="state_id" id="edit-state-id">
+            <input type="text" name="state_name" id="edit-state-name" placeholder="Nome do Estado">
+            <input type="hidden" name="edit_state" value="1">
+            <button type="submit">Salvar Alterações</button>
+        </form>
+        <button onclick="hidePopup('edit-state-popup')">Fechar</button>
+    </div>
+
+    <div id="edit-question-popup" class="popup">
+        <form id="edit-question-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="question_id" id="edit-question-id">
+            <input type="text" name="question_text" id="edit-question-text" placeholder="Texto da Pergunta">
+            <select name="question_type" id="edit-question-type">
+                <option value="text">Text</option>
+                <option value="choice">Choice</option>
+                <option value="number">Number</option>
+            </select>
+            <input type="text" name="invalid_response_message" id="edit-invalid-response-message" placeholder="Mensagem de Resposta Inválida">
+            <input type="text" name="custom_field_name" id="edit-custom-field-name" placeholder="Nome do Campo Personalizado">
+            <input type="hidden" name="edit_question" value="1">
+            <button type="submit">Salvar Alterações</button>
+        </form>
+        <button onclick="hidePopup('edit-question-popup')">Fechar</button>
+    </div>
+
+    <div id="edit-option-popup" class="popup">
+        <form id="edit-option-form" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="option_id" id="edit-option-id">
+            <input type="text" name="option_text" id="edit-option-text" placeholder="Texto da Opção">
+            <input type="text" name="response_message" id="edit-response-message" placeholder="Mensagem de Resposta">
+            <select name="next_state_id" id="edit-next-state-id">
+                <option value="">Selecionar Próximo Estado</option>
+                {% for state in states %}
+                    <option value="{{ state.id }}">{{ state.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="hidden" name="edit_option" value="1">
+            <button type="submit">Salvar Alterações</button>
+        </form>
+        <button onclick="hidePopup('edit-option-popup')">Fechar</button>
+    </div>
+
+    <div id="overlay" class="overlay" onclick="hideAllPopups()"></div>
+
+    <script>
+        function showPopup(popupId, relatedId = null) {
+            document.getElementById(popupId).style.display = 'block';
+            document.getElementById('overlay').style.display = 'block';
+            if (relatedId) {
+                if (popupId === 'add-question-popup') {
+                    document.getElementById('question-state-id').value = relatedId;
+                } else if (popupId === 'add-option-popup') {
+                    document.getElementById('option-question-id').value = relatedId;
+                }
+            }
+        }
+
+        function hidePopup(popupId) {
+            document.getElementById(popupId).style.display = 'none';
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function hideAllPopups() {
+            var popups = document.getElementsByClassName('popup');
+            for (var i = 0; i < popups.length; i++) {
+                popups[i].style.display = 'none';
+            }
+            document.getElementById('overlay').style.display = 'none';
+        }
+
+        function editState(id, name) {
+            document.getElementById('edit-state-id').value = id;
+            document.getElementById('edit-state-name').value = name;
+            showPopup('edit-state-popup');
+        }
+
+        function editQuestion(id, text, type, invalidResponseMessage, customFieldName) {
+            document.getElementById('edit-question-id').value = id;
+            document.getElementById('edit-question-text').value = text;
+            document.getElementById('edit-question-type').value = type;
+            document.getElementById('edit-invalid-response-message').value = invalidResponseMessage;
+            document.getElementById('edit-custom-field-name').value = customFieldName;
+            showPopup('edit-question-popup');
+        }
+
+        function editOption(id, text, responseMessage, nextStateId) {
+            document.getElementById('edit-option-id').value = id;
+            document.getElementById('edit-option-text').value = text;
+            document.getElementById('edit-response-message').value = responseMessage;
+            document.getElementById('edit-next-state-id').value = nextStateId;
+            showPopup('edit-option-popup');
+        }
+
+        function deleteState(id) {
+            if (confirm('Você tem certeza que deseja deletar este estado?')) {
+                document.getElementById('delete-state-id').value = id;
+                document.getElementById('delete-state-form').submit();
+            }
+        }
+
+        function deleteQuestion(id) {
+            if (confirm('Você tem certeza que deseja deletar esta pergunta?')) {
+                document.getElementById('delete-question-id').value = id;
+                document.getElementById('delete-question-form').submit();
+            }
+        }
+
+        function deleteOption(id) {
+            if (confirm('Você tem certeza que deseja deletar esta opção?')) {
+                document.getElementById('delete-option-id').value = id;
+                document.getElementById('delete-option-form').submit();
+            }
+        }
+    </script>
+</body>
+</html>

@@ -2,7 +2,9 @@ from django.conf import settings
 from .models import WpMessage
 import requests
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime
+from .models import WpMessage
+
 
 logger = logging.getLogger(__name__)
 
@@ -27,7 +29,6 @@ def send_whatsapp_message(phone_number, message):
         return {"status": "error", "message": str(e)}
 
     return response.json()
-
 
 def handle_incoming_message(lead_phone_number, profile_name, business_phone_number, text):
 

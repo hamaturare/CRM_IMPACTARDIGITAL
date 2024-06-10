@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'apps.clients',
     'apps.ideabox',
     'apps.wpmessages',
+    'apps.visualadmin',
 
 ]
 

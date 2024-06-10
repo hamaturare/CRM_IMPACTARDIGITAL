@@ -7,4 +7,5 @@ class WpMessageAdmin(admin.ModelAdmin):
                     'contact_method', 'chat_history')
     list_filter = ('lead_phone_number', 'profile_name','state', 'service_interest', 'contact_method')
 
+
 admin.site.register(WpMessage, WpMessageAdmin)
