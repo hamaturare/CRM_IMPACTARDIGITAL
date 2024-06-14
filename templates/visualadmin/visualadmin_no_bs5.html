@@ -4,126 +4,48 @@
 {% load wpmessages_extras %}
 
 {% block content %}
-<style>
-    .popup {
-        display: none;
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 400px;
-        padding: 20px;
-        background-color: white;
-        border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-        z-index: 1000;
-    }
-
-    .overlay {
-        display: none;
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        z-index: 999;
-    }
-
-    .card {
-        margin: 15px;
-    }
-
-    .form-control {
-        margin-bottom: 10px;
-    }
-
-    .btn {
-        margin-top: 5px;
-        margin-right: 5px;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border-color: #007bff;
-    }
-
-    .btn-success {
-        background-color: #28a745;
-        border-color: #28a745;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border-color: #dc3545;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        border-color: #6c757d;
-    }
-
-    .add-button {
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        padding: 10px 20px;
-        font-size: 16px;
-        background-color: #007bff;
-        color: white;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        transition: background-color 0.3s;
-    }
-
-    .add-button .material-icons {
-        font-size: 20px;
-        margin-right: 5px;
-    }
-
-    .add-button:hover {
-        background-color: #0056b3;
-        color: white;
-    }
-</style>
-
 <h1 style="text-align:center;">Fluxo de Perguntas do WhatsApp - Chat Bot</h1>
-<div class="d-flex justify-content-center mb-3">
-    <button class="add-button" onclick="showPopup('add-state-popup')">
-        <span class="material-icons">add</span>Adicionar Estado
-    </button>
-</div>
-<div id="organogram" class="container d-flex flex-column">
+<button class="add-button" onclick="showPopup('add-state-popup')"><span class="material-icons">add</span>Adicionar Estado</button>
+<div id="organogram">
     {% for state in states %}
-        <div class="card mb-4">
-            <div class="card-header">
-                <h4 class="card-title">Estágio: {{ state.name }}</h4>
+        <div class="node" id="state-{{ state.id }}">
+            <div>
+                <h2><strong>Estágio:</strong><span> {{ state.name }}</span></h2>
             </div>
-            <div class="card-body">
-                <button class="btn btn-success mb-2" onclick="editState({{ state.id }}, '{{ state.name }}')">Editar Estado</button>
-                <button class="btn btn-danger mb-2" onclick="deleteState({{ state.id }})">Deletar Estado</button>
-                <button class="btn btn-primary mb-2" onclick="showPopup('add-question-popup', {{ state.id }})">Adicionar Pergunta</button>
-
+            <div class="node-buttons">
+                <button class="btn btn-sm btn-success shadow-sm" onclick="editState({{ state.id }}, '{{ state.name }}')">Editar Estado</button>
+                <button id="deleteBtn" class="btn btn-sm btn-danger shadow-sm" onclick="deleteState({{ state.id }})">Deletar Estado</button>
+            </div>
+            <div id="btn_edit_add">
+                <button class="btn btn-sm btn-primary shadow-sm" onclick="showPopup('add-question-popup', {{ state.id }})">Adicionar Pergunta</button>
+            </div>
+            <div class="children">
                 {% for question in state.questions.all %}
-                    <div class="card mt-2">
-                        <div class="card-body">
-                            <h5 class="card-title">PERGUNTA</h5>
-                            <p class="card-text">{{ question.question_text }}</p>
-                            <button class="btn btn-success mb-2" onclick="editQuestion({{ question.id }}, '{{ question.question_text|escapejs }}', '{{ question.question_type }}', '{{ question.invalid_response_message|escapejs }}', '{{ question.custom_field_name|escapejs }}')">Editar Pergunta</button>
-                            <button class="btn btn-danger mb-2" onclick="deleteQuestion({{ question.id }})">Deletar Pergunta</button>
-                            <button class="btn btn-primary mb-2" onclick="showPopup('add-option-popup', {{ question.id }})">Adicionar Opção</button>
-
+                    <div class="node" id="question-{{ question.id }}">
+                        <div>
+                            <h2><strong>PERGUNTA</strong></h2>
+                            <p>{{ question.question_text }}</p>
+                        </div>
+                        <div class="node-buttons">
+                            <button class="btn btn-sm btn-success shadow-sm" onclick="editQuestion({{ question.id }}, '{{ question.question_text }}', '{{ question.question_type }}', '{{ question.invalid_response_message }}', '{{ question.custom_field_name }}')">Editar Pergunta</button>
+                            <button id="deleteBtn" class="btn btn-sm btn-danger shadow-sm" onclick="deleteQuestion({{ question.id }})">Deletar Pergunta</button>
+                        </div>
+                        <div id="btn_edit_add">
+                            <button class="btn btn-sm btn-primary shadow-sm" onclick="showPopup('add-option-popup', {{ question.id }})">Adicionar Opção</button>
+                        </div>
+                        <div class="children">
                             {% for option in question.options.all %}
-                                <div class="card mt-2">
-                                    <div class="card-body">
-                                        <h6 class="card-title">OPÇÃO</h6>
-                                        <p class="card-text">{{ option.option_text }} - {{ option.response_message }}</p>
+                                <div class="node" id="option-{{ option.id }}">
+                                    <div>
+                                        <h2><strong>OPÇÃO</strong></h2>
+                                        <p>{{ option.option_text }} - {{ option.response_message }}</p>
                                         {% if option.next_state %}
-                                            <p class="card-text"><strong>Próximo Estágio:</strong> {{ option.next_state.name }}</p>
+                                            <h2><strong>Próximo Estágio:</strong></h2><p>{{ option.next_state.name }}</p>
                                         {% endif %}
-                                        <button class="btn btn-success mb-2" onclick="editOption({{ option.id }}, '{{ option.option_text|escapejs }}', '{{ option.response_message|escapejs }}', '{{ option.next_state.id|default:'' }}')">Editar Opção</button>
-                                        <button class="btn btn-danger mb-2" onclick="deleteOption({{ option.id }})">Deletar Opção</button>
+                                    </div>
+                                    <div class="node-buttons">
+                                        <button class="btn btn-sm btn-success shadow-sm" onclick="editOption({{ option.id }}, '{{ option.option_text }}', '{{ option.response_message }}', '{{ option.next_state.id|default:'' }}')">Editar Opção</button>
+                                        <button id="deleteBtn" class="btn btn-sm btn-danger shadow-sm" onclick="deleteOption({{ option.id }})">Deletar Opção</button>
                                     </div>
                                 </div>
                             {% endfor %}
@@ -139,11 +61,11 @@
     <form id="add-state-form" method="post">
         {% csrf_token %}
         <label for="state_name">Nome do Estado:</label>
-        <input type="text" name="state_name" id="state_name" class="form-control" placeholder="Nome do Estado">
+        <input type="text" name="state_name" id="state_name" placeholder="Nome do Estado">
         <input type="hidden" name="add_state" value="1">
-        <button type="submit" class="btn btn-primary mt-3">Salvar Estado</button>
+        <button type="submit">Salvar Estado</button>
     </form>
-    <button class="btn btn-secondary mt-3" onclick="hidePopup('add-state-popup')">Fechar</button>
+    <button onclick="hidePopup('add-state-popup')">Fechar</button>
 </div>
 
 <div id="add-question-popup" class="popup">
@@ -151,21 +73,21 @@
         {% csrf_token %}
         <input type="hidden" name="state_id" id="question-state-id">
         <label for="question_text">Texto da Pergunta:</label>
-        <textarea name="question_text" id="question_text" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Texto da Pergunta"></textarea>
+        <input type="text" name="question_text" id="question_text" placeholder="Texto da Pergunta">
         <label for="question_type">Tipo da Pergunta:</label>
-        <select name="question_type" id="question_type" class="form-control">
+        <select name="question_type" id="question_type">
             <option value="text">Text</option>
             <option value="choice">Choice</option>
             <option value="number">Number</option>
         </select>
         <label for="invalid_response_message">Mensagem de Resposta Inválida:</label>
-        <textarea name="invalid_response_message" id="invalid_response_message" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Mensagem de Resposta Inválida"></textarea>
+        <input type="text" name="invalid_response_message" id="invalid_response_message" placeholder="Mensagem de Resposta Inválida">
         <label for="custom_field_name">Nome do Campo Personalizado:</label>
-        <input type="text" name="custom_field_name" id="custom_field_name" class="form-control" placeholder="Nome do Campo Personalizado">
+        <input type="text" name="custom_field_name" id="custom_field_name" placeholder="Nome do Campo Personalizado">
         <input type="hidden" name="add_question" value="1">
-        <button type="submit" class="btn btn-primary mt-3">Salvar Pergunta</button>
+        <button type="submit">Salvar Pergunta</button>
     </form>
-    <button class="btn btn-secondary mt-3" onclick="hidePopup('add-question-popup')">Fechar</button>
+    <button onclick="hidePopup('add-question-popup')">Fechar</button>
 </div>
 
 <div id="add-option-popup" class="popup">
@@ -173,20 +95,20 @@
         {% csrf_token %}
         <input type="hidden" name="question_id" id="option-question-id">
         <label for="option_text">Texto da Opção:</label>
-        <textarea name="option_text" id="option_text" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Texto da Opção"></textarea>
+        <input type="text" name="option_text" id="option_text" placeholder="Texto da Opção">
         <label for="response_message">Mensagem de Resposta:</label>
-        <textarea name="response_message" id="response_message" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Mensagem de Resposta"></textarea>
+        <input type="text" name="response_message" id="response_message" placeholder="Mensagem de Resposta">
         <label for="next_state_id">Selecionar Próximo Estado:</label>
-        <select name="next_state_id" id="next_state_id" class="form-control">
+        <select name="next_state_id" id="next_state_id">
             <option value="">Selecionar Próximo Estado</option>
             {% for state in states %}
                 <option value="{{ state.id }}">{{ state.name }}</option>
             {% endfor %}
         </select>
         <input type="hidden" name="add_option" value="1">
-        <button type="submit" class="btn btn-primary mt-3">Salvar Opção</button>
+        <button type="submit">Salvar Opção</button>
     </form>
-    <button class="btn btn-secondary mt-3" onclick="hidePopup('add-option-popup')">Fechar</button>
+    <button onclick="hidePopup('add-option-popup')">Fechar</button>
 </div>
 
 <div id="edit-state-popup" class="popup">
@@ -194,11 +116,11 @@
         {% csrf_token %}
         <input type="hidden" name="state_id" id="edit-state-id">
         <label for="edit-state-name">Nome do Estado:</label>
-        <input type="text" name="state_name" id="edit-state-name" class="form-control" placeholder="Nome do Estado">
+        <input type="text" name="state_name" id="edit-state-name" placeholder="Nome do Estado">
         <input type="hidden" name="edit_state" value="1">
-        <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+        <button type="submit">Salvar Alterações</button>
     </form>
-    <button class="btn btn-secondary mt-3" onclick="hidePopup('edit-state-popup')">Fechar</button>
+    <button onclick="hidePopup('edit-state-popup')">Fechar</button>
 </div>
 
 <div id="edit-question-popup" class="popup">
@@ -206,21 +128,21 @@
         {% csrf_token %}
         <input type="hidden" name="question_id" id="edit-question-id">
         <label for="edit-question-text">Texto da Pergunta:</label>
-        <textarea name="question_text" id="edit-question-text" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Texto da Pergunta"></textarea>
+        <input type="text" name="question_text" id="edit-question-text" placeholder="Texto da Pergunta">
         <label for="edit-question-type">Tipo da Pergunta:</label>
-        <select name="question_type" id="edit-question-type" class="form-control">
+        <select name="question_type" id="edit-question-type">
             <option value="text">Text</option>
             <option value="choice">Choice</option>
             <option value="number">Number</option>
         </select>
         <label for="edit-invalid-response-message">Mensagem de Resposta Inválida:</label>
-        <textarea name="invalid_response_message" id="edit-invalid-response-message" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Mensagem de Resposta Inválida"></textarea>
+        <input type="text" name="invalid_response_message" id="edit-invalid-response-message" placeholder="Mensagem de Resposta Inválida">
         <label for="edit-custom-field-name">Nome do Campo Personalizado:</label>
-        <input type="text" name="custom_field_name" id="edit-custom-field-name" class="form-control" placeholder="Nome do Campo Personalizado">
+        <input type="text" name="custom_field_name" id="edit-custom-field-name" placeholder="Nome do Campo Personalizado">
         <input type="hidden" name="edit_question" value="1">
-        <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+        <button type="submit">Salvar Alterações</button>
     </form>
-    <button class="btn btn-secondary mt-3" onclick="hidePopup('edit-question-popup')">Fechar</button>
+    <button onclick="hidePopup('edit-question-popup')">Fechar</button>
 </div>
 
 <div id="edit-option-popup" class="popup">
@@ -228,20 +150,20 @@
         {% csrf_token %}
         <input type="hidden" name="option_id" id="edit-option-id">
         <label for="edit-option-text">Texto da Opção:</label>
-        <textarea name="option_text" id="edit-option-text" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Texto da Opção"></textarea>
+        <input type="text" name="option_text" id="edit-option-text" placeholder="Texto da Opção">
         <label for="edit-response-message">Mensagem de Resposta:</label>
-        <textarea name="response_message" id="edit-response-message" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Mensagem de Resposta"></textarea>
+        <input type="text" name="response_message" id="edit-response-message" placeholder="Mensagem de Resposta">
         <label for="edit-next-state-id">Selecionar Próximo Estado:</label>
-        <select name="next_state_id" id="edit-next-state-id" class="form-control">
+        <select name="next_state_id" id="edit-next-state-id">
             <option value="">Selecionar Próximo Estado</option>
             {% for state in states %}
                 <option value="{{ state.id }}">{{ state.name }}</option>
             {% endfor %}
         </select>
         <input type="hidden" name="edit_option" value="1">
-        <button type="submit" class="btn btn-primary mt-3">Salvar Alterações</button>
+        <button type="submit">Salvar Alterações</button>
     </form>
-    <button class="btn btn-secondary mt-3" onclick="hidePopup('edit-option-popup')">Fechar</button>
+    <button onclick="hidePopup('edit-option-popup')">Fechar</button>
 </div>
 
 <div id="overlay" class="overlay" onclick="hideAllPopups()"></div>
@@ -334,4 +256,5 @@
         }
     }
 </script>
+
 {% endblock content %}

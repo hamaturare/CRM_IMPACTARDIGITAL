@@ -61,6 +61,10 @@
                     <h3>Messages</h3>
                     <span class="message-count">{{ message_count }}</span>
                 </a>
+                <a href="{% url 'visualadmin' %}" class="{% active_url request 'visualadmin' %}">
+                    <span class="material-icons">smart_toy</span>
+                    <h3>Chatbot Questions</h3>
+                </a>
                 <a href="{% url 'profile' %}" class="{% active_url request 'profile' %}">
                     <span class="material-icons">person_outline</span>
                     <h3>Profile</h3>

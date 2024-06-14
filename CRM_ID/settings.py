@@ -218,6 +218,8 @@ except ImportError:
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+
 
 # This will print email in Console.
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
