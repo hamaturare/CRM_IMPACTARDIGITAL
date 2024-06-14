@@ -26,7 +26,11 @@
                 <p><strong>Valor do Contrato: </strong> {{ client.client_income|real_brasileiro }}</p>
                 <p><strong>Gasto Máximo Mensal: </strong> {{ client.client_budget|real_brasileiro }}</p>
                 <p><strong>KPIs: </strong> {{ client.client_kpis|real_brasileiro }}</p>
-                <p><strong>Informações do Cliente: </strong> {{ client.client_info }}</p>
+                <p><strong>Informações do Cliente: </strong> 
+                <br>
+                    {{ client.client_info| linebreaksbr}}
+                </p>
+                <br>
                 <!-- Botões de ação -->
                 <a href="{% url 'update_client' client.pk %}" class="btn btn-sm btn-success shadow-sm">Editar</a>
                 <a href="{% url 'clients' %}" class="btn btn-sm btn-primary shadow-sm">Voltar</a>

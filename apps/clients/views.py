@@ -52,6 +52,8 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)  # get the form
         # Certifique-se de que os campos existem antes de atribuir widgets
+        if 'date_of_birth' in form.fields:
+            form.fields['date_of_birth'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         if 'contract_date' in form.fields:
             form.fields['contract_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         if 'next_contact_date' in form.fields:

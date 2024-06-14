@@ -92,31 +92,23 @@ def whatsapp_webhook(request):
                 try:
                     for entry in data['entry']:
                         business_phone_number= entry['changes'][0]['value']['metadata']['display_phone_number'] # This is our number from whatsapp business
-                        phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
+                        #phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
                         profile_name = entry['changes'][0]['value']['contacts'][0]['profile']['name']
                         whatsapp_id = entry['changes'][0]['value']['contacts'][0]['wa_id']
                         lead_phone_number = entry['changes'][0]['value']['messages'][0]['from'] # Number to respond to. This is the Lead phone Number that enters in contact
                         message_id = entry['changes'][0]['value']['messages'][0]['id']
-                        timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
+                        #timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
                         #Handle the incoming message
                         handle_incoming_message(
                             lead_phone_number,
                             profile_name,
-                            #phone_id,
-                            #whatsapp_id,
+                            whatsapp_id,
                             business_phone_number,
-                            #message_id,
-                            #timestamp,
+                            message_id,
                             text)
 
-
-                        """
-                        lead_phone_number = "5527999371909"
-                        message = 'RE: {} was received'.format(text)
-                        send_whatsapp_message(lead_phone_number, message)
-                        """
                 except:
                     pass
         return HttpResponse('success', status=200)

@@ -20,3 +20,5 @@ def real_brasileiro(value):
         return f'R$ {valor:,.2f}'.replace(',', 'x').replace('.', ',').replace('x', '.')
     except (TypeError, ValueError):
         return value  # Retorna o valor original se houver um erro
+
+        

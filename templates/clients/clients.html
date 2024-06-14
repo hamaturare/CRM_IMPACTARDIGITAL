@@ -38,12 +38,10 @@
                     <th>Instagram</th>
                     <th>Website</th>
                     <th>WhatsApp</th>
-                    <th><a href="?sort=created_at" class="sortable">Cadastrado Em</a></th>
-                    <th>Data do Contrato</th>
+                    <th>Próximo Contato</th>
                     <th><a href="?sort=service_type" class="sortable">Serviço Prestado</a></th>
                     <th><a href="?sort=client_income" class="sortable">Valor do Contrato</a></th>
                     <th><a href="?sort=client_budget" class="sortable">Gasto Máximo Mensal</a></th>
-                    <th><a href="?sort=id" class="sortable">ID</a></th>
                     <th>Vizualizar</th>
                     <th>Atualizar</th>
                 </tr>
@@ -79,12 +77,10 @@
                             <span class="blink2">Não Inf.</span>
                         {% endif %}
                     </td>
-                    <td>{{ client.created_at|date:"d/m/Y" }}</td>
-                    <td>{{ client.contract_date|date:"d/m/Y" }}</td>
+                    <td>{{ client.next_contact_date|date:"d/m/Y" }}</td>
                     <td>{{ client.service_type }}</td>
                     <td>{{ client.client_income }}</td>
                     <td>{{ client.client_budget }}</td>
-                    <td>{{ client.id }}</td>
                     <td><a href="{% url 'client_info' pk=client.pk %}" class="btn-view">Vizualizar</a></td>  
                     <td><a href="{% url 'update_client' pk=client.pk %}" class="btn-update">Atualizar</a></td>  
                 </tr>

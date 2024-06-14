@@ -10,6 +10,7 @@ class ServiceType(models.Model):
 class Client(models.Model):
     created_at = models.DateField(auto_now_add=True, verbose_name=_("Dia que a Lead Chegou"))
     client_name = models.CharField(max_length=255, verbose_name=_("Nome do Cliente"), blank=True)
+    date_of_birth = models.DateField(verbose_name=_("Data de Aniversário do Cliente"),null=True, blank=True)
     company_name = models.CharField(max_length=255, verbose_name=_("Nome da Empresa"), blank=True)
     contract_date = models.DateField(verbose_name=_("Data do Contrato"),null=True, blank=True)
     next_contact_date = models.DateField(verbose_name=_("Data próximo Contato"),null=True, blank=True)

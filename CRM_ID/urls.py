@@ -97,7 +97,7 @@ urlpatterns = [
     path('update_contacted_status/<int:wpmessage_id>/', update_contacted_status, name='update_contacted_status'),
 
     #VISUAL ADMIN
-    path('visual-admin/', include('apps.visualadmin.urls')),
+    #path('visual-admin/', include('apps.visualadmin.urls')),
 
 ]
 
