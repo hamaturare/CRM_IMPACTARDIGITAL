@@ -36,7 +36,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.status.strip|lower == 'completed' %}
+                    {% if wpmessage.state == 'completed'%}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
@@ -52,7 +52,7 @@
                             <td>{{ wpmessage.created_at|date:"d/m/Y" }}</td>
                             <td>{{ wpmessage.contact_method }}</td>
                             <td>{{ wpmessage.business_phone_number|phone_format }}</td>
-                            <td>{{ wpmessage.status }}</td>
+                            <td>{{ wpmessage.state }}</td>
                             <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
                             <td>{{ wpmessage.priority }}</td>
                             <td>
@@ -95,7 +95,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.status.strip|lower != 'completed' %}
+                    {% if wpmessage.state != 'completed'%}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
@@ -111,7 +111,7 @@
                             <td>{{ wpmessage.created_at|date:"d/m/Y" }}</td>
                             <td>{{ wpmessage.contact_method }}</td>
                             <td>{{ wpmessage.business_phone_number|phone_format }}</td>
-                            <td>{{ wpmessage.status }}</td>
+                            <td>{{ wpmessage.state }}</td>
                             <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
                             <td>{{ wpmessage.priority }}</td>
                             <td>

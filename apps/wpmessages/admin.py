@@ -3,9 +3,9 @@ from .models import WpMessage
 
 class WpMessageAdmin(admin.ModelAdmin):
     list_display = ('lead_phone_number', 'profile_name', 'message_timestamp', 
-                    'business_phone_number', 'status', 'service_interest', 
+                    'business_phone_number', 'state', 'service_interest', 
                     'contact_method', 'chat_history')
-    list_filter = ('lead_phone_number', 'profile_name','status', 'service_interest', 'contact_method')
+    list_filter = ('lead_phone_number', 'profile_name','state', 'service_interest', 'contact_method')
 
 
 admin.site.register(WpMessage, WpMessageAdmin)
