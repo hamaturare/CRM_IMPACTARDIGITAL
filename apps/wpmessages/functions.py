@@ -40,59 +40,73 @@ def handle_incoming_message(
     text):
 
     try:
-        # Trying to check if this phone number exists in database or not
+        # Tentando verificar se este número de telefone existe no banco de dados
         wp_message = WpMessage.objects.get(lead_phone_number=lead_phone_number)
 
-        # Fetch the current state from ChatbotState
+        # Buscar o estado atual do ChatbotState
         current_state = wp_message.state
 
         if current_state:
-            # Get the question associated with the current state
+            # Obter a pergunta associada ao estado atual
             question = current_state.questions.first()
 
             if question:
-                # Find the option based on the user's response
+                # Encontrar a opção com base na resposta do usuário
                 option = question.options.filter(option_text=text).first()
 
                 if option:
-                    # Update chat history and state
+                    # Atualizar histórico de chat e estado
                     wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {option.response_message}"
                     wp_message.message_timestamp = timezone.now()
+
+                    # Verificar se a pergunta tem um campo personalizado a ser atualizado
+                    if question.custom_field_name:
+                        setattr(wp_message, question.custom_field_name, option.option_text)
 
                     next_state = option.next_state
 
                     if next_state:
-                        wp_message.state = next_state
-                        next_question = next_state.questions.first()
-                        if next_question:
-                            combined_response = f"{option.response_message}\n\n{next_question.question_text}"
-                            wp_message.chat_history += f"\nBot: {next_question.question_text}"
-                            send_whatsapp_message(lead_phone_number, combined_response)
+                        if next_state.name.lower() == 'completed':
+                            wp_message.state = next_state  # Marcar como concluído
+                            wp_message.chat_history += f"\nBot: {option.response_message}"
+                            final_message = next_state.questions.first()
+                            if final_message:
+                                combined_response = f"{option.response_message}\n\n{final_message.question_text}"
+                                wp_message.chat_history += f"\nBot: {final_message.question_text}"
+                                send_whatsapp_message(lead_phone_number, combined_response)
+                            else:
+                                send_whatsapp_message(lead_phone_number, option.response_message)
                         else:
-                            wp_message.state = None  # No more questions
-                            send_whatsapp_message(lead_phone_number, option.response_message)
+                            wp_message.state = next_state
+                            next_question = next_state.questions.first()
+                            if next_question:
+                                combined_response = f"{option.response_message}\n\n{next_question.question_text}"
+                                wp_message.chat_history += f"\nBot: {next_question.question_text}"
+                                send_whatsapp_message(lead_phone_number, combined_response)
+                            else:
+                                send_whatsapp_message(lead_phone_number, option.response_message)
                     else:
-                        wp_message.state = None  # Mark as no more state
+                        wp_message.state = None  # Marcar como nenhum estado
                         send_whatsapp_message(lead_phone_number, option.response_message)
 
                     wp_message.save()
                 else:
-                    # Handle invalid response
+                    # Lidar com resposta inválida
                     response_message = question.invalid_response_message or "Resposta inválida, tente novamente."
                     wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {response_message}"
                     wp_message.message_timestamp = timezone.now()
                     wp_message.save()
                     send_whatsapp_message(lead_phone_number, response_message)
             else:
-                # Handle the case where there is no question for the state
+                # Lidar com o caso em que não há pergunta para o estado
                 response_message = "Não há mais perguntas no momento."
                 wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {response_message}"
                 wp_message.message_timestamp = timezone.now()
-                wp_message.state = None  # Mark as no more state
+                wp_message.state = None  # Marcar como nenhum estado
                 wp_message.save()
                 send_whatsapp_message(lead_phone_number, response_message)
         else:
-            # Handle the case where state is None
+            # Lidar com o caso em que o estado é None
             response_message = "Bem-vindo! Como posso ajudar?"
             wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {response_message}"
             wp_message.message_timestamp = timezone.now()
@@ -100,8 +114,8 @@ def handle_incoming_message(
             send_whatsapp_message(lead_phone_number, response_message)
 
     except WpMessage.DoesNotExist:
-        # Create a new WpMessage for the first contact
-        initial_state = ChatbotState.objects.order_by('id').first()  # Get the first state created by admin
+        # Criar um novo WpMessage para o primeiro contato
+        initial_state = ChatbotState.objects.order_by('id').first()  # Obter o primeiro estado criado pelo admin
 
         wp_message = WpMessage.objects.create(
             lead_phone_number=lead_phone_number,
@@ -126,6 +140,8 @@ def handle_incoming_message(
             wp_message.message_timestamp = timezone.now()
             wp_message.save()
             send_whatsapp_message(lead_phone_number, response_message)
+
+
 
 """
 #Funcao abaixo funciona, mas a maneira de usar eh não atribuindo respostas para as opcoes se houver uma proxima pergunta o que nao eh ideal,
