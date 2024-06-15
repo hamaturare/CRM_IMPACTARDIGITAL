@@ -58,7 +58,7 @@ class WpMessagesView(LoginRequiredMixin, ListView):
     
 class DeleteWpMessageView(LoginRequiredMixin, DeleteView):
     model = WpMessage
-    success_url = reverse_lazy('messages')
+    success_url = reverse_lazy('wpmessages')
 
     def delete(self, request, *args, **kwargs):
         messages.success(request, 'Lead deletada com sucesso.')

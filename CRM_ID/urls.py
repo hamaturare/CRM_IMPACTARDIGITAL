@@ -79,6 +79,7 @@ urlpatterns = [
     
     #CLIENTS
     path('clients/',ClientsView.as_view(), name='clients'),
+    path('client_info/<int:pk>/', ClientDetailView.as_view(), name='client_info'),
     path('update_client/<int:pk>/', ClientUpdateView.as_view(), name='update_client'),
     path('delete_client/<int:pk>/', ClientDeleteView.as_view(), name='delete_client'),
     path('add_client/', AddClientView.as_view(), name='add_client'),
@@ -88,7 +89,6 @@ urlpatterns = [
     path('submit_suggestion/', SubmitSuggestionView.as_view(), name='submit_suggestion'),
     path('suggestions/', SuggestionsListView.as_view(), name='suggestions_list'),
     path('update_suggestion/<int:pk>/', SuggestionUpdateView.as_view(), name='view_suggestion'),
-    path('client_info/<int:pk>/', ClientDetailView.as_view(), name='client_info'),
     path('preview/', preview_template, name='index'),
 
     #MESSAGES
