@@ -101,7 +101,14 @@ def handle_incoming_message(
                 wp_message.status = None  # Marcar como nenhum estado
                 wp_message.save()
                 send_whatsapp_message(lead_phone_number, response_message)
-                
+        else:
+            # Lidar com o caso em que o estado é None
+            response_message = "Bem-vindo! Como posso ajudar?"
+            wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {response_message}"
+            wp_message.message_timestamp = timezone.now()
+            wp_message.save()
+            send_whatsapp_message(lead_phone_number, response_message)
+
     except WpMessage.DoesNotExist:
         # Criar um novo WpMessage para o primeiro contato
         initial_state = ChatbotState.objects.order_by('id').first()  # Obter o primeiro estado criado pelo admin
