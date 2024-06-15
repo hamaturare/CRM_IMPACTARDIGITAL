@@ -36,7 +36,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.state == 'completed'%}
+                    {% if wpmessage.state.name|lower == 'completed' %}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
@@ -64,14 +64,14 @@
                                     </label>
                                 </form>
                             </td>
-                            <td><a href="#" class="btn-view">Quente</a></td>  
-                            <td><a href="#" class="btn-update">Deletar</a></td> 
+                            <td><a href="#" class="btn-view">Quente</a></td>
+                            <td><a href="#" class="btn-update">Deletar</a></td>
                         </tr>
                     {% endif %}
                 {% endfor %}
             </tbody>
         </table>
-    </div>    
+    </div>
     <div class="table-responsive">
         <h1 class="page-title">Leads Que Não Terminaram O Questionário</h1>
         <hr>
@@ -95,7 +95,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.state != 'completed'%}
+                    {% if wpmessage.state.name|lower != 'completed' %}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
@@ -123,8 +123,8 @@
                                     </label>
                                 </form>
                             </td>
-                            <td><a href="#" class="btn-view">Quente</a></td>  
-                            <td><a href="#" class="btn-update">Deletar</a></td> 
+                            <td><a href="#" class="btn-view">Quente</a></td>
+                            <td><a href="#" class="btn-update">Deletar</a></td>
                         </tr>
                     {% endif %}
                 {% endfor %}
