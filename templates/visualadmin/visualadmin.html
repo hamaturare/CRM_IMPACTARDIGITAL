@@ -173,7 +173,7 @@
         {% csrf_token %}
         <input type="hidden" name="question_id" id="option-question-id">
         <label for="option_text">Texto da Opção:</label>
-        <textarea name="option_text" id="option_text" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Texto da Opção"></textarea>
+        <input name="option_text" id="option_text"  class="form-control" placeholder="Texto da Opção">
         <label for="response_message">Mensagem de Resposta:</label>
         <textarea name="response_message" id="response_message" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Mensagem de Resposta"></textarea>
         <label for="next_state_id">Selecionar Próximo Estado:</label>
@@ -228,7 +228,7 @@
         {% csrf_token %}
         <input type="hidden" name="option_id" id="edit-option-id">
         <label for="edit-option-text">Texto da Opção:</label>
-        <textarea name="option_text" id="edit-option-text" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Texto da Opção"></textarea>
+        <input name="option_text" id="edit-option-text" class="form-control" placeholder="Texto da Opção">
         <label for="edit-response-message">Mensagem de Resposta:</label>
         <textarea name="response_message" id="edit-response-message" cols="40" rows="10" maxlength="500" class="textarea form-control" placeholder="Mensagem de Resposta"></textarea>
         <label for="edit-next-state-id">Selecionar Próximo Estado:</label>
