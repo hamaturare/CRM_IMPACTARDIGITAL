@@ -21,7 +21,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-+=k9m(bcfnr*o-j&zy0+1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['fmendes.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['crm.impactardigital.com.br', 'webapp-2115475.pythonanywhere.com']
 
 
 # Application definition
