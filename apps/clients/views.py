@@ -9,6 +9,11 @@ from .forms import ClientForm, ClientLeadsForm
 from django.views import View
 from django.contrib import messages
 from django.forms import DateInput
+from apps.leads.models import Lead
+from django.shortcuts import get_object_or_404, redirect
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class ClientsView(LoginRequiredMixin, ListView):
@@ -123,3 +128,25 @@ class ClientDetailView(LoginRequiredMixin, DetailView):
             followup.save()
             messages.success(request, 'Indicação adicionada com sucesso!')
             return redirect('client_info', pk=self.get_object().pk)
+        
+class MigrateClientLeadView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        client_lead = get_object_or_404(ClientLeads, pk=self.kwargs['pk'])
+
+        logger.debug(f"Migrating client lead: {client_lead}")
+
+        # Creating a new Lead object with fields from ClientLeads
+        lead = Lead.objects.create(
+            first_name=client_lead.name,
+            whatsapp=client_lead.whatsapp,
+            email=client_lead.email,
+            lead_info=client_lead.notes,
+            company_name=client_lead.company_name,  # if company_name is required
+            # Add more fields as necessary
+        )
+
+        # Deleting the client_lead after migration
+        client_lead.delete()
+
+        messages.success(request, 'Lead migrada com sucesso.')
+        return redirect('leads')

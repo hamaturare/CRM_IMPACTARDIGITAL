@@ -11,6 +11,10 @@ from django.conf import settings
 from .functions import *
 import json
 import logging
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.views.generic.edit import DeleteView, View
+from apps.leads.models import Lead, Origin, Priority, ServiceType
 
 logger = logging.getLogger(__name__)
 
@@ -51,6 +55,32 @@ class WpMessagesView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['message_count'] = WpMessage.objects.count()  # Get the total number of messages
         return context
+    
+class DeleteWpMessageView(LoginRequiredMixin, DeleteView):
+    model = WpMessage
+    success_url = reverse_lazy('messages')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Lead deletada com sucesso.')
+        return super().delete(request, *args, **kwargs)
+    
+class MigrateToLeadView(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        wpmessage = get_object_or_404(WpMessage, pk=self.kwargs['pk'])
+
+        # Criar nova lead com os dados do wpmessage
+        lead = Lead.objects.create(
+            first_name=wpmessage.profile_name,
+            whatsapp=wpmessage.lead_phone_number,
+            lead_info=wpmessage.chat_history,
+            #service_type=ServiceType.objects.filter(name=wpmessage.service_interest).first(),
+            # Adicione mais campos conforme necessário
+        )
+
+        wpmessage.delete()
+        
+        messages.success(request, 'Lead migrada com sucesso.')
+        return redirect('leads') #testar
 
 @csrf_protect
 @require_POST

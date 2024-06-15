@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.common.views import HomeView, SignUpView, DashboardView, ProfileUpdateView, ProfileView
-from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadView, LeadDetailView, FollowUpDeleteView
-from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, AddClientView, ClientDetailView
+from apps.common.views import *
+from apps.leads.views import *
+from apps.clients.views import *
 from django.contrib.auth import views as auth_views
-from apps.ideabox.views import SubmitSuggestionView, SuggestionsListView, SuggestionUpdateView
+from apps.ideabox.views import *
 from apps.wpmessages.views import *
 from apps.userprofile.views import preview_template
 
@@ -82,6 +82,7 @@ urlpatterns = [
     path('update_client/<int:pk>/', ClientUpdateView.as_view(), name='update_client'),
     path('delete_client/<int:pk>/', ClientDeleteView.as_view(), name='delete_client'),
     path('add_client/', AddClientView.as_view(), name='add_client'),
+    path('migrate_client_lead/<int:pk>/', MigrateClientLeadView.as_view(), name='migrate_client_lead'),
      
     #IDEABOX
     path('submit_suggestion/', SubmitSuggestionView.as_view(), name='submit_suggestion'),
@@ -94,9 +95,11 @@ urlpatterns = [
     path('messages/', WpMessagesView.as_view(), name='wpmessages'),
     path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02/', whatsapp_webhook, name='whatsapp-webhook'),
     path('update_contacted_status/<int:wpmessage_id>/', update_contacted_status, name='update_contacted_status'),
+    path('delete_wpmessage/<int:pk>/', DeleteWpMessageView.as_view(), name='delete_wpmessage'),
+    path('migrate_to_lead/<int:pk>/', MigrateToLeadView.as_view(), name='migrate_to_lead'),
 
     #VISUAL ADMIN
-    path('visual-admin/', include('apps.visualadmin.urls')),
+    path('chatbot/', include('apps.visualadmin.urls')),
 
 ]
 
