@@ -6,7 +6,7 @@ class WpMessage(models.Model):
     lead_phone_number = models.CharField(max_length=20, unique=True)  # Número de telefone da lead
     profile_name = models.CharField(max_length=100, blank=True, null=True)  # Nome do perfil da lead
     whatsapp_id = models.CharField(max_length=20, blank=True, null=True)  # ID do WhatsApp da lead
-    message_id = models.CharField(max_length=50, blank=True, null=True)  # ID da mensagem
+    message_id = models.CharField(max_length=100, blank=True, null=True)  # ID da mensagem
     message_timestamp = models.DateTimeField(blank=True, null=True, default=timezone.now)  # Timestamp da mensagem
     message_text = models.TextField()  # Texto da mensagem
     business_phone_number = models.CharField(max_length=15, blank=True, null=True)  # Número de telefone do negócio (Our number) que contactou a lead, que envia a mensagem

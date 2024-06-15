@@ -36,7 +36,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.status == 'completed'%}
+                    {% if wpmessage.status.strip|lower == 'completed' %}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
@@ -95,7 +95,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.status != 'completed'%}
+                    {% if wpmessage.status.strip|lower != 'completed' %}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
