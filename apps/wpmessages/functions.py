@@ -59,18 +59,32 @@ def handle_incoming_message(
                     wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {option.response_message}"
                     wp_message.message_timestamp = timezone.now()
 
+                    # Check if the question has a custom field to be updated
+                    if question.custom_field_name:
+                        setattr(wp_message, question.custom_field_name, option.option_text)
+
                     next_state = option.next_state
 
                     if next_state:
-                        wp_message.state = next_state
-                        next_question = next_state.questions.first()
-                        if next_question:
-                            combined_response = f"{option.response_message}\n\n{next_question.question_text}"
-                            wp_message.chat_history += f"\nBot: {next_question.question_text}"
-                            send_whatsapp_message(lead_phone_number, combined_response)
-                        else:
-                            wp_message.state = None  # No more questions
+                        if next_state.name.lower() == 'completed':
+                            wp_message.state = 'completed'
+                            wp_message.chat_history += f"\nBot: {option.response_message}"
                             send_whatsapp_message(lead_phone_number, option.response_message)
+                            final_message = next_state.questions.first()
+                            if final_message:
+                                combined_response = f"{option.response_message}\n\n{final_message.question_text}"
+                                wp_message.chat_history += f"\nBot: {final_message.question_text}"
+                                send_whatsapp_message(lead_phone_number, combined_response)
+                        else:
+                            wp_message.state = next_state
+                            next_question = next_state.questions.first()
+                            if next_question:
+                                combined_response = f"{option.response_message}\n\n{next_question.question_text}"
+                                wp_message.chat_history += f"\nBot: {next_question.question_text}"
+                                send_whatsapp_message(lead_phone_number, combined_response)
+                            else:
+                                wp_message.state = None  # No more questions
+                                send_whatsapp_message(lead_phone_number, option.response_message)
                     else:
                         wp_message.state = None  # Mark as no more state
                         send_whatsapp_message(lead_phone_number, option.response_message)
@@ -88,7 +102,7 @@ def handle_incoming_message(
                 response_message = "Não há mais perguntas no momento."
                 wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {response_message}"
                 wp_message.message_timestamp = timezone.now()
-                wp_message.state = None  # Mark as no more state
+                wp_message.state = 'completed'  # Mark as completed state
                 wp_message.save()
                 send_whatsapp_message(lead_phone_number, response_message)
         else:
@@ -126,6 +140,7 @@ def handle_incoming_message(
             wp_message.message_timestamp = timezone.now()
             wp_message.save()
             send_whatsapp_message(lead_phone_number, response_message)
+
 
 """
 #Funcao abaixo funciona, mas a maneira de usar eh não atribuindo respostas para as opcoes se houver uma proxima pergunta o que nao eh ideal,
