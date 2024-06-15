@@ -13,7 +13,7 @@ class WpMessage(models.Model):
     phone_id = models.CharField(max_length=20, blank=True, null=True)  # ID do telefone do negócio (Our number)
     chat_history = models.TextField(blank=True, null=True)  # Histórico de chat
 
-    state = models.ForeignKey('visualadmin.ChatbotState', on_delete=models.SET_NULL, null=True, blank=True)  # Estado atual do chat
+    status = models.ForeignKey('visualadmin.ChatbotState', on_delete=models.SET_NULL, null=True, blank=True)  # Estado atual do chat
     contacted = models.BooleanField(default=False)  # Chat finalizado com obrigado
     service_interest = models.CharField(max_length=100, blank=True, null=True)  # Interesse no serviço
     contact_method = models.CharField(max_length=50, blank=True, null=True)  # Método de contato preferido

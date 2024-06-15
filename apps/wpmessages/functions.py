@@ -44,7 +44,7 @@ def handle_incoming_message(
         wp_message = WpMessage.objects.get(lead_phone_number=lead_phone_number)
 
         # Buscar o estado atual do ChatbotState
-        current_state = wp_message.state
+        current_state = wp_message.status
 
         if current_state:
             # Obter a pergunta associada ao estado atual
@@ -67,9 +67,8 @@ def handle_incoming_message(
 
                     if next_state:
                         if next_state.name.lower() == 'completed':
-                            wp_message.state = next_state
+                            wp_message.status = next_state
                             wp_message.chat_history += f"\nBot: {option.response_message}"
-                            wp_message.state = next_state
                             final_message = next_state.questions.first()
                             if final_message:
                                 combined_response = f"{option.response_message}\n\n{final_message.question_text}"
@@ -78,7 +77,7 @@ def handle_incoming_message(
                             else:
                                 send_whatsapp_message(lead_phone_number, option.response_message)
                         else:
-                            wp_message.state = next_state
+                            wp_message.status = next_state
                             next_question = next_state.questions.first()
                             if next_question:
                                 combined_response = f"{option.response_message}\n\n{next_question.question_text}"
@@ -87,7 +86,7 @@ def handle_incoming_message(
                             else:
                                 send_whatsapp_message(lead_phone_number, option.response_message)
                     else:
-                        wp_message.state = None  # Marcar como nenhum estado
+                        wp_message.status = None  # Marcar como nenhum estado
                         send_whatsapp_message(lead_phone_number, option.response_message)
 
                     wp_message.save()
@@ -103,7 +102,7 @@ def handle_incoming_message(
                 response_message = "Não há mais perguntas no momento."
                 wp_message.chat_history += f"\n{profile_name}: {text}\nBot: {response_message}"
                 wp_message.message_timestamp = timezone.now()
-                wp_message.state = None  # Marcar como nenhum estado
+                wp_message.status = None  # Marcar como nenhum estado
                 wp_message.save()
                 send_whatsapp_message(lead_phone_number, response_message)
         else:
@@ -141,6 +140,7 @@ def handle_incoming_message(
             wp_message.message_timestamp = timezone.now()
             wp_message.save()
             send_whatsapp_message(lead_phone_number, response_message)
+
 
 
 

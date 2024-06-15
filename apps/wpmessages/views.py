@@ -37,7 +37,7 @@ class WpMessagesView(LoginRequiredMixin, ListView):
             )
 
         # Lista dos campos válidos para ordenação
-        valid_sort_fields = ['profile_name', 'lead_phone_number', 'created_at', 'contact_method', 'state', 'service_interest']
+        valid_sort_fields = ['profile_name', 'lead_phone_number', 'created_at', 'contact_method', 'status', 'service_interest']
         
         # Obtendo o campo de ordenação da query string e verificando se é válida
         ordering = self.request.GET.get('sort', 'profile_name')
