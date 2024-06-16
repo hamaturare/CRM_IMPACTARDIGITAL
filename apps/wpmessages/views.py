@@ -65,6 +65,7 @@ class DeleteWpMessageView(LoginRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
     
 class MigrateToLeadView(LoginRequiredMixin, View):
+    
     def get(self, request, *args, **kwargs):
         wpmessage = get_object_or_404(WpMessage, pk=self.kwargs['pk'])
 

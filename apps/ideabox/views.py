@@ -11,6 +11,10 @@ from django.http import Http404
 from django.views.generic import DeleteView
 from django.core.mail import send_mail
 from django.conf import settings
+import logging
+
+# Set up logging
+logger = logging.getLogger(__name__)
 
 class SubmitSuggestionView(LoginRequiredMixin, CreateView):
     model = Suggestion
@@ -33,18 +37,28 @@ class SubmitSuggestionView(LoginRequiredMixin, CreateView):
         form.instance.user = self.request.user
         response = super().form_valid(form)  # Isso salva o objeto
 
-        # Envio do email após o objeto ser salvo
-        send_mail(
-            'Nova Sugestão Recebida',  # Assunto do email
-            'Uma nova sugestão foi submetida por {}. \n\nTítulo: {}\n\nSugestão: {}'.format(
-                self.request.user.username,
-                form.instance.title,
-                form.instance.content
-            ),  # Mensagem
-            settings.EMAIL_HOST_USER,  # Email do remetente
-            ['felipe@impactardigital.com.br'],  # Lista de emails que receberão a mensagem
-            fail_silently=False,  # Se True, suprime as exceções de SMTP
-        )
+        # Get the emails
+        admin_emails = settings.EMAIL_ADMINS
+        user_email = self.request.user.email
+        recipient_list = admin_emails + [user_email]
+
+        try:
+            send_mail(
+                'Nova Sugestão Recebida',  # Assunto do email
+                'Uma nova sugestão foi submetida por {}. \n\nTítulo: {}\n\nSugestão: {}'.format(
+                    self.request.user.username,
+                    form.instance.title,
+                    form.instance.content
+                ),  # Mensagem
+                settings.EMAIL_HOST_USER,  # Email do remetente
+                recipient_list,  # Lista de emails que receberão a mensagem
+                fail_silently=False,  # Se True, suprime as exceções de SMTP
+            )
+        except Exception as e:
+            # Log the error
+            logger.error(f"Failed to send email: {e}")
+            messages.error(self.request, 'Houve um problema ao enviar o email de notificação, mas sua sugestão foi submetida com sucesso.')
+
         return response
 
 class SuggestionsListView(LoginRequiredMixin, ListView):

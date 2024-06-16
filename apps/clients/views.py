@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Client, ClientLeads
 from django.views.generic import UpdateView, DetailView, DeleteView
@@ -80,30 +80,30 @@ class ClientDeleteView(LoginRequiredMixin, DeleteView):
         return super().delete(request, *args, **kwargs)
 
 
-class AddClientView(LoginRequiredMixin, View):
+class AddClientView(LoginRequiredMixin, CreateView):
+    model = Client
+    form_class = ClientForm
     template_name = 'clients/add_client.html'
+    success_url = reverse_lazy('clients')
 
-    def get(self, request, *args, **kwargs):
-        form = ClientForm()
-        self.setup_date_widgets(form)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        form = ClientForm(request.POST)
-        self.setup_date_widgets(form)
-        # Adiciona a mensagem de sucesso antes de verificar se o formulário é válido
-        messages.success(self.request, 'Cliente adicionado com sucesso!!!')
-        if form.is_valid():
-            form.save()
-            return redirect('clients')  # Redireciona após o cadastro ser bem-sucedido
-        return render(request, self.template_name, {'form': form})
-
-    def setup_date_widgets(self, form):
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
         # Configura os widgets de data somente se os campos existirem
         if 'contract_date' in form.fields:
             form.fields['contract_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        if 'date_of_birth' in form.fields:
+            form.fields['date_of_birth'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
         if 'next_contact_date' in form.fields:
             form.fields['next_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
+        return form
+
+    def form_valid(self, form):
+        messages.success(self.request, 'Cliente adicionado com sucesso!!!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao adicionar o cliente. Verifique os dados e tente novamente.')
+        return super().form_invalid(form)
 
 class ClientDetailView(LoginRequiredMixin, DetailView):
     model = Client

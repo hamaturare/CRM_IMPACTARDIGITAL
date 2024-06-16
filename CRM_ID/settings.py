@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from decouple import Config, RepositoryEnv
+from decouple import Config, RepositoryEnv, Csv
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -222,15 +222,16 @@ LOGIN_URL = 'login'
 
 
 # This will print email in Console.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'crm.impactardigital.com.br'
-#EMAIL_PORT = 465
-#EMAIL_USE_TLS = False
-#MAIL_USE_SSL = True
-#EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-#DEFAULT_FROM_EMAIL = 'noreplyt@crm.impactardigital.com.br'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'crm.impactardigital.com.br'
+EMAIL_PORT = 465
+EMAIL_USE_TLS = False
+EMAIL_USE_SSL = True
+EMAIL_ADMINS = config('EMAIL_ADMINS', cast=Csv())
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 'noreplyt@crm.impactardigital.com.br'
 
 from django.contrib.messages import constants as messages
 

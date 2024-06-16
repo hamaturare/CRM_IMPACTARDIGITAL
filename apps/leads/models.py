@@ -35,8 +35,6 @@ class Lead(models.Model):
     instagram = models.CharField(max_length=50, blank=True, null=True, verbose_name=_("Instagram"))
     website = models.URLField(blank=True, null=True, verbose_name=_("Website"))
     whatsapp = models.CharField(max_length=20, verbose_name=_("Whatsapp (Telefone)"), blank=True)
-    #last_contact_date = models.DateField(verbose_name=_("Data do Último Contato"),null=True, blank=True)
-    #return_contact = models.DateField(verbose_name=_("Data do Próximo Contato"),null=True, blank=True)
     origin = models.ForeignKey(Origin, on_delete=models.SET_NULL, null=True, verbose_name="Origem da Lead")
     service_type = models.ForeignKey(ServiceType, on_delete=models.SET_NULL, null=True, verbose_name=_("Tipos de Serviço da Lead"))
     # Continuação dos outros campos
