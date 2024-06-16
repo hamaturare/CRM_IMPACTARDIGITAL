@@ -224,14 +224,14 @@ LOGIN_URL = 'login'
 # This will print email in Console.
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'crm.impactardigital.com.br'
+EMAIL_HOST = 'mail.impactardigital.com.br'  # The correct SMTP server
 EMAIL_PORT = 465
-EMAIL_USE_TLS = False
-EMAIL_USE_SSL = True
+EMAIL_USE_SSL = True  # Use SSL since the port is 465
+EMAIL_USE_TLS = False  # Do not use TLS since SSL is being used
 EMAIL_ADMINS = config('EMAIL_ADMINS', cast=Csv())
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-DEFAULT_FROM_EMAIL = 'noreplyt@crm.impactardigital.com.br'
+DEFAULT_FROM_EMAIL = 'noreplycrm@impactardigital.com.br'
 
 from django.contrib.messages import constants as messages
 
