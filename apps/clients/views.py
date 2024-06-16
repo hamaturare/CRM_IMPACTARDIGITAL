@@ -52,7 +52,9 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
     model = Client
     form_class = ClientForm
     template_name = 'clients/update_client.html'
-    success_url = reverse_lazy('clients')
+    
+    def get_success_url(self):
+        return reverse_lazy('client_info', kwargs={'pk':self.object.pk})
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)  # get the form

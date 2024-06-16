@@ -48,7 +48,9 @@ class LeadUpdateView(LoginRequiredMixin, UpdateView):
     model = Lead
     form_class = LeadForm
     template_name = 'leads/update_lead.html'
-    success_url = reverse_lazy('leads')
+
+    def get_success_url(self):
+        return reverse_lazy('lead_info', kwargs={'pk':self.object.pk})  
 
     def post(self, request, *args, **kwargs):
         # Adiciona a mensagem antes de processar o formulário
