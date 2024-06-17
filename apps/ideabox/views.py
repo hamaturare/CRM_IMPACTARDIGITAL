@@ -17,19 +17,6 @@ import threading
 # Set up logging
 logger = logging.getLogger(__name__)
 
-def send_email_async(recipient_list, subject, message):
-    try:
-        send_mail(
-            subject,
-            message,
-            settings.EMAIL_HOST_USER,
-            recipient_list,
-            fail_silently=False,
-        )
-        logger.info(f"Email sent to {recipient_list}")
-    except Exception as e:
-        logger.error(f"Failed to send email to {recipient_list}: {e}")
-
 class SuggestionsListView(LoginRequiredMixin, ListView):
     model = Suggestion
     context_object_name = 'suggestions'
@@ -72,18 +59,6 @@ class SubmitSuggestionView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.user = self.request.user
         response = super().form_valid(form)
-
-        admin_emails = settings.EMAIL_ADMINS
-        user_email = self.request.user.email
-        recipient_list = admin_emails + [user_email]
-        subject = 'Nova Sugestão Recebida'
-        message = 'Uma nova sugestão foi submetida por {}. \n\nTítulo: {}\n\nSugestão: {}\n\nImplementaremos o mais Rápido possível\n\n Att,\n\n Admin 😎'.format(
-            self.request.user.username,
-            form.instance.title,
-            form.instance.content
-        )
-
-        threading.Thread(target=send_email_async, args=(recipient_list, subject, message)).start()
         return response
 
 class SuggestionUpdateView(LoginRequiredMixin, UpdateView):
@@ -93,15 +68,5 @@ class SuggestionUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('suggestions_list')
 
     def form_valid(self, form):
-        original_status = self.get_object().status
         response = super().form_valid(form)
-
-        if form.instance.status != original_status:
-            admin_emails = settings.EMAIL_ADMINS
-            user_email = self.request.user.email
-            recipient_list = admin_emails + [user_email]
-            subject = 'Sugestão Atualizada'
-            message = f'Status da sugestão "{form.instance.title}" foi atualizado para {form.instance.status}.\n\n Att,\n\n Admin 😎'
-            
-            threading.Thread(target=send_email_async, args=(recipient_list, subject, message)).start()
         return response
