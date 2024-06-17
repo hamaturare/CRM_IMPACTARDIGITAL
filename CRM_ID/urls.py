@@ -79,6 +79,7 @@ urlpatterns = [
     
     #CLIENTS
     path('clients/',ClientsView.as_view(), name='clients'),
+    path('update_client_status/<int:pk>/', update_client_status, name='update_client_status'),
     path('client_info/<int:pk>/', ClientDetailView.as_view(), name='client_info'),
     path('update_client/<int:pk>/', ClientUpdateView.as_view(), name='update_client'),
     path('delete_client/<int:pk>/', ClientDeleteView.as_view(), name='delete_client'),

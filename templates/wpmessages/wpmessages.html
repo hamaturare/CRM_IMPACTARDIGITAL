@@ -31,6 +31,51 @@
         border-color: darkorange;
         color: white;
     }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+        vertical-align: middle; /* Alinha verticalmente no meio */
+        margin:0px;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+        transform: translateX(14px);
+    }
+    td {
+        vertical-align: middle; /* Certifique-se de que as células da tabela alinhem o conteúdo ao meio */
+        padding-bottom:0px;
+    }
 </style>
 <div class="main-container">
     <div class="table-responsive">
@@ -48,7 +93,6 @@
                     <th>Número ID</th>
                     <th>Status Atendimento</th>
                     <th>Chat History</th>
-                    <th>Prioridade</th>
                     <th>Contacted</th>
                     <th></th>
                     <th></th>
@@ -74,13 +118,12 @@
                             <td>{{ wpmessage.business_phone_number|phone_format }}</td>
                             <td>{{ wpmessage.state }}</td>
                             <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
-                            <td>{{ wpmessage.priority }}</td>
                             <td>
                                 <form method="post" action="{% url 'update_contacted_status' wpmessage.id %}">
                                     {% csrf_token %}
-                                    <label class="custom-checkbox">
+                                    <label class="toggle-switch">
                                         <input type="checkbox" name="contacted" onchange="this.form.submit()" {% if wpmessage.contacted %}checked{% endif %}>
-                                        <span class="checkmark"></span>
+                                        <span class="slider"></span>
                                     </label>
                                 </form>
                             </td>
@@ -135,12 +178,14 @@
                             <td>
                                 <form method="post" action="{% url 'update_contacted_status' wpmessage.id %}">
                                     {% csrf_token %}
-                                    <label class="custom-checkbox">
+                                    <label class="toggle-switch">
                                         <input type="checkbox" name="contacted" onchange="this.form.submit()" {% if wpmessage.contacted %}checked{% endif %}>
-                                        <span class="checkmark"></span>
+                                        <span class="slider"></span>
                                     </label>
                                 </form>
                             </td>
+                            <td><button data-wpmessage-id="{{ wpmessage.pk }}" class="btn-view btn-migrate migrateBtn">Quente</button></td>
+                            <td><button data-wpmessage-id="{{ wpmessage.pk }}" class="btn-view btn-delete deleteBtn">Deletar</button></td> 
                         </tr>
                     {% endif %}
                 {% endfor %}

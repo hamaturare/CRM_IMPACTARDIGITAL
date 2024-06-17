@@ -10,11 +10,24 @@ from django.views import View
 from django.contrib import messages
 from django.forms import DateInput
 from apps.leads.models import Lead
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect
+from django.views.decorators.csrf import csrf_exempt, csrf_protect
+from django.views.decorators.http import require_POST 
 import logging
 
 logger = logging.getLogger(__name__)
 
+
+@csrf_protect
+@require_POST
+def update_client_status(request, pk):
+    if request.method == 'POST':
+        client = Client.objects.get(pk=pk)
+        client.status = not client.status
+        client.save()
+        return redirect('clients')
+    return HttpResponseNotAllowed(['POST'])
 
 class ClientsView(LoginRequiredMixin, ListView):
     model = Client

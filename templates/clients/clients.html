@@ -4,10 +4,82 @@
 {% load client_extras %}
 
 {% block content %}
+<style>
+    .page-title {
+        text-align: center;
+        text-transform: capitalize;
+        margin-bottom: 10px;
+        /* Add any other styling you want aqui */
+    }
+    .btn-delete {
+        background-color: red;
+        border-color: red;
+        color: white;
+    }
+    .btn-delete:hover {
+        background-color: darkred;
+        border-color: darkred;
+        color: white;
+    }
+    .btn-migrate {
+        background-color: orange;
+        border-color: orange;
+        color: white;
+    }
+    .btn-migrate:hover {
+        background-color: darkorange;
+        border-color: darkorange;
+        color: white;
+    }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+        vertical-align: middle; /* Alinha verticalmente no meio */
+        margin-bottom:0px;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+        transform: translateX(14px);
+    }
+    td {
+        vertical-align: middle; /* Certifique-se de que as células da tabela alinhem o conteúdo ao meio */
+    }
+</style>
 <div class="main-container">
     <div class="header">
         <div class="header-content">
-           <!--  <h1>Clientes</h1> -->
+            <!-- <h1>Clientes</h1> -->
             <a href="{% url 'add_client' %}" class="add-button" role="button">
                 <span class="material-icons">add</span>
                 <span class="btn-text">Adicionar Cliente</span>
@@ -29,6 +101,7 @@
         </div>
     </div>
     <div class="table-responsive">
+        <h1 class="page-title">Clientes Ativos</h1>
         <table class="custom-table">
             <thead>
                 <tr>
@@ -42,12 +115,14 @@
                     <th><a href="?sort=service_type" class="sortable">Serviço Prestado</a></th>
                     <th><a href="?sort=client_income" class="sortable">Valor do Contrato</a></th>
                     <th><a href="?sort=client_budget" class="sortable">Gasto Máximo Mensal</a></th>
+                    <th>Status</th>
                     <th>Vizualizar</th>
                     <th>Atualizar</th>
                 </tr>
             </thead>
             <tbody>
                 {% for client in clients %}
+                {% if client.status %}
                 <tr>
                     <td style="text-align: left;"><a href="{% url 'client_info' pk=client.pk %}">{{ client.client_name }} </a></td>
                     <td style="text-align: left;"><a href="{% url 'client_info' pk=client.pk %}">{{ client.company_name }} </a></td>
@@ -83,9 +158,94 @@
                     <td>{{ client.service_type }}</td>
                     <td>{{ client.client_income }}</td>
                     <td>{{ client.client_budget }}</td>
+                    <td>
+                        <form method="post" action="{% url 'update_client_status' client.pk %}">
+                            {% csrf_token %}
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="status" onchange="this.form.submit()" {% if client.status %}checked{% endif %}>
+                                <span class="slider"></span>
+                            </label>
+                        </form>
+                    </td>
                     <td><a href="{% url 'client_info' pk=client.pk %}" class="btn-view">Vizualizar</a></td>  
                     <td><a href="{% url 'update_client' pk=client.pk %}" class="btn-update">Atualizar</a></td>  
                 </tr>
+                {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="table-responsive">
+        <h1 class="page-title">Clientes Inativos</h1>
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th><a href="?sort=client_name" class="sortable">Nome do Cliente</a></th>
+                    <th><a href="?sort=company_name" class="sortable">Empresa do Cliente</a></th>
+                    <th>Email</th>
+                    <th>Instagram</th>
+                    <th>Website</th>
+                    <th>WhatsApp</th>
+                    <th>Próximo Contato</th>
+                    <th><a href="?sort=service_type" class="sortable">Serviço Prestado</a></th>
+                    <th><a href="?sort=client_income" class="sortable">Valor do Contrato</a></th>
+                    <th><a href="?sort=client_budget" class="sortable">Gasto Máximo Mensal</a></th>
+                    <th>Status</th>
+                    <th>Vizualizar</th>
+                    <th>Atualizar</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for client in clients %}
+                {% if not client.status %}
+                <tr>
+                    <td style="text-align: left;"><a href="{% url 'client_info' pk=client.pk %}">{{ client.client_name }} </a></td>
+                    <td style="text-align: left;"><a href="{% url 'client_info' pk=client.pk %}">{{ client.company_name }} </a></td>
+                    <td>{{ client.email }}</td>
+                    <td class="instagram">
+                        {% if client.instagram %} 
+                            {{client.instagram|default_if_none:"Não Inf."}}
+                        {% else %}
+                            <span class="blink2">Não Inf.</span>
+                        {% endif %}    
+                    </td>
+                    <td class="website">
+                        {% if client.website %}
+                            <a href="{{ client.website }}" target="_blank">
+                                <span class="material-icons">link</span> <strong>Visit</strong>
+                            </a>
+                        {% else %}
+                            <span class="blink2">Não Inf.</span>
+                        {% endif %}
+                    </td>
+                    <td class="whatsapp">
+                        {% if client.whatsapp %}
+                            <a href="https://wa.me/{{ client.whatsapp }}" target="_blank">
+                                <i class="fab fa-whatsapp"></i> {{ client.whatsapp|phone_format }}
+                            </a>
+                        {% else %}
+                            <span class="blink2">Não Inf.</span>
+                        {% endif %}
+                    </td>
+                    <td class="next_contact_date">
+                        {{ client.next_contact_date|date:"d/m/Y" }}
+                    </td>
+                    <td>{{ client.service_type }}</td>
+                    <td>{{ client.client_income }}</td>
+                    <td>{{ client.client_budget }}</td>
+                    <td>
+                        <form method="post" action="{% url 'update_client_status' client.pk %}">
+                            {% csrf_token %}
+                            <label class="toggle-switch">
+                                <input type="checkbox" name="status" onchange="this.form.submit()" {% if client.status %}checked{% endif %}>
+                                <span class="slider"></span>
+                            </label>
+                        </form>
+                    </td>
+                    <td><a href="{% url 'client_info' pk=client.pk %}" class="btn-view">Vizualizar</a></td>  
+                    <td><a href="{% url 'update_client' pk=client.pk %}" class="btn-update">Atualizar</a></td>  
+                </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
