@@ -14,6 +14,7 @@ from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, redirect
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST 
+from django.http import JsonResponse
 import logging
 
 logger = logging.getLogger(__name__)
@@ -21,13 +22,21 @@ logger = logging.getLogger(__name__)
 
 @csrf_protect
 @require_POST
-def update_client_status(request, pk):
+def update_client_status_listview(request, pk):
     if request.method == 'POST':
         client = Client.objects.get(pk=pk)
         client.status = not client.status
         client.save()
         return redirect('clients')
     return HttpResponseNotAllowed(['POST'])
+
+@csrf_protect
+@require_POST
+def update_client_status_client_info(request, pk):
+    client = Client.objects.get(pk=pk)
+    client.status = not client.status
+    client.save()
+    return JsonResponse({'status': client.status})
 
 class ClientsView(LoginRequiredMixin, ListView):
     model = Client
@@ -68,7 +77,7 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
     
     def get_success_url(self):
         return reverse_lazy('client_info', kwargs={'pk':self.object.pk})
-
+    
     def get_form(self, form_class=None):
         form = super().get_form(form_class)  # get the form
         # Certifique-se de que os campos existem antes de atribuir widgets
@@ -85,6 +94,10 @@ class ClientUpdateView(LoginRequiredMixin, UpdateView):
         messages.success(self.request, 'Cliente atualizado com sucesso!!!')
         return super().post(request, *args, **kwargs)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['prev_url'] = self.request.session.get('prev_url', reverse_lazy('clients'))
+        return context
 
 class ClientDeleteView(LoginRequiredMixin, DeleteView):
     model = Client

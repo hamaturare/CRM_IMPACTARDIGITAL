@@ -33,16 +33,69 @@
         color: white;
         font-weight: bold;
     }
-    
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+        vertical-align: middle; /* Alinha verticalmente no meio */
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+        transform: translateX(14px);
+    }
+    .status-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 <div class="main-container">
-    <div>
+    <div class="status-container">
         <h1>DETALHES DO CLIENTE</h1>
     </div>
     <div class="row">
         <div class="card o-hidden border-0 shadow-sm my-5 col-lg-12">
             <div class="card-body">
-                <h2>{{ client.company_name }}</h2>
+                <div style="display:flex; justify-content:space-between;">
+                    <h2>{{ client.company_name }}</h2>
+                    <form id="statusForm" method="post" action="{% url 'update_client_status_client_info' client.pk %}">
+                        {% csrf_token %}
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="status" id="statusToggle" {% if client.status %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                    </form>
+                </div>
                 <p><strong>Nome do Cliente: </strong> {{ client.client_name }}</p>
                 <p><strong>Email: </strong> {{ client.email }}</p>
                 <p><strong>Data de Aniversário: </strong> {{ client.date_of_birth }}</p>
@@ -54,7 +107,7 @@
                 <p><strong>WhatsApp: </strong> <a href="https://wa.me/{{ client.whatsapp }}" target="_blank" class="text-success"><i class="fab fa-whatsapp"></i> {{ client.whatsapp|phone_format }}</a></p>
                 <p><strong>Serviço Prestado: </strong> {{ client.service_type.name }}</p>
                 <p><strong>Cidade: </strong> {{ client.city }}</p>
-                <p><strong>Estado: </strong> {{ client.state }}</p>
+                <p><strong>Status: </strong> {% if client.status %}<span id="clientStatus">Atívo</span>{% else %}<span id="clientStatus">Inativo</span>{% endif %}</p>
                 <p><strong>Valor do Contrato: </strong> {{ client.client_income|real_brasileiro }}</p>
                 <p><strong>Gasto Máximo Mensal: </strong> {{ client.client_budget|real_brasileiro }}</p>
                 <p><strong>KPIs: </strong> {{ client.client_kpis|real_brasileiro }}</p>
@@ -186,6 +239,22 @@
             migrateClientForm.action = `{% url 'migrate_client_lead' pk=0 %}`.replace('0', clientLeadId);
             $('#migrateClientModal').modal('show');
         });
+    });
+
+    // JavaScript para enviar o formulário de status via AJAX
+    document.getElementById('statusToggle').addEventListener('change', function() {
+        var form = document.getElementById('statusForm');
+        var formData = new FormData(form);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                document.getElementById('clientStatus').innerText = response.status ? 'Atívo' : 'Inativo';
+            }
+        };
+        xhr.send(formData);
     });
 </script>
 {% endblock content %}

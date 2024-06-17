@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% load static %}
 {% load client_extras %}
-{% load crispy_forms_tags %} 
+{% load crispy_forms_tags %}
 
 {% block content %}
 <div class="main-container">
@@ -15,7 +15,7 @@
             {{ form|crispy }}
             <div class="form-buttons">
                 <button type="submit" name="save" class="btn btn-success mr-1">Salvar</button>
-                <a href="{% url 'clients' %}" class="btn btn-secondary mr-1">Voltar</a>
+                <a href="{{ prev_url }}" class="btn btn-secondary mr-1">Voltar</a>
                 <button id="deleteBtn" type="button" class="btn btn-danger">Deletar</button>
             </div>
         </form>

@@ -159,7 +159,7 @@
                     <td>{{ client.client_income }}</td>
                     <td>{{ client.client_budget }}</td>
                     <td>
-                        <form method="post" action="{% url 'update_client_status' client.pk %}">
+                        <form method="post" action="{% url 'update_client_status_listview' client.pk %}">
                             {% csrf_token %}
                             <label class="toggle-switch">
                                 <input type="checkbox" name="status" onchange="this.form.submit()" {% if client.status %}checked{% endif %}>
@@ -234,7 +234,7 @@
                     <td>{{ client.client_income }}</td>
                     <td>{{ client.client_budget }}</td>
                     <td>
-                        <form method="post" action="{% url 'update_client_status' client.pk %}">
+                        <form method="post" action="{% url 'update_client_status_listview' client.pk %}">
                             {% csrf_token %}
                             <label class="toggle-switch">
                                 <input type="checkbox" name="status" onchange="this.form.submit()" {% if client.status %}checked{% endif %}>
