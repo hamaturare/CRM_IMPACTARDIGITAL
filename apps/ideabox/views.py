@@ -11,41 +11,11 @@ from django.http import Http404
 from django.views.generic import DeleteView
 from django.core.mail import send_mail
 from django.conf import settings
+import logging
+import threading
 
-class SubmitSuggestionView(LoginRequiredMixin, CreateView):
-    model = Suggestion
-    form_class = SuggestionForm
-    template_name = 'ideabox/submit_suggestion.html'
-    success_url = reverse_lazy('suggestions_list')
-
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['user'] = self.request.user
-        return kwargs
-    
-    def post(self, request, *args, **kwargs):
-        # Adiciona a mensagem antes de processar o formulário
-        messages.success(self.request, 'Sugestão Enviada Com Sucesso')
-        return super().post(request, *args, **kwargs)
-    
-    def form_valid(self, form):
-        # Associa o usuário logado à instância do formulário antes de salvar
-        form.instance.user = self.request.user
-        response = super().form_valid(form)  # Isso salva o objeto
-
-        # Envio do email após o objeto ser salvo
-        send_mail(
-            'Nova Sugestão Recebida',  # Assunto do email
-            'Uma nova sugestão foi submetida por {}. \n\nTítulo: {}\n\nSugestão: {}'.format(
-                self.request.user.username,
-                form.instance.title,
-                form.instance.content
-            ),  # Mensagem
-            settings.EMAIL_HOST_USER,  # Email do remetente
-            ['felipe@impactardigital.com.br'],  # Lista de emails que receberão a mensagem
-            fail_silently=False,  # Se True, suprime as exceções de SMTP
-        )
-        return response
+# Set up logging
+logger = logging.getLogger(__name__)
 
 class SuggestionsListView(LoginRequiredMixin, ListView):
     model = Suggestion
@@ -71,6 +41,26 @@ class SuggestionsListView(LoginRequiredMixin, ListView):
 
         return queryset
 
+class SubmitSuggestionView(LoginRequiredMixin, CreateView):
+    model = Suggestion
+    form_class = SuggestionForm
+    template_name = 'ideabox/submit_suggestion.html'
+    success_url = reverse_lazy('suggestions_list')
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['user'] = self.request.user
+        return kwargs
+    
+    def post(self, request, *args, **kwargs):
+        messages.success(self.request, 'Sugestão Enviada Com Sucesso')
+        return super().post(request, *args, **kwargs)
+    
+    def form_valid(self, form):
+        form.instance.user = self.request.user
+        response = super().form_valid(form)
+        return response
+
 class SuggestionUpdateView(LoginRequiredMixin, UpdateView):
     model = Suggestion
     form_class = SuggestionUpdateForm
@@ -78,5 +68,5 @@ class SuggestionUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy('suggestions_list')
 
     def form_valid(self, form):
-        messages.success(self.request, 'Sugestão atualizada com sucesso!')
-        return super().form_valid(form)
+        response = super().form_valid(form)
+        return response

@@ -1,6 +1,6 @@
 from pathlib import Path
 import os
-from decouple import Config, RepositoryEnv
+from decouple import Config, RepositoryEnv, Csv
 
 # Base directory
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -21,7 +21,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-+=k9m(bcfnr*o-j&zy0+1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['fmendes.pythonanywhere.com', '127.0.0.1']
+ALLOWED_HOSTS = ['crm.impactardigital.com.br', 'webapp-2115475.pythonanywhere.com', '127.0.0.1', 'fmendes.pythonanywhere.com']
 
 
 # Application definition
@@ -55,6 +55,7 @@ LOCAL_APPS = [
     'apps.clients',
     'apps.ideabox',
     'apps.wpmessages',
+    'apps.visualadmin',
 
 ]
 
@@ -68,6 +69,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'apps.clients.middleware.StorePrevURLMiddleware',
 ]
 
 ROOT_URLCONF = 'CRM_ID.urls'
@@ -217,17 +219,20 @@ except ImportError:
 
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
+LOGIN_URL = 'login'
+
 
 # This will print email in Console.
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-#EMAIL_HOST = 'crm.impactardigital.com.br'
-#EMAIL_PORT = 465
-#EMAIL_USE_TLS = False
-#MAIL_USE_SSL = True
-#EMAIL_HOST_USER = config('EMAIL_HOST_USER')
-#EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
-#DEFAULT_FROM_EMAIL = 'noreplyt@crm.impactardigital.com.br'
+#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'mail.impactardigital.com.br'  # The correct SMTP server
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False  # Use SSL since the port is 465
+EMAIL_USE_TLS = True  # Do not use TLS since SSL is being used
+EMAIL_ADMINS = config('EMAIL_ADMINS', cast=Csv())
+EMAIL_HOST_USER = config('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
+DEFAULT_FROM_EMAIL = 'noreplycrm@impactardigital.com.br'
 
 from django.contrib.messages import constants as messages
 

@@ -1,11 +1,11 @@
 from django.contrib import admin
 from django.urls import path, include
 
-from apps.common.views import HomeView, SignUpView, DashboardView, ProfileUpdateView, ProfileView
-from apps.leads.views import LeadsView, LeadUpdateView, LeadDeleteView, AddLeadView, LeadDetailView, FollowUpDeleteView
-from apps.clients.views import ClientsView, ClientUpdateView, ClientDeleteView, AddClientView, ClientDetailView
+from apps.common.views import *
+from apps.leads.views import *
+from apps.clients.views import *
 from django.contrib.auth import views as auth_views
-from apps.ideabox.views import SubmitSuggestionView, SuggestionsListView, SuggestionUpdateView
+from apps.ideabox.views import *
 from apps.wpmessages.views import *
 from apps.userprofile.views import preview_template
 
@@ -79,22 +79,29 @@ urlpatterns = [
     
     #CLIENTS
     path('clients/',ClientsView.as_view(), name='clients'),
+    path('update_client_status_listview/<int:pk>/', update_client_status_listview, name='update_client_status_listview'),
+    path('update_client_status_client_info/<int:pk>/', update_client_status_client_info, name='update_client_status_client_info'),
+    path('client_info/<int:pk>/', ClientDetailView.as_view(), name='client_info'),
     path('update_client/<int:pk>/', ClientUpdateView.as_view(), name='update_client'),
     path('delete_client/<int:pk>/', ClientDeleteView.as_view(), name='delete_client'),
     path('add_client/', AddClientView.as_view(), name='add_client'),
+    path('migrate_client_lead/<int:pk>/', MigrateClientLeadView.as_view(), name='migrate_client_lead'),
      
     #IDEABOX
     path('submit_suggestion/', SubmitSuggestionView.as_view(), name='submit_suggestion'),
     path('suggestions/', SuggestionsListView.as_view(), name='suggestions_list'),
     path('update_suggestion/<int:pk>/', SuggestionUpdateView.as_view(), name='view_suggestion'),
-    path('client_info/<int:pk>/', ClientDetailView.as_view(), name='client_info'),
     path('preview/', preview_template, name='index'),
 
     #MESSAGES
     path('messages/', WpMessagesView.as_view(), name='wpmessages'),
-    #path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02/', WhatsAppWebhookView.as_view(), name='whatsapp-webhook'),
     path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02/', whatsapp_webhook, name='whatsapp-webhook'),
     path('update_contacted_status/<int:wpmessage_id>/', update_contacted_status, name='update_contacted_status'),
+    path('delete_wpmessage/<int:pk>/', DeleteWpMessageView.as_view(), name='delete_wpmessage'),
+    path('migrate_to_lead/<int:pk>/', MigrateToLeadView.as_view(), name='migrate_to_lead'),
+
+    #VISUAL ADMIN
+    path('chatbot/', include('apps.visualadmin.urls')),
 
 ]
 

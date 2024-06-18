@@ -6,6 +6,7 @@ dj-database-url==2.1.0
 Django==5.0.4
 django-cleanup==8.1.0
 django-crispy-forms==2.1
+django-jazzmin==3.0.0
 django-nested-admin==4.0.2
 gunicorn==22.0.0
 idna==3.7

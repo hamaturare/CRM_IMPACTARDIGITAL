@@ -2,18 +2,19 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import WpMessage
-from django.views.generic import UpdateView
-from django.shortcuts import redirect, render
-from django.views.generic import DeleteView, DetailView
+from django.shortcuts import redirect
 from django.db.models import Q
-from django.views import View
-from django.http import HttpResponse, JsonResponse 
+from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt, csrf_protect
 from django.views.decorators.http import require_POST 
 from django.conf import settings
 from .functions import *
 import json
 import logging
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
+from django.views.generic.edit import DeleteView, View
+from apps.leads.models import Lead, Origin, Priority, ServiceType
 
 logger = logging.getLogger(__name__)
 
@@ -54,6 +55,33 @@ class WpMessagesView(LoginRequiredMixin, ListView):
         context = super().get_context_data(**kwargs)
         context['message_count'] = WpMessage.objects.count()  # Get the total number of messages
         return context
+    
+class DeleteWpMessageView(LoginRequiredMixin, DeleteView):
+    model = WpMessage
+    success_url = reverse_lazy('wpmessages')
+
+    def delete(self, request, *args, **kwargs):
+        messages.success(request, 'Lead deletada com sucesso.')
+        return super().delete(request, *args, **kwargs)
+    
+class MigrateToLeadView(LoginRequiredMixin, View):
+    
+    def get(self, request, *args, **kwargs):
+        wpmessage = get_object_or_404(WpMessage, pk=self.kwargs['pk'])
+
+        # Criar nova lead com os dados do wpmessage
+        lead = Lead.objects.create(
+            first_name=wpmessage.profile_name,
+            whatsapp=wpmessage.lead_phone_number,
+            lead_info=wpmessage.chat_history,
+            #service_type=ServiceType.objects.filter(name=wpmessage.service_interest).first(),
+            # Adicione mais campos conforme necessário
+        )
+
+        wpmessage.delete()
+        
+        messages.success(request, 'Lead migrada com sucesso.')
+        return redirect('leads') #testar
 
 @csrf_protect
 @require_POST
@@ -95,35 +123,26 @@ def whatsapp_webhook(request):
                 try:
                     for entry in data['entry']:
                         business_phone_number= entry['changes'][0]['value']['metadata']['display_phone_number'] # This is our number from whatsapp business
-                        phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
+                        #phone_id = entry['changes'][0]['value']['metadata']['phone_number_id']
                         profile_name = entry['changes'][0]['value']['contacts'][0]['profile']['name']
                         whatsapp_id = entry['changes'][0]['value']['contacts'][0]['wa_id']
                         lead_phone_number = entry['changes'][0]['value']['messages'][0]['from'] # Number to respond to. This is the Lead phone Number that enters in contact
                         message_id = entry['changes'][0]['value']['messages'][0]['id']
-                        timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
+                        #timestamp = entry['changes'][0]['value']['messages'][0]['timestamp']
                         text = entry['changes'][0]['value']['messages'][0]['text']['body']
 
                         #Handle the incoming message
                         handle_incoming_message(
                             lead_phone_number,
                             profile_name,
-                            #phone_id,
-                            #whatsapp_id,
+                            whatsapp_id,
                             business_phone_number,
-                            #message_id,
-                            #timestamp,
+                            message_id,
                             text)
 
-
-                        """
-                        lead_phone_number = "5527999371909"
-                        message = 'RE: {} was received'.format(text)
-                        send_whatsapp_message(lead_phone_number, message)
-                        """
                 except:
                     pass
         return HttpResponse('success', status=200)
-
 
 """
 class WhatsAppWebhookView():

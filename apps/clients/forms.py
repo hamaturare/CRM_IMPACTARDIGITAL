@@ -15,9 +15,13 @@ class ClientForm(forms.ModelForm):
         for field_name in readonly_fields:
             if field_name in self.fields:
                 self.fields[field_name].disabled = True  # Desativa o campo, mantendo-o visível mas não editável
+
+        # Remover o campo 'status' do formulário para as views de adição e atualização
+        if 'status' in self.fields:
+            self.fields['status'].widget = forms.HiddenInput()
                 
 class ClientLeadsForm(forms.ModelForm):
     class Meta:
         model = ClientLeads
         fields = '__all__'
-        exclude = ['client']  # Exclua 'lead' do formulário
+        exclude = ['client']  #Exclua 'lead' do formulário

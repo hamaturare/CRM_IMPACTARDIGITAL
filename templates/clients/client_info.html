@@ -4,16 +4,101 @@
 {% load client_extras %}
 
 {% block content %}
+<style>
+    .page-title {
+        text-align: center;
+        text-transform: capitalize;
+        margin-bottom: 10px;
+        /* Add any other styling you want here */
+    }
+    .btn-delete {
+        background-color: red;
+        border-color: red;
+        color: white;
+    }
+    .btn-delete:hover {
+        background-color: darkred;
+        border-color: darkred;
+        color: white;
+    }
+    .btn-migrate {
+        background-color: #ff5f10;
+        border-color: #ff5f10;
+        color: #1c3145;
+        font-weight: 600;
+    }
+    .btn-migrate:hover {
+        background-color: darkorange;
+        border-color: darkorange;
+        color: white;
+        font-weight: bold;
+    }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+        vertical-align: middle; /* Alinha verticalmente no meio */
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+        transform: translateX(14px);
+    }
+    .status-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+</style>
 <div class="main-container">
-    <div>
+    <div class="status-container">
         <h1>DETALHES DO CLIENTE</h1>
     </div>
     <div class="row">
         <div class="card o-hidden border-0 shadow-sm my-5 col-lg-12">
             <div class="card-body">
-                <h2>{{ client.company_name }}</h2>
+                <div style="display:flex; justify-content:space-between;">
+                    <h2>{{ client.company_name }}</h2>
+                    <form id="statusForm" method="post" action="{% url 'update_client_status_client_info' client.pk %}">
+                        {% csrf_token %}
+                        <label class="toggle-switch">
+                            <input type="checkbox" name="status" id="statusToggle" {% if client.status %}checked{% endif %}>
+                            <span class="slider"></span>
+                        </label>
+                    </form>
+                </div>
                 <p><strong>Nome do Cliente: </strong> {{ client.client_name }}</p>
                 <p><strong>Email: </strong> {{ client.email }}</p>
+                <p><strong>Data de Aniversário: </strong> {{ client.date_of_birth }}</p>
                 <p><strong>Data do Contrato: </strong> {{ client.contract_date|date:"d/m/Y" }}</p>
                 <p><strong>Data de Criação: </strong> {{ client.created_at|date:"d/m/Y" }}</p>
                 <p><strong>Próximo Contato: </strong> {{ client.next_contact_date|date:"d/m/Y" }}</p>
@@ -22,11 +107,15 @@
                 <p><strong>WhatsApp: </strong> <a href="https://wa.me/{{ client.whatsapp }}" target="_blank" class="text-success"><i class="fab fa-whatsapp"></i> {{ client.whatsapp|phone_format }}</a></p>
                 <p><strong>Serviço Prestado: </strong> {{ client.service_type.name }}</p>
                 <p><strong>Cidade: </strong> {{ client.city }}</p>
-                <p><strong>Estado: </strong> {{ client.state }}</p>
+                <p><strong>Status: </strong> {% if client.status %}<span id="clientStatus">Atívo</span>{% else %}<span id="clientStatus">Inativo</span>{% endif %}</p>
                 <p><strong>Valor do Contrato: </strong> {{ client.client_income|real_brasileiro }}</p>
                 <p><strong>Gasto Máximo Mensal: </strong> {{ client.client_budget|real_brasileiro }}</p>
                 <p><strong>KPIs: </strong> {{ client.client_kpis|real_brasileiro }}</p>
-                <p><strong>Informações do Cliente: </strong> {{ client.client_info }}</p>
+                <p><strong>Informações do Cliente: </strong> 
+                <br>
+                    {{ client.client_info| linebreaksbr}}
+                </p>
+                <br>
                 <!-- Botões de ação -->
                 <a href="{% url 'update_client' client.pk %}" class="btn btn-sm btn-success shadow-sm">Editar</a>
                 <a href="{% url 'clients' %}" class="btn btn-sm btn-primary shadow-sm">Voltar</a>
@@ -74,45 +163,98 @@
                                         <a href="https://wa.me/{{ client_lead.whatsapp }}" target="_blank"><i class="fab fa-whatsapp"></i> {{ client_lead.whatsapp|phone_format }}</a>
                                     </td>
                                     <td>{{ client_lead.created_at|date:"d/m/Y" }}</td>
-                                    <td>{{ client_lead.notes }}</td>
-                                    <td><a href="#" class="btn btn-success">Adicionar a Lead</a></td>  <!-- Botão de adicionar Lead para banco de dados da lead -->
+                                    <td>{{ client_lead.notes|truncatechars:50 }}</td>
+                                    <td><button data-client-lead-id="{{ client_lead.pk }}" class="btn btn-migrate migrateClientBtn">Add Lead</button></td>  <!-- Botão de adicionar Lead para banco de dados da lead -->
                                 </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                </div>
             </div>
         </div>
     </div>
-</div>
-<!-- Modal de Confirmação -->
-<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <!-- Modal de Confirmação -->
+    <div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" style="border-radius: 20px;">
+                <div class="modal-header text-center">
+                    <h3 class="modal-title w-100" id="confirmationModalLabel">Confirmar Deleção</h3>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+                <div class="modal-body text-center">
+                    <h5>Tem certeza que deseja deletar este Cliente?</h5>
+                    <h5>Todos os dados do cliente serão apagados!</h5>
+                    <h5>Isto será irreversível!</h5>
+                </div>
+                <div class="modal-footer">
+                    <form action="{% url 'delete_client' pk=client.pk %}" method="post">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" value="Confirmar" class="btn btn-danger"/>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Confirmação de Migração -->
+<div class="modal fade" id="migrateClientModal" tabindex="-1" role="dialog" aria-labelledby="migrateClientModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content" style="border-radius: 20px;">
             <div class="modal-header text-center">
-                <h3 class="modal-title w-100" id="confirmationModalLabel">Confirmar Deleção</h3>
+                <h3 class="modal-title w-100" id="migrateClientModalLabel">Confirmar Migração</h3>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">×</span>
                 </button>
             </div>
             <div class="modal-body text-center">
-                <h5>Tem certeza que deseja deletar este Cliente?</h5>
-                <h5>Todos os dados do cliente serão apagados!</h5>
-                <h5>Isto será irreversível!</h5>
-            </div>
-            <div class="modal-footer">
-                <form action="{% url 'delete_client' pk=client.pk %}" method="post">
-                    {% csrf_token %}
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                    <input type="submit" value="Confirmar" class="btn btn-danger"/>
-                </form>
+                    <h5>Tem certeza que deseja migrar esta Indicação para Leads?</h5>
+                    <h5>Todos os dados da indicação serão transferidos!</h5>
+                    <h5>Isto será irreversível!</h5>
+                </div>
+                <div class="modal-footer">
+                    <form id="migrateClientForm" action="#" method="get">
+                        {% csrf_token %}
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                        <input type="submit" value="Confirmar" class="btn btn-warning"/>
+                    </form>
+                </div>
             </div>
         </div>
     </div>
 </div>
 <script>
-    // JavaScript para abrir a modal de confirmação
+    // JavaScript para abrir a modal de confirmação de deleção
     document.getElementById('deleteBtn').addEventListener('click', function() {
         $('#confirmationModal').modal('show');
+    });
+
+    // JavaScript para abrir a modal de confirmação de migração de cliente
+    document.querySelectorAll('.migrateClientBtn').forEach(button => {
+        button.addEventListener('click', function() {
+            const clientLeadId = this.getAttribute('data-client-lead-id');
+            const migrateClientForm = document.getElementById('migrateClientForm');
+            migrateClientForm.action = `{% url 'migrate_client_lead' pk=0 %}`.replace('0', clientLeadId);
+            $('#migrateClientModal').modal('show');
+        });
+    });
+
+    // JavaScript para enviar o formulário de status via AJAX
+    document.getElementById('statusToggle').addEventListener('change', function() {
+        var form = document.getElementById('statusForm');
+        var formData = new FormData(form);
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', form.action, true);
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
+        xhr.onreadystatechange = function() {
+            if (xhr.readyState === XMLHttpRequest.DONE && xhr.status === 200) {
+                var response = JSON.parse(xhr.responseText);
+                document.getElementById('clientStatus').innerText = response.status ? 'Atívo' : 'Inativo';
+            }
+        };
+        xhr.send(formData);
     });
 </script>
 {% endblock content %}

@@ -11,6 +11,71 @@
         margin-bottom: 10px;
         /* Add any other styling you want here */
     }
+    .btn-delete {
+        background-color: red;
+        border-color: red;
+        color: white;
+    }
+    .btn-delete:hover {
+        background-color: darkred;
+        border-color: darkred;
+        color: white;
+    }
+    .btn-migrate {
+        background-color: orange;
+        border-color: orange;
+        color: white;
+    }
+    .btn-migrate:hover {
+        background-color: darkorange;
+        border-color: darkorange;
+        color: white;
+    }
+    .toggle-switch {
+        position: relative;
+        display: inline-block;
+        width: 34px;
+        height: 20px;
+        vertical-align: middle; /* Alinha verticalmente no meio */
+        margin:0px;
+    }
+    .toggle-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 34px;
+    }
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px;
+        width: 16px;
+        left: 2px;
+        bottom: 2px;
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+    input:checked + .slider {
+        background-color: #2196F3;
+    }
+    input:checked + .slider:before {
+        transform: translateX(14px);
+    }
+    td {
+        vertical-align: middle; /* Certifique-se de que as células da tabela alinhem o conteúdo ao meio */
+        padding-bottom:0px;
+    }
 </style>
 <div class="main-container">
     <div class="table-responsive">
@@ -28,7 +93,6 @@
                     <th>Número ID</th>
                     <th>Status Atendimento</th>
                     <th>Chat History</th>
-                    <th>Prioridade</th>
                     <th>Contacted</th>
                     <th></th>
                     <th></th>
@@ -36,7 +100,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.state == 'completed'%}
+                    {% if wpmessage.state.name|lower == 'completed' %}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
@@ -54,24 +118,23 @@
                             <td>{{ wpmessage.business_phone_number|phone_format }}</td>
                             <td>{{ wpmessage.state }}</td>
                             <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
-                            <td>{{ wpmessage.priority }}</td>
                             <td>
                                 <form method="post" action="{% url 'update_contacted_status' wpmessage.id %}">
                                     {% csrf_token %}
-                                    <label class="custom-checkbox">
+                                    <label class="toggle-switch">
                                         <input type="checkbox" name="contacted" onchange="this.form.submit()" {% if wpmessage.contacted %}checked{% endif %}>
-                                        <span class="checkmark"></span>
+                                        <span class="slider"></span>
                                     </label>
                                 </form>
                             </td>
-                            <td><a href="#" class="btn-view">Quente</a></td>  
-                            <td><a href="#" class="btn-update">Deletar</a></td> 
+                            <td><button data-wpmessage-id="{{ wpmessage.pk }}" class="btn-view btn-migrate migrateBtn">Quente</button></td>
+                            <td><button data-wpmessage-id="{{ wpmessage.pk }}" class="btn-view btn-delete deleteBtn">Deletar</button></td>  
                         </tr>
                     {% endif %}
                 {% endfor %}
             </tbody>
         </table>
-    </div>    
+    </div>
     <div class="table-responsive">
         <h1 class="page-title">Leads Que Não Terminaram O Questionário</h1>
         <hr>
@@ -87,7 +150,6 @@
                     <th>Número ID</th>
                     <th>Status Atendimento</th>
                     <th>Chat History</th>
-                    <th>Prioridade</th>
                     <th>Contacted</th>
                     <th></th>
                     <th></th>
@@ -95,7 +157,7 @@
             </thead>
             <tbody>
                 {% for wpmessage in wpmessages %}
-                    {% if wpmessage.state != 'completed'%}
+                    {% if wpmessage.state.name|lower != 'completed' %}
                         <tr>
                             <td>{{ wpmessage.profile_name }}</td>
                             <td>{{ wpmessage.service_interest }}</td>
@@ -113,18 +175,17 @@
                             <td>{{ wpmessage.business_phone_number|phone_format }}</td>
                             <td>{{ wpmessage.state }}</td>
                             <td>{{ wpmessage.chat_history|truncatechars:50 }}</td>
-                            <td>{{ wpmessage.priority }}</td>
                             <td>
                                 <form method="post" action="{% url 'update_contacted_status' wpmessage.id %}">
                                     {% csrf_token %}
-                                    <label class="custom-checkbox">
+                                    <label class="toggle-switch">
                                         <input type="checkbox" name="contacted" onchange="this.form.submit()" {% if wpmessage.contacted %}checked{% endif %}>
-                                        <span class="checkmark"></span>
+                                        <span class="slider"></span>
                                     </label>
                                 </form>
                             </td>
-                            <td><a href="#" class="btn-view">Quente</a></td>  
-                            <td><a href="#" class="btn-update">Deletar</a></td> 
+                            <td><button data-wpmessage-id="{{ wpmessage.pk }}" class="btn-view btn-migrate migrateBtn">Quente</button></td>
+                            <td><button data-wpmessage-id="{{ wpmessage.pk }}" class="btn-view btn-delete deleteBtn">Deletar</button></td> 
                         </tr>
                     {% endif %}
                 {% endfor %}
@@ -132,4 +193,75 @@
         </table>
     </div>
 </div>
+<div class="modal fade" id="confirmationModal" tabindex="-1" role="dialog" aria-labelledby="confirmationModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-header text-center">
+                <h3 class="modal-title w-100" id="confirmationModalLabel">Confirmar Deleção</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <h5>Tem certeza que deseja deletar esta Mensagem?</h5>
+                <h5>Todos os dados da lead desta mesagem serão apagados!</h5>
+                <h5>Isto será irreversível!</h5>
+            </div>
+            <div class="modal-footer">
+                <form id="deleteForm" action="#" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Confirmar" class="btn btn-danger"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="migrateModal" tabindex="-1" role="dialog" aria-labelledby="migrateModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content" style="border-radius: 20px;">
+            <div class="modal-header text-center">
+                <h3 class="modal-title w-100" id="migrateModalLabel">Confirmar Migração</h3>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">×</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <h5>Tem certeza que deseja migrar esta mensagem para o campo de Leads?</h5>
+                <h5>Todos os dados desta mensagem serão transferidos para Leads!</h5>
+                <h5>Isto será irreversível!</h5>
+            </div>
+            <div class="modal-footer">
+                <form id="migrateForm" action="#" method="post">
+                    {% csrf_token %}
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                    <input type="submit" value="Confirmar" class="btn btn-warning"/>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // JavaScript para abrir a modal de confirmação de deleção
+    document.querySelectorAll('.deleteBtn').forEach(button => {
+        button.addEventListener('click', function() {
+            const wpmessageId = this.getAttribute('data-wpmessage-id');
+            const deleteForm = document.getElementById('deleteForm');
+            deleteForm.action = `{% url 'delete_wpmessage' pk=0 %}`.replace('0', wpmessageId);
+            $('#confirmationModal').modal('show');
+        });
+    });
+
+    // JavaScript para abrir a modal de confirmação de migração
+    document.querySelectorAll('.migrateBtn').forEach(button => {
+        button.addEventListener('click', function() {
+            const wpmessageId = this.getAttribute('data-wpmessage-id');
+            const migrateForm = document.getElementById('migrateForm');
+            migrateForm.action = `{% url 'migrate_to_lead' pk=0 %}`.replace('0', wpmessageId);
+            $('#migrateModal').modal('show');
+        });
+    });
+</script>
 {% endblock content %}

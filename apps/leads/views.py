@@ -1,5 +1,5 @@
 from django.urls import reverse_lazy
-from django.views.generic import ListView
+from django.views.generic import ListView, CreateView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import Lead, FollowUp
 from django.views.generic import UpdateView
@@ -48,22 +48,14 @@ class LeadUpdateView(LoginRequiredMixin, UpdateView):
     model = Lead
     form_class = LeadForm
     template_name = 'leads/update_lead.html'
-    success_url = reverse_lazy('leads')
 
-    def get_form(self, form_class=None):
-        form = super().get_form(form_class)  # get the form
-        # Certifique-se de que os campos existem antes de atribuir widgets
-        if 'last_contact_date' in form.fields:
-            form.fields['last_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-        if 'return_contact' in form.fields:
-            form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-        return form
-    
+    def get_success_url(self):
+        return reverse_lazy('lead_info', kwargs={'pk':self.object.pk})  
+
     def post(self, request, *args, **kwargs):
         # Adiciona a mensagem antes de processar o formulário
         messages.success(self.request, 'Lead atualizado com sucesso!!!')
         return super().post(request, *args, **kwargs)
-
 
 class LeadDeleteView(LoginRequiredMixin, DeleteView):
     model = Lead
@@ -85,32 +77,18 @@ class FollowUpDeleteView(LoginRequiredMixin, DeleteView):
         messages.success(self.request, 'Follow-up deleted successfully!')
         return super().delete(request, *args, **kwargs)
 
-class AddLeadView(LoginRequiredMixin, View):
+class AddLeadView(LoginRequiredMixin, CreateView):
+    model = Lead
+    form_class = LeadForm
     template_name = 'leads/add_lead.html'
-
-    def get(self, request, *args, **kwargs):
-        form = LeadForm()
-        self.setup_date_widgets(form)
-        return render(request, self.template_name, {'form': form})
-
-    def post(self, request, *args, **kwargs):
-        form = LeadForm(request.POST)
-        self.setup_date_widgets(form)
-        # Adiciona a mensagem de sucesso antes de verificar se o formulário é válido
-        messages.success(self.request, 'Lead adicionado com sucesso!!!')
-        if form.is_valid():
-            form.save()
-            return redirect('leads')  # Redireciona após o cadastro ser bem-sucedido
-        return render(request, self.template_name, {'form': form})
+    success_url = reverse_lazy('leads')
     
-    """
-    def setup_date_widgets(self, form):
-        # Configura os widgets de data somente se os campos existirem
-        if 'last_contact_date' in form.fields:
-            form.fields['last_contact_date'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-        if 'return_contact' in form.fields:
-            form.fields['return_contact'].widget = DateInput(attrs={'type': 'date', 'class': 'datepicker'})
-    """
+    def form_valid(self, form):
+        messages.success(self.request, 'Lead adicionado com sucesso!!!')
+        return super().form_valid(form)
+
+    def form_invalid(self, form):
+        messages.error(self.request, 'Erro ao adicionar a lead. Verifique os dados e tente novamente.')
 
 class LeadDetailView(LoginRequiredMixin, DetailView):
     model = Lead
