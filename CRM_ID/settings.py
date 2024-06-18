@@ -226,9 +226,9 @@ LOGIN_URL = 'login'
 #EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'mail.impactardigital.com.br'  # The correct SMTP server
-EMAIL_PORT = 465
-EMAIL_USE_SSL = True  # Use SSL since the port is 465
-EMAIL_USE_TLS = False  # Do not use TLS since SSL is being used
+EMAIL_PORT = 587
+EMAIL_USE_SSL = False  # Use SSL since the port is 465
+EMAIL_USE_TLS = True  # Do not use TLS since SSL is being used
 EMAIL_ADMINS = config('EMAIL_ADMINS', cast=Csv())
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
