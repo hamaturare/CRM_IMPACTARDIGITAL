@@ -13,7 +13,8 @@ import json
 import logging
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
-from django.views.generic.edit import DeleteView, View
+from django.views import View
+from django.views.generic.edit import DeleteView
 from apps.leads.models import Lead, Origin, Priority, ServiceType
 
 logger = logging.getLogger(__name__)
