@@ -37,10 +37,8 @@
                     <th><a href="?sort=service_type" class="sortable">Serviço de Interesse</a></th>
                     <th>Responsável</th>
                     <th>Próximo Contato</th>
-                    <th>Último Contato</th>
                     <th>WhatsApp</th>
                     <th><a href="?sort=created_at" class="sortable">Criado Em</a></th>
-                    <th><a href="?sort=priority" class="sortable">Prioridade</a></th>
                     <th>Origem da Lead</th>
                     <th>Vizualizar</th>
                     <th>Atualizar</th>
@@ -60,6 +58,7 @@
                             <span class="blink">Marcar Contato</span>
                         {% endif %}
                     </td>
+                    <!--
                     <td>
                         {% if lead.followup_set.last %}
                             {{ lead.followup_set.last.last_contact_date|date:"d/m/Y" }}
@@ -67,7 +66,7 @@
                             <span class="blink">Sem Contato</span>
                         {% endif %}
                     </td>
-                    <!--
+
                     <td>{{ lead.email }}</td>
                     <td class="instagram">
                         {% if lead.instagram %}
@@ -96,7 +95,6 @@
                         {% endif %}
                     </td>
                     <td>{{ lead.created_at|date:"d/m/Y" }}</td>
-                    <td>{{ lead.priority }}</td>
                     <td>{{ lead.origin }}</td>
                     <td><a href="{% url 'lead_info' pk=lead.pk %}" class="btn-view">Vizualizar</a></td>
                     <td><a href="{% url 'update_lead' pk=lead.pk %}" class="btn-update">Atualizar</a></td>
