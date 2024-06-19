@@ -40,6 +40,8 @@ class LeadsView(LoginRequiredMixin, ListView):
         # Obtendo o campo de ordenação da query string e verificando se é válida
         ordering = self.request.GET.get('sort', 'first_name')
         if ordering in valid_sort_fields:
+            if ordering == 'created_at':
+                return queryset.order_by('-created_at')
             return queryset.order_by(ordering)
         
         return queryset.order_by('first_name')
