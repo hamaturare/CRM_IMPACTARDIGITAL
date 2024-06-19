@@ -67,7 +67,7 @@ class DeleteWpMessageView(LoginRequiredMixin, DeleteView):
     
 class MigrateToLeadView(LoginRequiredMixin, View):
     
-    def get(self, request, *args, **kwargs):
+    def post(self, request, *args, **kwargs):
         wpmessage = get_object_or_404(WpMessage, pk=self.kwargs['pk'])
 
         # Criar nova lead com os dados do wpmessage

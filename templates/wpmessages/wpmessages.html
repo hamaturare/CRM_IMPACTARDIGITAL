@@ -259,7 +259,7 @@
         button.addEventListener('click', function() {
             const wpmessageId = this.getAttribute('data-wpmessage-id');
             const migrateForm = document.getElementById('migrateForm');
-            migrateForm.action = `{% url 'migrate_to_lead' pk=0 %}`.replace('0', wpmessageId);
+            migrateForm.action = `{% url 'migrate_to_leads' pk=0 %}`.replace('0', wpmessageId);
             $('#migrateModal').modal('show');
         });
     });

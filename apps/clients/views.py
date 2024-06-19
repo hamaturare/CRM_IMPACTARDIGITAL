@@ -161,8 +161,6 @@ class MigrateClientLeadView(LoginRequiredMixin, View):
     def get(self, request, *args, **kwargs):
         client_lead = get_object_or_404(ClientLeads, pk=self.kwargs['pk'])
 
-        logger.debug(f"Migrating client lead: {client_lead}")
-
         # Creating a new Lead object with fields from ClientLeads
         lead = Lead.objects.create(
             first_name=client_lead.name,

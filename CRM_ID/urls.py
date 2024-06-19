@@ -98,7 +98,7 @@ urlpatterns = [
     path('f2ebd9bb-3e10-494b-80d1-45a7b5a11d02/', whatsapp_webhook, name='whatsapp-webhook'),
     path('update_contacted_status/<int:wpmessage_id>/', update_contacted_status, name='update_contacted_status'),
     path('delete_wpmessage/<int:pk>/', DeleteWpMessageView.as_view(), name='delete_wpmessage'),
-    path('migrate_to_lead/<int:pk>/', MigrateToLeadView.as_view(), name='migrate_to_lead'),
+    path('migrate_to_leads/<int:pk>/', MigrateToLeadView.as_view(), name='migrate_to_leads'),
 
     #VISUAL ADMIN
     path('chatbot/', include('apps.visualadmin.urls')),
