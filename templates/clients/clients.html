@@ -156,8 +156,8 @@
                         {{ client.next_contact_date|date:"d/m/Y" }}
                     </td>
                     <td>{{ client.service_type }}</td>
-                    <td>{{ client.client_income }}</td>
-                    <td>{{ client.client_budget }}</td>
+                    <td>{{ client.client_income|real_brasileiro }}</td>
+                    <td>{{ client.client_budget|real_brasileiro }}</td>
                     <td>
                         <form method="post" action="{% url 'update_client_status_listview' client.pk %}">
                             {% csrf_token %}
