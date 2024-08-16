@@ -91,7 +91,7 @@ TEMPLATES = [
     },
 ]
 
-
+# Adding POSTGRESSSQL AS DATABASE
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
