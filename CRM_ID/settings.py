@@ -21,7 +21,7 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-+=k9m(bcfnr*o-j&zy0+1
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=True, cast=bool)
 
-ALLOWED_HOSTS = ['crm.impactardigital.com.br', 'webapp-2115475.pythonanywhere.com', '127.0.0.1', 'fmendes.pythonanywhere.com']
+ALLOWED_HOSTS = ['localhost', 'crm.impactardigital.com.br', 'webapp-2115475.pythonanywhere.com', '127.0.0.1', 'fmendes.pythonanywhere.com']
 
 
 # Application definition
@@ -94,11 +94,12 @@ TEMPLATES = [
 # Adding POSTGRESSSQL AS DATABASE
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-        'OPTIONS': {
-            'timeout': 20,
-        }
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'crmid',
+        'USER': config('DB_USER'),
+        'PASSWORD': config('DB_PASSWORD'),
+        'HOST': 'localhost',
+        'PORT': '5432',
     }
 }
 
