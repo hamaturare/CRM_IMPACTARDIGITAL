@@ -9,20 +9,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 env_path = BASE_DIR / '.env'
 config = Config(RepositoryEnv(str(env_path)))
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve().parent.parent
-
-# Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = config('SECRET_KEY', default='django-insecure-+=k9m(bcfnr*o-j&zy0+17*zt%0a$01+z9(feyce3jh-!vf1zp')
+# SECURITY WARNING: don't run with debug turned on in production!
+SECRET_KEY = config('SECRET_KEY')  # Força o uso da SECRET_KEY do .env, sem valor padrão visível
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = ['*']
-
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', cast=Csv(), default='crm.impactardigital.com.br,www.crm.impactardigital.com.br')
 
 # Application definition
 
@@ -41,7 +34,6 @@ THIRD_PARTY_APPS = [
     'crispy_bootstrap5',
     'django_cleanup',
     'nested_admin',
-
 ]
 
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap5'
@@ -56,7 +48,6 @@ LOCAL_APPS = [
     'apps.ideabox',
     'apps.wpmessages',
     'apps.visualadmin',
-
 ]
 
 INSTALLED_APPS = DEFAULT_APPS + LOCAL_APPS + THIRD_PARTY_APPS
@@ -91,7 +82,7 @@ TEMPLATES = [
     },
 ]
 
-# Adding POSTGRESSSQL AS DATABASE
+# Database configuration (PostgreSQL)
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -103,9 +94,7 @@ DATABASES = {
     }
 }
 
-
 WSGI_APPLICATION = 'CRM_ID.wsgi.application'
-
 
 JAZZMIN_SETTINGS = {
     "site_title": "Meu Painel de Administração",
@@ -144,7 +133,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-"""
+# Logging configuration
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -160,7 +149,7 @@ LOGGING = {
     },
     'handlers': {
         'file': {
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'class': 'logging.FileHandler',
             'filename': os.path.join(BASE_DIR, 'debug.log'),
             'formatter': 'verbose',
@@ -174,7 +163,7 @@ LOGGING = {
     'loggers': {
         'django': {
             'handlers': ['file', 'console'],
-            'level': 'DEBUG',
+            'level': 'WARNING',
             'propagate': True,
         },
         '': {  # Isso captura todos os loggers, incluindo os definidos com __name__
@@ -184,7 +173,7 @@ LOGGING = {
         },
     },
 }
-"""
+
 # Internationalization
 # https://docs.djangoproject.com/en/5.0/topics/i18n/
 
@@ -196,10 +185,8 @@ USE_I18N = True
 
 USE_TZ = True
 
-
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = '/static/'
-#STATICFILES_DIRS = (os.path.join(BASE_DIR, 'static'),)
 STATIC_ROOT = os.path.join(BASE_DIR, 'static/')
 
 # Media Files
@@ -211,23 +198,16 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-try:
-    from CRM_ID.local_settings import *
-except ImportError:
-    pass
-
 LOGIN_REDIRECT_URL = 'dashboard'
 LOGOUT_REDIRECT_URL = 'home'
 LOGIN_URL = 'login'
 
-
-# This will print email in Console.
-#EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+# Email Configuration
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'mail.impactardigital.com.br'  # The correct SMTP server
+EMAIL_HOST = 'mail.impactardigital.com.br'
 EMAIL_PORT = 587
-EMAIL_USE_SSL = False  # Use SSL since the port is 465
-EMAIL_USE_TLS = True  # Do not use TLS since SSL is being used
+EMAIL_USE_SSL = False  # Use SSL if port 465
+EMAIL_USE_TLS = True  # Use TLS if port 587
 EMAIL_ADMINS = config('EMAIL_ADMINS', cast=Csv())
 EMAIL_HOST_USER = config('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD')
@@ -243,8 +223,19 @@ MESSAGE_TAGS = {
     messages.ERROR: 'alert-danger',
 }
 
+# WhatsApp API Configuration
 WHATSAPP_API_URL = config('WHATSAPP_API_URL')
 WHATSAPP_ACCESS_TOKEN = config('WHATSAPP_ACCESS_TOKEN')
 VERIFY_TOKEN = config('VERIFY_TOKEN')
 
-#SECURE_SSL_REDIRECT = True
+# Security settings
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+SECURE_HSTS_SECONDS = 31536000  # 1 ano
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+SECURE_HSTS_PRELOAD = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+SECURE_BROWSER_XSS_FILTER = True
+X_FRAME_OPTIONS = 'DENY'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
