@@ -96,6 +96,60 @@ def update_contacted_status(request, wpmessage_id):
     except WpMessage.DoesNotExist:
         return HttpResponse('WpMessage not found', status=404)
 
+
+@csrf_exempt
+def whatsapp_webhook(request):
+    if request.method == 'GET':
+        try:
+            VERIFY_TOKEN = 'e4679551-2c1e-420a-92a0-40d965a8a66f'
+            mode = request.GET.get('hub.mode')
+            token = request.GET.get('hub.verify_token')
+            challenge = request.GET.get('hub.challenge')
+
+            if mode == 'subscribe' and token == VERIFY_TOKEN:
+                return HttpResponse(challenge, status=200)
+            else:
+                logger.warning('Forbidden access attempted with token: %s', token)
+                return HttpResponse('Forbidden', status=403)
+        except Exception as e:
+            logger.error(f'Error in GET request: {e}')
+            return HttpResponse('Internal Server Error', status=500)
+
+    if request.method == 'POST':
+        try:
+            data = json.loads(request.body)
+            
+            # Verifica se a estrutura correta está presente
+            if 'value' in data:
+                value = data['value']
+
+                # Extraindo os dados do JSON
+                business_phone_number = value['metadata']['display_phone_number']  # Número do WhatsApp Business
+                profile_name = value['contacts'][0]['profile']['name']
+                whatsapp_id = value['contacts'][0]['wa_id']
+                lead_phone_number = value['messages'][0]['from']  # Número da lead
+                message_id = value['messages'][0]['id']
+                text = value['messages'][0]['text']['body']
+
+                # Lida com a mensagem recebida
+                handle_incoming_message(
+                    lead_phone_number,
+                    profile_name,
+                    whatsapp_id,
+                    business_phone_number,
+                    message_id,
+                    text
+                )
+
+        except Exception as e:
+            logger.error(f'Error processing WhatsApp message: {e}')
+            return HttpResponse('Internal Server Error', status=500)
+
+        return HttpResponse('success', status=200)
+
+
+"""
+#Este codigo abaixo funcionava com a v19 do webhoock do facebook.
 @csrf_exempt
 def whatsapp_webhook(request):
     #logger.info('Webhook accessed')
@@ -145,7 +199,7 @@ def whatsapp_webhook(request):
                     pass
         return HttpResponse('success', status=200)
 
-"""
+
 class WhatsAppWebhookView():
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
