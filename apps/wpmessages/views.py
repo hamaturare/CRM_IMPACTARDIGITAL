@@ -96,7 +96,7 @@ def update_contacted_status(request, wpmessage_id):
     except WpMessage.DoesNotExist:
         return HttpResponse('WpMessage not found', status=404)
 
-
+"""
 @csrf_exempt
 def whatsapp_webhook(request):
     if request.method == 'GET':
@@ -199,7 +199,7 @@ def whatsapp_webhook(request):
                     pass
         return HttpResponse('success', status=200)
 
-
+"""
 class WhatsAppWebhookView():
     @csrf_exempt
     def dispatch(self, *args, **kwargs):
